@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Glass Hybrid Sample — Teknik Logistik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --amber-500:#D99F60; --amber-600:#C08A4C;
+    --brand-700:#8C6441; --brand-800:#6E4E33;
+    --cream-300:#AC9587; --surface-0:#FFFDFB; --surface-50:#ECEBE9;
+    --navy-700:#505666; --ink-900:#24141F;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Plus Jakarta Sans',Inter,sans-serif; color:var(--navy-700);
+    background:
+      radial-gradient(circle at 15% 0%, rgba(217,159,96,0.18), transparent 45%),
+      radial-gradient(circle at 85% 10%, rgba(140,100,65,0.14), transparent 50%),
+      var(--surface-50);
+    min-height:100vh;
+  }
+  h1,h2,h3{font-family:'Fraunces',serif; color:var(--ink-900); margin:0;}
+
+  /* ===== NAVBAR — glass ===== */
+  header.nav{
+    position:sticky; top:0; z-index:50;
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    background: rgba(255,253,251,0.62);
+    border-bottom: 1px solid rgba(140,100,65,0.12);
+    box-shadow: 0 8px 24px -12px rgba(36,20,31,0.12);
+  }
+  nav{
+    max-width:1200px; margin:0 auto; padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{ font-family:'Fraunces',serif; font-weight:600; font-size:1.05rem; color:var(--ink-900); }
+  .brand span{color:var(--brand-700);}
+  .nav-links{ display:flex; gap:28px; }
+  .nav-links a{
+    font-size:0.875rem; font-weight:500; color:rgba(36,20,31,0.75); text-decoration:none;
+    position:relative; padding-bottom:2px;
+  }
+  .nav-links a:hover{color:var(--brand-700);}
+  .nav-right{display:flex; align-items:center; gap:12px;}
+  .lang-toggle{
+    display:inline-flex; border-radius:999px; padding:2px;
+    background:rgba(140,100,65,0.10);
+    border:1px solid rgba(140,100,65,0.22);
+  }
+  .lang-toggle span{
+    font-size:0.7rem; font-weight:700; padding:6px 12px; border-radius:999px; color:var(--brand-700);
+  }
+  .lang-toggle span.active{background:var(--brand-700); color:var(--surface-0);}
+
+  section{padding:84px 24px;}
+  .wrap{max-width:1200px; margin:0 auto;}
+
+  /* ===== Section label — NOT a generic pale pill ===== */
+  .kicker{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:0.78rem; font-weight:700; letter-spacing:0.02em;
+    color:var(--brand-700);
+  }
+  .kicker::before{
+    content:''; width:18px; height:2px; background:var(--amber-500); border-radius:2px; display:inline-block;
+  }
+
+  .head-row{
+    display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-bottom:40px; flex-wrap:wrap;
+  }
+  .head-row h2{font-size:clamp(1.8rem,3vw,2.4rem); font-weight:600; margin-top:10px; max-width:34ch;}
+  .more-link{
+    font-weight:600; color:var(--brand-700); text-decoration:none; font-size:0.92rem;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+
+  /* ===== Lab cards — frosted glass, asymmetric sizes (bento) ===== */
+  .lab-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:24px;
+  }
+  .lab-card{
+    grid-column:span 1;
+    border-radius:20px;
+    background: rgba(255,253,251,0.55);
+    backdrop-filter: blur(10px) saturate(130%);
+    -webkit-backdrop-filter: blur(10px) saturate(130%);
+    border:1px solid rgba(255,255,255,0.5);
+    box-shadow: 0 10px 30px -14px rgba(36,20,31,0.18), inset 0 1px 0 rgba(255,255,255,0.6);
+    overflow:hidden; display:flex; flex-direction:column;
+    transition: transform .35s ease, box-shadow .35s ease;
+  }
+  .lab-card:hover{ transform:translateY(-4px); box-shadow:0 18px 36px -16px rgba(36,20,31,0.24), inset 0 1px 0 rgba(255,255,255,0.6); }
+  .lab-card.lg{ grid-column:span 2; grid-row:span 1; }
+  .lab-img{ position:relative; aspect-ratio:4/3; overflow:hidden; }
+  .lab-card.lg .lab-img{ aspect-ratio:16/9; }
+  .lab-img img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .lab-tag{
+    position:absolute; bottom:12px; left:12px;
+    background:rgba(217,159,96,0.85);
+    backdrop-filter:blur(6px);
+    color:var(--ink-900); font-size:0.62rem; font-weight:800; letter-spacing:0.04em;
+    text-transform:uppercase; padding:4px 10px; border-radius:999px;
+  }
+  .lab-body{ padding:20px; flex:1; display:flex; flex-direction:column; gap:8px; }
+  .lab-body h3{ font-size:1.05rem; font-weight:600; line-height:1.3; }
+  .lab-body p{ font-size:0.82rem; line-height:1.55; margin:0; color:var(--navy-700); }
+
+  /* ===== Partners / trust section ===== */
+  .trust{ text-align:center; }
+  .trust h2{ font-size:clamp(1.8rem,3vw,2.4rem); margin-top:10px; }
+  .trust p{ max-width:56ch; margin:14px auto 0; }
+  .marquee{
+    margin-top:36px; display:flex; gap:16px; flex-wrap:wrap; justify-content:center;
+  }
+  .pill-logo{
+    padding:12px 24px; border-radius:14px;
+    background:rgba(255,253,251,0.5);
+    backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,0.55);
+    font-weight:700; font-size:0.78rem; letter-spacing:0.03em; color:var(--navy-700);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+
+  .cta{
+    border-radius:28px; margin:0 24px 84px; padding:64px 40px; text-align:center;
+    background: linear-gradient(135deg, var(--amber-500) 0%, var(--amber-600) 45%, var(--brand-700) 100%);
+    color:var(--surface-0); position:relative; overflow:hidden;
+  }
+  .cta::before{
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.18), transparent 55%);
+  }
+  .cta h2{ color:var(--surface-0); font-size:clamp(1.8rem,3.4vw,2.6rem); position:relative; }
+  .cta p{ color:rgba(255,253,251,0.9); max-width:52ch; margin:14px auto 28px; position:relative; }
+  .cta-btns{ display:flex; gap:14px; justify-content:center; position:relative; flex-wrap:wrap; }
+  .btn{
+    padding:13px 28px; border-radius:999px; font-weight:600; font-size:0.9rem; text-decoration:none; cursor:pointer; border:none;
+  }
+  .btn-light{ background:var(--surface-0); color:var(--brand-700); }
+  .btn-ghost{ background:rgba(255,255,255,0.14); color:var(--surface-0); border:1.5px solid rgba(255,253,251,0.55); backdrop-filter:blur(6px); }
+
+  @media (max-width: 1024px){ .lab-grid{grid-template-columns:repeat(2,1fr);} .lab-card.lg{grid-column:span 2;} }
+  @media (max-width: 720px){ .nav-links{display:none;} .lab-grid{grid-template-columns:1fr;} .lab-card.lg{grid-column:span 1;} }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <nav>
+    <div class="brand">Teknik Logistik <span>·</span> Digital Supply Chain</div>
+    <div class="nav-links">
+      <a href="#">Beranda</a><a href="#">Profil</a><a href="#">Kurikulum</a>
+      <a href="#">Dosen</a><a href="#">Berita</a><a href="#">Galeri</a>
+      <a href="#">Statistik</a><a href="#">Kontak</a>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle"><span class="active">ID</span><span>EN</span></div>
+    </div>
+  </nav>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="head-row">
+      <div>
+        <span class="kicker">FASILITAS RISET</span>
+        <h2>Laboratorium &amp; Fasilitas</h2>
+      </div>
+      <a class="more-link" href="#">Semua laboratorium →</a>
+    </div>
+
+    <div class="lab-grid">
+      <div class="lab-card lg">
+        <div class="lab-img">
+          <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=900&h=506" alt="">
+          <span class="lab-tag">Digital Supply Chain</span>
+        </div>
+        <div class="lab-body">
+          <h3>Laboratorium E-Logistik</h3>
+          <p>Fokus pada pemodelan, integrasi, dan optimalisasi sistem logistik elektronik berbasis IT untuk meningkatkan keandalan rantai pasok.</p>
+        </div>
+      </div>
+
+      <div class="lab-card">
+        <div class="lab-img">
+          <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=600&h=450" alt="">
+          <span class="lab-tag">Logistics Analytics</span>
+        </div>
+        <div class="lab-body">
+          <h3>Laboratorium Simulasi Rantai Pasok</h3>
+          <p>Mensimulasikan skenario logistik industri riil dan memecahkan bottleneck operasional secara virtual.</p>
+        </div>
+      </div>
+
+      <div class="lab-card">
+        <div class="lab-img">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600&h=450" alt="">
+          <span class="lab-tag">Logistics Analytics</span>
+        </div>
+        <div class="lab-body">
+          <h3>Laboratorium Sistem Informasi Logistik</h3>
+          <p>Merancang dan mengimplementasikan solusi ERP dan platform sistem informasi logistik digital terintegrasi.</p>
+        </div>
+      </div>
+
+      <div class="lab-card">
+        <div class="lab-img">
+          <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=600&h=450" alt="">
+          <span class="lab-tag">Automation &amp; Systems</span>
+        </div>
+        <div class="lab-body">
+          <h3>Laboratorium Otomasi Gudang</h3>
+          <p>Mempelajari teknologi otomasi gudang pintar, sensor IoT, serta integrasi robotik pergudangan.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="trust">
+  <div class="wrap">
+    <span class="kicker" style="justify-content:center;">KEMITRAAN GLOBAL</span>
+    <h2>Dipercaya oleh Industri &amp; Mitra Akademik</h2>
+    <p>Kami bekerja sama dengan berbagai BUMN, logistik multinasional, dan universitas global untuk riset dan magang.</p>
+    <div class="marquee">
+      <div class="pill-logo">HAVI LOGISTICS</div>
+      <div class="pill-logo">GARUDA FOOD</div>
+      <div class="pill-logo">PERTAMINA</div>
+      <div class="pill-logo">DHL SUPPLY CHAIN</div>
+      <div class="pill-logo">JNE</div>
+    </div>
+  </div>
+</section>
+
+<div class="cta">
+  <span class="kicker" style="color:rgba(255,253,251,0.9); justify-content:center;">PENERIMAAN MAHASISWA BARU</span>
+  <h2>Siap Menjadi Insinyur Logistik Masa Depan?</h2>
+  <p>Bergabunglah bersama kami di prodi Teknik Logistik Telkom University dan kuasai keahlian rantai pasok digital masa depan.</p>
+  <div class="cta-btns">
+    <a class="btn btn-light" href="#">Daftar Sekarang</a>
+    <a class="btn btn-ghost" href="#">Hubungi Kami</a>
+  </div>
+</div>
+
+</body>
+</html>

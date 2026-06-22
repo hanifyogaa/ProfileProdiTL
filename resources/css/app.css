@@ -1,0 +1,86 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
+@theme {
+    --font-display: 'Fraunces', serif;
+    --font-sans: 'Plus Jakarta Sans', Inter, sans-serif;
+
+    --color-amber-500: #d99f60;
+    --color-amber-600: #c08a4c;
+    --color-brand-700: #8c6441;
+    --color-brand-800: #6e4e33;
+    --color-cream-300: #ac9587;
+    --color-surface-0: #fffdfb;
+    --color-surface-50: #ecebe9;
+    --color-navy-700: #505666;
+    --color-ink-900: #24141f;
+}
+
+@theme inline {
+    --color-background: var(--color-surface-50);
+    --color-foreground: var(--color-ink-900);
+    --color-card: var(--color-surface-0);
+    --color-card-foreground: var(--color-ink-900);
+    --color-primary: var(--color-brand-700);
+    --color-primary-foreground: var(--color-surface-0);
+    --color-secondary: var(--color-cream-300);
+    --color-secondary-foreground: var(--color-ink-900);
+    --color-muted: var(--color-surface-50);
+    --color-muted-foreground: var(--color-navy-700);
+    --color-accent: var(--color-amber-500);
+    --color-accent-foreground: var(--color-ink-900);
+    --color-border: var(--color-cream-300);
+    --color-input: var(--color-cream-300);
+    --color-ring: var(--color-amber-500);
+    --color-destructive: #b3261e;
+    --color-destructive-foreground: var(--color-surface-0);
+}
+
+/* ─── Seamless section transitions ─────────────────────────────────────── */
+/* Each section bleeds into the next via these "bleed" dividers — no hard color cuts */
+
+/* Light-to-subtle-warm transition between white sections */
+.section-blend-warm::before {
+    content: '';
+    display: block;
+    height: 120px;
+    margin-bottom: -120px;
+    background: linear-gradient(to bottom, #fffdfb 0%, rgba(255,253,251,0) 100%);
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* ─── Infinity marquee ─────────────────────────────────────────────────── */
+@keyframes marquee-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+.marquee-container {
+    display: flex;
+    width: max-content;
+}
+.marquee-container.is-playing {
+    animation: marquee-scroll 40s linear infinite;
+}
+.marquee-container.is-playing:hover {
+    animation-play-state: paused;
+}
+
+/* Partner card flip depth */
+.partner-card {
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.partner-card:hover {
+    transform: perspective(800px) rotateY(0deg) translateZ(12px) scale(1.04) !important;
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

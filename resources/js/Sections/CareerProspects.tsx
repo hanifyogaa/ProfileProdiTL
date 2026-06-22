@@ -1,0 +1,73 @@
+import { LangText } from '@/components/LangText';
+import { Reveal } from '@/components/Reveal';
+import { useLocale } from '@/contexts/LocaleContext';
+import type { Bilingual } from '@/types';
+import { Award, Briefcase, TrendingUp } from 'lucide-react';
+
+interface TrackItem {
+    title: Bilingual;
+    description: Bilingual;
+}
+
+interface ProspectsData {
+    heading: Bilingual;
+    tracks: TrackItem[];
+}
+
+const ICONS = [Briefcase, Award, TrendingUp];
+
+export function CareerProspects({ prospects }: { prospects: ProspectsData }) {
+    const { locale } = useLocale();
+
+    return (
+        <section className="bg-surface-0 py-20">
+            <div className="mx-auto max-w-[1200px] px-6">
+                <div className="mx-auto mb-16 max-w-2xl text-center">
+                    <Reveal>
+                        <h2 className="font-display text-ink-900 mt-6 text-3xl leading-tight font-semibold sm:text-4xl">
+                            {locale === 'id'
+                                ? 'Profil Kelulusan & Karir Teknik Logistik'
+                                : 'Graduate Profile & Career Pathways'}
+                        </h2>
+                        <p className="text-navy-700 mt-4 text-base leading-relaxed">
+                            {locale === 'id'
+                                ? 'Lulusan dibekali keahlian logistik berbasis IT yang sangat dibutuhkan di berbagai sektor industri modern.'
+                                : 'Graduates are equipped with IT-based logistics capabilities highly sought after in modern industries.'}
+                        </p>
+                    </Reveal>
+                </div>
+
+                {/* Numbered list with a divider rhythm instead of repeated cards */}
+                <div className="divide-cream-300/30 border-cream-300/30 divide-y border-y">
+                    {prospects.tracks.map((track, index) => {
+                        const Icon = ICONS[index % ICONS.length] || Briefcase;
+
+                        return (
+                            <Reveal key={index} delay={index * 0.1}>
+                                <div className="group flex flex-col gap-6 py-8 sm:flex-row sm:items-center md:py-10">
+                                    <span className="font-display text-cream-300/70 text-4xl font-semibold sm:w-20 sm:shrink-0">
+                                        0{index + 1}
+                                    </span>
+                                    <div className="flex-1">
+                                        <h3 className="font-display text-ink-900 text-xl font-bold">
+                                            <LangText text={track.title} />
+                                        </h3>
+                                        <p className="text-navy-700 mt-2 max-w-xl text-sm leading-relaxed">
+                                            <LangText
+                                                text={track.description}
+                                            />
+                                        </p>
+                                    </div>
+                                    <Icon
+                                        className="text-brand-700/30 hidden size-9 shrink-0 transition-colors group-hover:text-amber-500 sm:block"
+                                        strokeWidth={1.5}
+                                    />
+                                </div>
+                            </Reveal>
+                        );
+                    })}
+                </div>
+            </div>
+        </section>
+    );
+}

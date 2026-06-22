@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php -v)",
+      "Bash(composer --version)",
+      "Bash(ls \"C:/laragon/bin/php\" 2>/dev/null)",
+      "Read(//c/laragon/bin/php/**)",
+      "Bash(PATH=/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64:__TRACKED_VAR__ composer update --with-all-dependencies)",
+      "Bash(PATH=/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64:__TRACKED_VAR__ composer show laravel/tinker --all)",
+      "Bash(PATH=/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64:__TRACKED_VAR__ php artisan --version)",
+      "Bash(PATH=/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64:__TRACKED_VAR__ php artisan breeze:install --help)",
+      "Bash(PATH=/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64:__TRACKED_VAR__ php artisan breeze:install react --typescript --eslint --no-interaction)",
+      "Bash(npm install *)",
+      "Bash(npm audit *)",
+      "Bash(PATH=/c/laragon/bin/mysql/mysql-8.0.30-winx64/bin:__TRACKED_VAR__ mysql -u root -e 'SELECT VERSION\\(\\);')",
+      "Read(//c/laragon/bin/mysql/**)",
+      "Bash(PATH=/c/laragon/bin/mysql/mysql-8.4.3-winx64/bin:__TRACKED_VAR__ mysql -u root -h 127.0.0.1 -e 'SELECT VERSION\\(\\);')",
+      "Bash(PATH=/c/laragon/bin/mysql/mysql-8.4.3-winx64/bin:__TRACKED_VAR__ mysql -u root -h 127.0.0.1 -e 'CREATE DATABASE IF NOT EXISTS teknik_logistik CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;')",
+      "Bash(npx shadcn@latest add dialog dropdown-menu tabs --yes)",
+      "Bash(npm view *)",
+      "Bash(PATH=/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64:__TRACKED_VAR__ php artisan migrate)",
+      "Bash(mv Components components_tmp)",
+      "Bash(mv components_tmp components)",
+      "Bash(start \"\" \"f:\\\\Web App\\\\Profile Web\\\\Teknik Logistik\\\\.docs\\\\glass-sample.html\")",
+      "WebFetch(domain:bis.telkomuniversity.ac.id)",
+      "Bash(npx tsc *)",
+      "Bash(curl -s http://127.0.0.1:8000/)",
+      "Bash(curl -s -o /dev/null -w \"homepage: %{http_code}\\\\n\" http://127.0.0.1:8000/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=800&h=500\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800&h=500\")",
+      "Bash(curl -sI \"https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800&h=500\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://127.0.0.1:8000/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:5174/)",
+      "Read(//tmp/**)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:5173/ http://localhost:5175/)"
+    ]
+  }
+}
