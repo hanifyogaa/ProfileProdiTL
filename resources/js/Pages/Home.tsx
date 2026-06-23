@@ -1,5 +1,6 @@
 import { Achievements } from '@/Sections/Achievements';
 import { AdmissionCta } from '@/Sections/AdmissionCta';
+import { AmbientBand } from '@/Sections/AmbientBand';
 import { CareerProspects } from '@/Sections/CareerProspects';
 import { CurriculumSnapshot } from '@/Sections/CurriculumSnapshot';
 import { Distinctiveness } from '@/Sections/Distinctiveness';
@@ -88,10 +89,7 @@ export default function Home({
                         <Hero hero={hero} />
                     </div>
 
-                    {/* Seamless bleed: dark → white */}
-                    {/* Hero ends dark, stats starts white — the hero's bottom gradient handles it */}
-
-                    {/* 2. Stats Strip — white surface, no border */}
+                    {/* 2. Stats Strip — dark brand-800 band */}
                     <div id="stats" className="relative z-10">
                         <StatsStrip stats={stats} />
                     </div>
@@ -120,16 +118,16 @@ export default function Home({
                         <FeaturedCarousel featured={featured} />
                     </div>
 
-                    {/* Dark → white gradient bridge */}
+                    {/* Dark → surface-0 gradient bridge */}
                     <div
                         className="pointer-events-none relative z-10 h-24"
                         style={{
                             background:
-                                'linear-gradient(to bottom, #24141f 0%, #fffdfb 100%)',
+                                'linear-gradient(to bottom, #24141f 0%, #FFFDFB 100%)',
                         }}
                     />
 
-                    {/* 6. News grid — white */}
+                    {/* 6. News grid — surface-0 */}
                     <div id="news" className="relative z-10">
                         <LatestNews latestNews={latestNews} />
                     </div>
@@ -166,16 +164,12 @@ export default function Home({
                         <PartnersMarquee partners={partners} />
                     </div>
 
-                    {/* Gradient bridge before dark CTA */}
-                    <div
-                        className="pointer-events-none relative z-10 h-20"
-                        style={{
-                            background:
-                                'linear-gradient(to bottom, #fffdfb 0%, rgba(140,100,65,0.08) 100%)',
-                        }}
-                    />
+                    {/* 13. Ambient parallax band — elegant crescendo before CTA */}
+                    <div id="ambient" className="relative z-10">
+                        <AmbientBand />
+                    </div>
 
-                    {/* 13. Call-to-action banner */}
+                    {/* 14. Call-to-action banner */}
                     <div id="cta" className="relative z-10">
                         <AdmissionCta />
                     </div>

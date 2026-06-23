@@ -18,7 +18,11 @@ class ActivityResource extends Resource
 {
     protected static ?string $model = Activity::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
+    protected static ?string $navigationLabel = 'Agenda Kegiatan';
+    protected static ?int $navigationSort = 2;
+
+    public static function getNavigationGroup(): string|null { return 'Konten Utama'; }
 
     public static function form(Schema $schema): Schema
     {

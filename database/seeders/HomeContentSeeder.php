@@ -151,6 +151,123 @@ class HomeContentSeeder extends Seeder
             'email' => null,
             'phone' => null,
         ]]);
+
+        Setting::updateOrCreate(['key' => 'about_content'], ['value' => [
+            'visi' => [
+                'id' => 'Menjadi Program Studi S1 Teknik Logistik yang unggul, inovatif, dan bertaraf internasional dalam pengembangan ilmu pengetahuan dan teknologi di bidang logistik berbasis digital pada tahun 2028.',
+                'en' => 'To become an excellent, innovative, and internationally standardized undergraduate Logistics Engineering program in the development of science and technology in the field of digital-based logistics by 2028.',
+            ],
+            'misi' => [
+                [
+                    'id' => 'Menyelenggarakan pendidikan S1 Teknik Logistik yang berkualitas dan relevan dengan kebutuhan industri logistik nasional dan internasional.',
+                    'en' => 'To organize quality S1 Logistics Engineering education relevant to the needs of national and international logistics industries.',
+                ],
+                [
+                    'id' => 'Mengembangkan riset inovatif di bidang sistem logistik digital, analitik rantai pasok, dan otomasi untuk memajukan ilmu pengetahuan dan teknologi logistik.',
+                    'en' => 'To develop innovative research in digital logistics systems, supply chain analytics, and automation to advance logistics science and technology.',
+                ],
+                [
+                    'id' => 'Melaksanakan pengabdian kepada masyarakat dengan menerapkan ilmu Teknik Logistik untuk meningkatkan efisiensi dan daya saing logistik nasional.',
+                    'en' => 'To conduct community service by applying Logistics Engineering knowledge to improve the efficiency and competitiveness of national logistics.',
+                ],
+            ],
+            'history' => [
+                'id' => 'Program Studi S1 Teknik Logistik Universitas Telkom didirikan di bawah naungan Fakultas Rekayasa Industri (FRI). Dengan dukungan PT Telkom Indonesia sebagai BUMN platform telekomunikasi, program studi ini mengembangkan kekhasan keilmuan e-logistik yang memadukan rekayasa industri, teknologi informasi, dan manajemen rantai pasok digital. Sejak berdirinya, program ini konsisten mencetak lulusan yang terserap di berbagai sektor industri logistik nasional maupun internasional, dan telah meraih predikat Akreditasi "Unggul" dari LAM Teknik.',
+                'en' => 'The S1 Logistics Engineering Program at Telkom University was established under the Faculty of Industrial Engineering (FRI). With the support of PT Telkom Indonesia, a state-owned telecommunications platform company, this program develops a distinctive e-logistics specialization that integrates industrial engineering, information technology, and digital supply chain management. Since its founding, the program has consistently produced graduates absorbed across various national and international logistics industry sectors, and has earned the "Unggul" (Excellent) accreditation from LAM Teknik.',
+            ],
+        ]]);
+
+        Setting::updateOrCreate(['key' => 'accreditation'], ['value' => [
+            'body_name' => 'LAM Teknik',
+            'status' => [
+                'id' => 'Terakreditasi: UNGGUL',
+                'en' => 'Accreditation Rank: UNGGUL (Excellent)',
+            ],
+            'description' => [
+                'id' => '"Unggul" adalah predikat akreditasi tertinggi yang diberikan oleh Lembaga Akreditasi Mandiri Teknik (LAM Teknik) kepada program studi yang memenuhi standar kualitas pendidikan tinggi secara komprehensif.',
+                'en' => '"Unggul" is the highest accreditation rank awarded by the Independent Engineering Accreditation Institute (LAM Teknik) to study programs that comprehensively meet higher education quality standards.',
+            ],
+            'decrees' => [
+                [
+                    'title' => [
+                        'id' => 'SK Akreditasi LAM Teknik 2025',
+                        'en' => 'LAM Teknik Accreditation Decree (2025)',
+                    ],
+                    'number' => 'No: 0451/SK/LAM-Teknik/IV/2025',
+                    'description' => [
+                        'id' => 'Menetapkan predikat Akreditasi "Unggul" untuk Program Studi S1 Teknik Logistik, berlaku selama 5 tahun hingga tahun 2030.',
+                        'en' => 'Establishes the "Unggul" accreditation rank for the S1 Logistics Engineering Program, valid for 5 years through 2030.',
+                    ],
+                ],
+            ],
+        ]]);
+
+        Setting::updateOrCreate(['key' => 'research_areas'], ['value' => [
+            'areas' => [
+                [
+                    'icon' => 'code',
+                    'title' => [
+                        'id' => 'Sistem Logistik Digital',
+                        'en' => 'Digital Logistics Systems',
+                    ],
+                    'description' => [
+                        'id' => 'Pengembangan arsitektur sistem informasi logistik, Warehouse Management System (WMS), dan platform e-logistik yang terintegrasi dengan teknologi IoT dan AI.',
+                        'en' => 'Development of logistics information system architectures, Warehouse Management Systems (WMS), and e-logistics platforms integrated with IoT and AI technologies.',
+                    ],
+                ],
+                [
+                    'icon' => 'compass',
+                    'title' => [
+                        'id' => 'Model Riset Operasional',
+                        'en' => 'Operations Research Modeling',
+                    ],
+                    'description' => [
+                        'id' => 'Pemodelan matematika dan simulasi untuk optimasi jaringan distribusi, manajemen inventori, dan perencanaan kapasitas rantai pasok.',
+                        'en' => 'Mathematical modeling and simulation for optimizing distribution networks, inventory management, and supply chain capacity planning.',
+                    ],
+                ],
+                [
+                    'icon' => 'heart',
+                    'title' => [
+                        'id' => 'Pengabdian & Inovasi Masyarakat',
+                        'en' => 'Community Service & Innovation',
+                    ],
+                    'description' => [
+                        'id' => 'Implementasi keilmuan logistik untuk meningkatkan efisiensi UMKM dan rantai pasok lokal, serta pengembangan solusi logistik sosial berbasis teknologi.',
+                        'en' => 'Applying logistics knowledge to improve SME efficiency and local supply chains, and developing technology-based social logistics solutions.',
+                    ],
+                ],
+            ],
+        ]]);
+
+        Setting::updateOrCreate(['key' => 'mbkm_content'], ['value' => [
+            'description' => [
+                'id' => 'Program Merdeka Belajar - Kampus Merdeka (MBKM) memfasilitasi mahasiswa Teknik Logistik untuk mendapatkan pengalaman belajar di luar kampus yang dapat dikonversi menjadi SKS. Tersedia dua skema utama yang dirancang untuk mempercepat kesiapan kerja dan memperluas wawasan global mahasiswa.',
+                'en' => 'The Merdeka Belajar - Kampus Merdeka (MBKM) program enables Logistics Engineering students to gain learning experiences outside campus that can be converted into credits. Two main schemes are available, designed to accelerate career readiness and broaden students\' global perspectives.',
+            ],
+            'programs' => [
+                [
+                    'title' => [
+                        'id' => 'Magang Industri Bersertifikat',
+                        'en' => 'Certified Industry Internships',
+                    ],
+                    'description' => [
+                        'id' => 'Penempatan magang terstruktur selama 6 bulan di perusahaan mitra industri unggulan — BUMN logistik, perusahaan manufaktur, atau perusahaan teknologi rantai pasok. Dapat dikonversi hingga 20 SKS dengan pendampingan akademik penuh.',
+                        'en' => 'Structured 6-month internship placement at leading industry partner companies — logistics state enterprises, manufacturing companies, or supply chain technology companies. Convertible for up to 20 credits with full academic mentoring.',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'id' => 'Pertukaran Mahasiswa',
+                        'en' => 'Student Exchange',
+                    ],
+                    'description' => [
+                        'id' => 'Kesempatan studi satu semester di universitas mitra nasional maupun internasional di kawasan Asia Tenggara dan Asia Timur. Program ini memperkaya perspektif mahasiswa tentang praktik logistik global dengan konversi SKS penuh.',
+                        'en' => 'Opportunity to study for one semester at national or international partner universities in Southeast and East Asia. This program enriches students\' perspectives on global logistics practices with full credit conversion.',
+                    ],
+                ],
+            ],
+        ]]);
     }
 
     private function seedStats(): void

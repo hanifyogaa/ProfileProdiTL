@@ -28,12 +28,12 @@ export function Distinctiveness({
     const { locale, t } = useLocale();
 
     return (
-        <section className="bg-surface-0 pt-20 pb-32 sm:pb-40">
+        <section className="bg-surface-50 pt-20 pb-32 sm:pb-40">
             <div className="mx-auto max-w-[1200px] px-6">
                 <div className="grid gap-12 lg:grid-cols-12 lg:items-start">
                     {/* Left Panel */}
                     <div className="lg:sticky lg:top-24 lg:col-span-5">
-                        <Reveal>
+                        <Reveal variant="fade-left">
                             <h2 className="font-display text-ink-900 mt-6 text-3xl leading-tight font-semibold sm:text-4xl">
                                 {locale === 'id'
                                     ? 'Warna Keilmuan E-Logistik Kami'
@@ -65,8 +65,8 @@ export function Distinctiveness({
                             (() => {
                                 const point = distinctiveness.points[0];
                                 return (
-                                    <Reveal>
-                                        <Card className="border-cream-300/30 bg-surface-0 relative overflow-hidden p-8 shadow-[0_16px_36px_-12px_rgba(36,20,31,0.1),0_4px_12px_-4px_rgba(36,20,31,0.04)] sm:p-10">
+                                    <Reveal variant="fade-right" delay={0.1}>
+                                        <Card className="relative overflow-hidden p-8 sm:p-10">
                                             {/* Corner flag motif: deliberate larger signature */}
                                             <div className="absolute top-0 left-0 z-10 size-8 bg-amber-500 [clip-path:polygon(0_0,100%_0,0_100%)]" />
 
@@ -97,9 +97,10 @@ export function Distinctiveness({
                                     return (
                                         <Reveal
                                             key={index}
-                                            delay={(index + 1) * 0.1}
+                                            delay={(index + 1) * 0.22}
+                                            variant="fade-right"
                                         >
-                                            <Card className="border-cream-300/30 bg-surface-0 h-full border p-6 transition-shadow duration-300 hover:shadow-[0_18px_36px_-16px_rgba(36,20,31,0.12)]">
+                                            <Card className="h-full p-6">
                                                 <Icon
                                                     className="text-brand-700/80 size-5"
                                                     strokeWidth={1.25}

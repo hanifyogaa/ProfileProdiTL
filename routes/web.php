@@ -27,8 +27,27 @@ Route::get('/faq', [PageController::class, 'faq'])->name('faq');
 Route::get('/kontak', [PageController::class, 'contact'])->name('contact');
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return redirect()->route('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+// Admin Panel Routes
+Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('dashboard');
+    
+    Route::resource('news', \App\Http\Controllers\Admin\AdminNewsController::class);
+    Route::resource('lecturers', \App\Http\Controllers\Admin\AdminLecturerController::class);
+    Route::resource('courses', \App\Http\Controllers\Admin\AdminCourseController::class);
+    Route::resource('activities', \App\Http\Controllers\Admin\AdminActivityController::class);
+    Route::resource('achievements', \App\Http\Controllers\Admin\AdminAchievementController::class);
+    Route::resource('labs', \App\Http\Controllers\Admin\AdminLabController::class);
+    Route::resource('partners', \App\Http\Controllers\Admin\AdminPartnerController::class);
+    Route::resource('stats', \App\Http\Controllers\Admin\AdminStatController::class);
+    Route::resource('galleries', \App\Http\Controllers\Admin\AdminGalleryController::class);
+    Route::resource('faqs', \App\Http\Controllers\Admin\AdminFaqController::class);
+    
+    Route::get('settings', [\App\Http\Controllers\Admin\AdminSettingsController::class, 'edit'])->name('settings.edit');
+    Route::put('settings', [\App\Http\Controllers\Admin\AdminSettingsController::class, 'update'])->name('settings.update');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

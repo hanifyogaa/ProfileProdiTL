@@ -2,6 +2,13 @@ import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Reveal } from '@/components/Reveal';
 import { useLocale } from '@/contexts/LocaleContext';
+import {
+    motion,
+    useReducedMotion,
+    useScroll,
+    useTransform,
+} from 'framer-motion';
+import { useRef } from 'react';
 
 interface LabItem {
     id: number;
@@ -39,18 +46,94 @@ const LAB_FALLBACK_DESCRIPTIONS: Record<string, { id: string; en: string }> = {
     },
 };
 
+// Per-card parallax image: each card index gets a slightly different Y range
+// so cards drift at marginally different rates — subtle depth layering
+const PARALLAX_OFFSETS = [-55, -40, -65, -45];
+
+function ParallaxCard({
+    lab,
+    index,
+    sectionProgress,
+    description,
+}: {
+    lab: LabItem;
+    index: number;
+    sectionProgress: ReturnType<typeof useScroll>['scrollYProgress'];
+    description: string;
+}) {
+    const shouldReduceMotion = useReducedMotion();
+    const offset = PARALLAX_OFFSETS[index % PARALLAX_OFFSETS.length];
+
+    const yImg = useTransform(
+        sectionProgress,
+        [0, 1],
+        [0, shouldReduceMotion ? 0 : offset],
+    );
+
+    const coverImg =
+        lab.photo || LAB_FALLBACK_IMAGES[index % LAB_FALLBACK_IMAGES.length];
+
+    return (
+        <Reveal delay={index * 0.1}>
+            <Card noLift className="group flex h-full flex-col overflow-visible transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-12px_rgba(36,20,31,0.2)]">
+                {/* Image with scroll parallax — motion wrapper handles Y, img handles hover scale */}
+                <div className="relative aspect-[4/3] overflow-hidden rounded-t-2xl">
+                    <motion.div
+                        className="absolute inset-0 -inset-y-8"
+                        style={{ y: yImg }}
+                    >
+                        <img
+                            src={coverImg}
+                            alt={lab.name}
+                            className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            loading="lazy"
+                        />
+                    </motion.div>
+                    <div className="from-ink-900/50 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
+                </div>
+
+                {/* Badge overlaps the photo/content seam */}
+                <div className="text-ink-900 ring-surface-0 -mt-6 ml-6 flex size-12 items-center justify-center rounded-full bg-amber-500 shadow-[0_8px_18px_-6px_rgba(36,20,31,0.35)] ring-4">
+                    <span className="text-[10px] leading-none font-bold">
+                        {lab.focus
+                            ? lab.focus.slice(0, 3).toUpperCase()
+                            : String(index + 1).padStart(2, '0')}
+                    </span>
+                </div>
+
+                <div className="flex flex-1 flex-col justify-between px-6 pt-3 pb-6">
+                    <div>
+                        <h3 className="font-display text-ink-900 group-hover:text-brand-700 text-lg leading-snug font-semibold transition-colors">
+                            {lab.name}
+                        </h3>
+                        <p className="text-navy-700 mt-3 line-clamp-4 text-xs leading-relaxed">
+                            {description}
+                        </p>
+                    </div>
+                </div>
+            </Card>
+        </Reveal>
+    );
+}
+
 export function LabsFacilities({ labs }: { labs: LabItem[] }) {
     const { locale, t } = useLocale();
+    const sectionRef = useRef<HTMLElement>(null);
+
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ['start end', 'end start'],
+    });
 
     if (!labs || labs.length === 0) {
         return null;
     }
 
     return (
-        <section className="bg-surface-0 py-20">
+        <section ref={sectionRef} className="bg-surface-50 py-20">
             <div className="mx-auto max-w-[1200px] px-6">
                 {/* Header */}
-                <Reveal>
+                <Reveal variant="fade-down">
                     <div className="mb-12 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
                         <div>
                             <h2 className="font-display text-ink-900 mt-4 text-3xl leading-tight font-semibold sm:text-4xl">
@@ -73,7 +156,7 @@ export function LabsFacilities({ labs }: { labs: LabItem[] }) {
                     </div>
                 </Reveal>
 
-                {/* Grid — uniform 4-up, evenly balanced regardless of item count */}
+                {/* Grid — 4-up, each image parallaxes at a slightly different rate */}
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     {labs.map((lab, index) => {
                         const description =
@@ -85,49 +168,14 @@ export function LabsFacilities({ labs }: { labs: LabItem[] }) {
                                   LAB_FALLBACK_DESCRIPTIONS[lab.name]?.en ||
                                   '';
 
-                        const coverImg =
-                            lab.photo ||
-                            LAB_FALLBACK_IMAGES[
-                                index % LAB_FALLBACK_IMAGES.length
-                            ];
-
                         return (
-                            <Reveal key={lab.id} delay={index * 0.1}>
-                                <Card className="group bg-surface-0 border-cream-300/30 flex h-full flex-col overflow-visible shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_-12px_rgba(36,20,31,0.15)]">
-                                    <div className="relative aspect-[4/3] overflow-hidden rounded-t-2xl">
-                                        <img
-                                            src={coverImg}
-                                            alt={lab.name}
-                                            className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                            loading="lazy"
-                                        />
-                                        <div className="from-ink-900/50 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
-                                    </div>
-                                    {/* Badge overlaps the photo/content seam */}
-                                    <div className="text-ink-900 ring-surface-0 -mt-6 ml-6 flex size-12 items-center justify-center rounded-full bg-amber-500 shadow-[0_8px_18px_-6px_rgba(36,20,31,0.35)] ring-4">
-                                        <span className="text-[10px] leading-none font-bold">
-                                            {lab.focus
-                                                ? lab.focus
-                                                      .slice(0, 3)
-                                                      .toUpperCase()
-                                                : String(index + 1).padStart(
-                                                      2,
-                                                      '0',
-                                                  )}
-                                        </span>
-                                    </div>
-                                    <div className="flex flex-1 flex-col justify-between px-6 pt-3 pb-6">
-                                        <div>
-                                            <h3 className="font-display text-ink-900 group-hover:text-brand-700 text-lg leading-snug font-semibold transition-colors">
-                                                {lab.name}
-                                            </h3>
-                                            <p className="text-navy-700 mt-3 line-clamp-4 text-xs leading-relaxed">
-                                                {description}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </Card>
-                            </Reveal>
+                            <ParallaxCard
+                                key={lab.id}
+                                lab={lab}
+                                index={index}
+                                sectionProgress={scrollYProgress}
+                                description={description}
+                            />
                         );
                     })}
                 </div>

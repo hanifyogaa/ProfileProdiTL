@@ -18,7 +18,11 @@ class LabResource extends Resource
 {
     protected static ?string $model = Lab::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBeaker;
+    protected static ?string $navigationLabel = 'Laboratorium';
+    protected static ?int $navigationSort = 3;
+
+    public static function getNavigationGroup(): string|null { return 'Akademik'; }
 
     public static function form(Schema $schema): Schema
     {

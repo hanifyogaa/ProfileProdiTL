@@ -24,13 +24,13 @@ export function CurriculumSnapshot({
     const { locale, t } = useLocale();
 
     return (
-        <section className="bg-surface-0 py-20">
+        <section className="bg-surface-50 py-20">
             <div className="mx-auto max-w-[1200px] px-6">
                 <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
                     {/* Visual Card / Left Side */}
                     <div className="order-last lg:order-first lg:col-span-5">
-                        <Reveal>
-                            <Card className="border-cream-300/20 bg-surface-0 relative overflow-hidden border p-8">
+                        <Reveal variant="fade-left">
+                            <Card className="relative overflow-hidden p-8">
                                 <div className="absolute top-0 right-0 size-24 rounded-bl-full bg-amber-500/5" />
 
                                 <h3 className="font-display text-ink-900 mb-6 flex items-center gap-2 text-xl font-bold">
@@ -116,7 +116,7 @@ export function CurriculumSnapshot({
 
                     {/* Text Details / Right Side */}
                     <div className="lg:col-span-7">
-                        <Reveal>
+                        <Reveal variant="fade-right">
                             <h2 className="font-display text-ink-900 mt-6 text-3xl leading-tight font-semibold sm:text-4xl">
                                 {locale === 'id'
                                     ? 'Kurikulum Berbasis Kompetensi Rantai Pasok Digital'

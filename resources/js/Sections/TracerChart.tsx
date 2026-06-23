@@ -79,7 +79,7 @@ export function TracerChart({ tracerStats }: { tracerStats: TracerStatsData }) {
                 <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
                     {/* Text Details / Left Side */}
                     <div className="lg:col-span-5">
-                        <Reveal>
+                        <Reveal variant="fade-left">
                             <h2 className="font-display text-ink-900 mt-6 text-3xl leading-tight font-semibold sm:text-4xl">
                                 {locale === 'id'
                                     ? 'Tingkat Penyerapan Kerja Lulusan Cepat'
@@ -109,7 +109,7 @@ export function TracerChart({ tracerStats }: { tracerStats: TracerStatsData }) {
 
                     {/* Chart Container / Right Side */}
                     <div className="min-w-0 lg:col-span-7">
-                        <Reveal delay={0.2}>
+                        <Reveal delay={0.15} variant="fade-right">
                             <Card className="border-cream-300/20 bg-surface-0 border p-6 md:p-8">
                                 <div
                                     ref={containerRef}

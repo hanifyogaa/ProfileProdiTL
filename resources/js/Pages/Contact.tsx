@@ -6,9 +6,25 @@ import { Head } from '@inertiajs/react';
 import { Mail, MapPin, Phone, Send } from 'lucide-react';
 import { useState } from 'react';
 
-export default function Contact() {
+interface ContactData { email?: string | null; phone?: string | null; }
+interface SiteMeta { name?: string | null; address?: string | null; }
+interface Socials { instagram?: string | null; line?: string | null; tiktok?: string | null; }
+
+export default function Contact({
+    contact,
+    siteMeta,
+    socials,
+}: {
+    contact?: ContactData;
+    siteMeta?: SiteMeta;
+    socials?: Socials;
+}) {
     const { locale, t } = useLocale();
     const [submitted, setSubmitted] = useState(false);
+
+    const email   = contact?.email   ?? 'disca@telkomuniversity.ac.id';
+    const phone   = contact?.phone   ?? '+62 22 756 4108';
+    const address = siteMeta?.address ?? 'Fakultas Rekayasa Industri, Telkom University, Jl. Telekomunikasi No. 1, Bandung, Indonesia';
 
     const title = locale === 'id' ? 'Hubungi Kami' : 'Contact Us';
 
@@ -138,10 +154,10 @@ export default function Contact() {
                                             Email
                                         </h4>
                                         <a
-                                            href="mailto:disca@telkomuniversity.ac.id"
+                                            href={`mailto:${email}`}
                                             className="text-navy-700 hover:text-brand-700 mt-1 block text-xs"
                                         >
-                                            disca@telkomuniversity.ac.id
+                                            {email}
                                         </a>
                                     </div>
                                 </Card>
@@ -157,10 +173,10 @@ export default function Contact() {
                                                 : 'Telephone'}
                                         </h4>
                                         <a
-                                            href="tel:+62227564108"
+                                            href={`tel:${phone.replace(/\s/g, '')}`}
                                             className="text-navy-700 hover:text-brand-700 mt-1 block text-xs"
                                         >
-                                            +62 22 756 4108
+                                            {phone}
                                         </a>
                                     </div>
                                 </Card>
@@ -176,9 +192,7 @@ export default function Contact() {
                                                 : 'Office'}
                                         </h4>
                                         <p className="text-navy-700 mt-1 text-xs leading-relaxed">
-                                            Fakultas Rekayasa Industri, Telkom
-                                            University, Jl. Telekomunikasi No.
-                                            1, Bandung, Indonesia
+                                            {address}
                                         </p>
                                     </div>
                                 </Card>

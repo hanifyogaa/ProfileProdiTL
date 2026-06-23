@@ -60,29 +60,68 @@ export function StatsStrip({ stats }: { stats: StatItem[] }) {
     const { locale } = useLocale();
 
     return (
-        <section className="bg-surface-0 py-12 sm:py-16">
-            <div className="mx-auto max-w-[1200px] px-6">
-                <Reveal>
-                    <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4">
-                        {stats.map((stat) => (
-                            <div
-                                key={stat.id}
-                                className="flex flex-col items-center text-center"
-                            >
-                                <div className="font-display text-brand-800 text-4xl font-semibold sm:text-5xl">
+        <section
+            className="relative overflow-hidden py-14 sm:py-20"
+        >
+            {/* Base fill — 10% opaque (90% transparent) brown */}
+            <div
+                className="pointer-events-none absolute inset-0"
+                style={{ background: 'rgba(110,78,51,0.10)' }}
+                aria-hidden="true"
+            />
+
+            {/* Left shading — fades in from edge */}
+            <div
+                className="pointer-events-none absolute inset-y-0 left-0 w-1/3"
+                style={{
+                    background: 'linear-gradient(to right, rgba(110,78,51,0.28) 0%, transparent 100%)',
+                }}
+                aria-hidden="true"
+            />
+
+            {/* Right shading — fades in from edge */}
+            <div
+                className="pointer-events-none absolute inset-y-0 right-0 w-1/3"
+                style={{
+                    background: 'linear-gradient(to left, rgba(110,78,51,0.28) 0%, transparent 100%)',
+                }}
+                aria-hidden="true"
+            />
+
+            {/* Top & bottom edge fade */}
+            <div
+                className="pointer-events-none absolute inset-x-0 top-0 h-12"
+                style={{ background: 'linear-gradient(to bottom, rgba(110,78,51,0.18), transparent)' }}
+                aria-hidden="true"
+            />
+            <div
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-12"
+                style={{ background: 'linear-gradient(to top, rgba(110,78,51,0.18), transparent)' }}
+                aria-hidden="true"
+            />
+
+            <div className="relative mx-auto max-w-[1200px] px-6">
+                <div className="grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-4">
+                    {stats.map((stat, index) => (
+                        <Reveal key={stat.id} delay={index * 0.12} variant="zoom-in">
+                            <div className="flex flex-col items-center text-center">
+                                <div
+                                    className="font-display text-4xl font-semibold sm:text-5xl"
+                                    style={{ color: '#8C6441' }}
+                                >
                                     <StatCounter value={stat.value} />
                                 </div>
-                                {/* Precise amber-500 underline rule */}
-                                <div className="mt-2.5 h-[3px] w-6 rounded-full bg-amber-500" />
-                                <p className="text-navy-700 mt-4 text-xs font-semibold tracking-wider uppercase sm:text-sm">
-                                    {locale === 'id'
-                                        ? stat.label_id
-                                        : stat.label_en}
+                                <div className="mt-3 h-[2px] w-8 rounded-full bg-amber-500/60" />
+                                <p
+                                    className="mt-4 text-xs font-semibold tracking-[0.15em] uppercase sm:text-sm"
+                                    style={{ color: 'rgba(110,78,51,0.65)' }}
+                                >
+                                    {locale === 'id' ? stat.label_id : stat.label_en}
                                 </p>
                             </div>
-                        ))}
-                    </div>
-                </Reveal>
+                        </Reveal>
+                    ))}
+                </div>
             </div>
         </section>
     );

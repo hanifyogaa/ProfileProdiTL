@@ -18,7 +18,11 @@ class AchievementResource extends Resource
 {
     protected static ?string $model = Achievement::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTrophy;
+    protected static ?string $navigationLabel = 'Prestasi';
+    protected static ?int $navigationSort = 3;
+
+    public static function getNavigationGroup(): string|null { return 'Konten Utama'; }
 
     public static function form(Schema $schema): Schema
     {

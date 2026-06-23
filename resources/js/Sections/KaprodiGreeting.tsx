@@ -4,6 +4,13 @@ import { LangText } from '@/components/LangText';
 import { Reveal } from '@/components/Reveal';
 import { useLocale } from '@/contexts/LocaleContext';
 import type { Bilingual } from '@/types';
+import {
+    motion,
+    useReducedMotion,
+    useScroll,
+    useTransform,
+} from 'framer-motion';
+import { useRef } from 'react';
 
 interface GreetingData {
     name: string | null;
@@ -15,6 +22,20 @@ interface GreetingData {
 
 export function KaprodiGreeting({ greeting }: { greeting: GreetingData }) {
     const { t } = useLocale();
+    const shouldReduceMotion = useReducedMotion();
+    const sectionRef = useRef<HTMLElement>(null);
+
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ['start end', 'end start'],
+    });
+
+    // Portrait drifts upward noticeably — creates clear depth vs. surrounding content
+    const yPortrait = useTransform(
+        scrollYProgress,
+        [0, 1],
+        [20, shouldReduceMotion ? 20 : -60],
+    );
 
     const kaprodiName = greeting.name || 'Dr. Ir. Muhammad Akbar, S.T., M.T.';
     const kaprodiPhoto =
@@ -22,18 +43,24 @@ export function KaprodiGreeting({ greeting }: { greeting: GreetingData }) {
         'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=600&h=750';
 
     return (
-        <section className="bg-surface-0 relative pt-0 pb-20">
+        <section ref={sectionRef} className="bg-surface-0 relative pt-0 pb-20">
             <div className="mx-auto max-w-[1000px] px-6">
-                <Reveal>
-                    <Card className="border-cream-300/30 bg-surface-0 relative -mt-16 border shadow-[0_24px_48px_-20px_rgba(36,20,31,0.22)] sm:-mt-24">
+                <Reveal variant="zoom-in" delay={0.15}>
+                    <Card noLift className="relative -mt-16 shadow-[0_24px_48px_-20px_rgba(36,20,31,0.28)] sm:-mt-24">
                         <div className="grid md:grid-cols-12">
-                            {/* Photo Column */}
+                            {/* Photo Column — portrait parallaxes upward */}
                             <div className="bg-surface-50 border-cream-300/10 relative z-10 aspect-[4/5] overflow-hidden rounded-t-2xl border md:col-span-4 md:-my-8 md:-ml-6 md:aspect-auto md:rounded-2xl md:shadow-lg">
-                                <img
-                                    src={kaprodiPhoto}
-                                    alt={kaprodiName}
-                                    className="size-full object-cover"
-                                />
+                                {/* motion wrapper handles Y parallax; img is oversized to hide gaps at edges */}
+                                <motion.div
+                                    className="absolute inset-0 -inset-y-10"
+                                    style={{ y: yPortrait }}
+                                >
+                                    <img
+                                        src={kaprodiPhoto}
+                                        alt={kaprodiName}
+                                        className="size-full object-cover object-top"
+                                    />
+                                </motion.div>
                                 <div className="from-ink-900/60 absolute inset-0 bg-gradient-to-t via-transparent to-transparent md:hidden" />
                                 <div className="text-surface-0 absolute bottom-4 left-6 md:hidden">
                                     <h4 className="text-lg font-semibold">
@@ -49,7 +76,7 @@ export function KaprodiGreeting({ greeting }: { greeting: GreetingData }) {
                             <div className="flex flex-col justify-between p-8 md:col-span-8 md:p-12">
                                 <div>
                                     <span className="font-display mb-6 block text-4xl leading-none font-semibold text-amber-500">
-                                        “
+                                        "
                                     </span>
                                     <blockquote className="font-display text-ink-900 text-lg leading-relaxed font-medium italic sm:text-xl">
                                         <LangText text={greeting.quote} />

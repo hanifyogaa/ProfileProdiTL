@@ -23,7 +23,7 @@ export function CareerProspects({ prospects }: { prospects: ProspectsData }) {
         <section className="bg-surface-0 py-20">
             <div className="mx-auto max-w-[1200px] px-6">
                 <div className="mx-auto mb-16 max-w-2xl text-center">
-                    <Reveal>
+                    <Reveal variant="fade-down">
                         <h2 className="font-display text-ink-900 mt-6 text-3xl leading-tight font-semibold sm:text-4xl">
                             {locale === 'id'
                                 ? 'Profil Kelulusan & Karir Teknik Logistik'
@@ -43,7 +43,7 @@ export function CareerProspects({ prospects }: { prospects: ProspectsData }) {
                         const Icon = ICONS[index % ICONS.length] || Briefcase;
 
                         return (
-                            <Reveal key={index} delay={index * 0.1}>
+                            <Reveal key={index} delay={index * 0.08} variant={index % 2 === 0 ? 'fade-left' : 'fade-right'}>
                                 <div className="group flex flex-col gap-6 py-8 sm:flex-row sm:items-center md:py-10">
                                     <span className="font-display text-cream-300/70 text-4xl font-semibold sm:w-20 sm:shrink-0">
                                         0{index + 1}

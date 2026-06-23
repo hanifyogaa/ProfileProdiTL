@@ -18,7 +18,11 @@ class StatResource extends Resource
 {
     protected static ?string $model = Stat::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
+    protected static ?string $navigationLabel = 'Statistik Angka';
+    protected static ?int $navigationSort = 1;
+
+    public static function getNavigationGroup(): string|null { return 'Umum'; }
 
     public static function form(Schema $schema): Schema
     {

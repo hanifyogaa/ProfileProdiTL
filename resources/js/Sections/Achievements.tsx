@@ -58,10 +58,10 @@ export function Achievements({
     }
 
     return (
-        <section className="bg-surface-0 overflow-hidden py-20">
+        <section className="bg-surface-50 overflow-hidden py-20">
             <div className="mx-auto max-w-[1200px] px-6">
                 {/* Header */}
-                <Reveal>
+                <Reveal variant="fade-down">
                     <div className="mb-12 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
                         <div>
                             <h2 className="font-display text-ink-900 mt-4 text-3xl leading-tight font-semibold sm:text-4xl">
@@ -117,7 +117,7 @@ export function Achievements({
                                         key={item.id}
                                         className="w-[80%] flex-none shrink-0 pr-5 sm:w-[44%] md:w-[31%]"
                                     >
-                                        <Card className="group border-cream-300/20 bg-surface-0 flex h-full flex-col overflow-hidden border transition-all duration-300 hover:shadow-[0_16px_36px_-12px_rgba(36,20,31,0.15)]">
+                                        <Card noLift className="group flex h-full flex-col overflow-hidden transition-all duration-300 hover:shadow-[0_16px_36px_-12px_rgba(36,20,31,0.2)]">
                                             {/* Photo block */}
                                             <div className="relative aspect-[4/3] overflow-hidden">
                                                 <img

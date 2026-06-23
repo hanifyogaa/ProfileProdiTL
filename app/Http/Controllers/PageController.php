@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Achievement;
 use App\Models\Activity;
 use App\Models\Course;
+use App\Models\Faq;
+use App\Models\Gallery;
 use App\Models\Lab;
+use App\Models\Lecturer;
 use App\Models\News;
 use App\Models\Partner;
 use App\Models\Setting;
@@ -18,14 +21,17 @@ class PageController extends Controller
     public function about(): Response
     {
         return Inertia::render('About', [
-            'greeting' => Setting::getValue('greeting'),
+            'greeting'        => Setting::getValue('greeting'),
             'distinctiveness' => Setting::getValue('distinctiveness'),
+            'aboutContent'    => Setting::getValue('about_content'),
         ]);
     }
 
     public function accreditation(): Response
     {
-        return Inertia::render('Accreditation');
+        return Inertia::render('Accreditation', [
+            'accreditation' => Setting::getValue('accreditation'),
+        ]);
     }
 
     public function curriculum(): Response
@@ -37,7 +43,9 @@ class PageController extends Controller
 
     public function lecturers(): Response
     {
-        return Inertia::render('Lecturers');
+        return Inertia::render('Lecturers', [
+            'lecturers' => Lecturer::active()->orderBy('order')->get(),
+        ]);
     }
 
     public function news(): Response
@@ -61,7 +69,9 @@ class PageController extends Controller
 
     public function gallery(): Response
     {
-        return Inertia::render('Gallery');
+        return Inertia::render('Gallery', [
+            'photos' => Gallery::published()->orderBy('order')->get(),
+        ]);
     }
 
     public function achievements(): Response
@@ -94,12 +104,16 @@ class PageController extends Controller
 
     public function research(): Response
     {
-        return Inertia::render('Research');
+        return Inertia::render('Research', [
+            'researchAreas' => Setting::getValue('research_areas'),
+        ]);
     }
 
     public function mbkm(): Response
     {
-        return Inertia::render('Mbkm');
+        return Inertia::render('Mbkm', [
+            'mbkmContent' => Setting::getValue('mbkm_content'),
+        ]);
     }
 
     public function statistics(): Response
@@ -112,11 +126,17 @@ class PageController extends Controller
 
     public function faq(): Response
     {
-        return Inertia::render('Faq');
+        return Inertia::render('Faq', [
+            'faqs' => Faq::active()->orderBy('order')->get(),
+        ]);
     }
 
     public function contact(): Response
     {
-        return Inertia::render('Contact');
+        return Inertia::render('Contact', [
+            'contact'  => Setting::getValue('contact'),
+            'siteMeta' => Setting::getValue('site_meta'),
+            'socials'  => Setting::getValue('socials'),
+        ]);
     }
 }

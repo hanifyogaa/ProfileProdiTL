@@ -38,7 +38,7 @@ export function LatestNews({ latestNews }: { latestNews: NewsItem[] }) {
     return (
         <section className="bg-surface-0 py-20">
             <div className="mx-auto max-w-[1200px] px-6">
-                <Reveal>
+                <Reveal variant="fade-down">
                     <div className="mb-12 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
                         <div>
                             <h2 className="font-display text-ink-900 mt-4 text-3xl leading-tight font-semibold sm:text-4xl">
@@ -79,8 +79,8 @@ export function LatestNews({ latestNews }: { latestNews: NewsItem[] }) {
                                 DEFAULT_NEWS_BG;
 
                             return (
-                                <Reveal className="lg:col-span-7">
-                                    <Card className="group border-cream-300/20 flex h-full flex-col overflow-hidden border transition-shadow duration-300 hover:shadow-lg">
+                                <Reveal className="lg:col-span-7" variant="fade-left">
+                                    <Card noLift className="group flex h-full flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-12px_rgba(36,20,31,0.2)]">
                                         <div className="relative aspect-[16/10] overflow-hidden">
                                             <img
                                                 src={coverImg}
@@ -157,7 +157,7 @@ export function LatestNews({ latestNews }: { latestNews: NewsItem[] }) {
                                 DEFAULT_NEWS_BG;
 
                             return (
-                                <Reveal key={item.id} delay={(index + 1) * 0.1}>
+                                <Reveal key={item.id} delay={(index + 1) * 0.1} variant="fade-right">
                                     <a
                                         href={`/berita/${item.slug}`}
                                         className="group border-cream-300/20 bg-surface-0 flex gap-4 rounded-2xl border p-3 transition-shadow hover:shadow-md"

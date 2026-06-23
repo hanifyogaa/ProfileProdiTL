@@ -89,6 +89,12 @@ export function Hero({ hero }: { hero: HeroData }) {
         [0, 1],
         [0, shouldReduceMotion ? 0 : 120],
     );
+    // Mid-layer moves at an intermediate speed — creates true 3-layer depth
+    const yMid = useTransform(
+        scrollYProgress,
+        [0, 1],
+        [0, shouldReduceMotion ? 0 : 70],
+    );
     const scaleOverlay = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
 
     // Auto-advance slides
@@ -139,6 +145,57 @@ export function Hero({ hero }: { hero: HeroData }) {
                         'radial-gradient(ellipse at bottom left, rgba(217,159,96,0.18) 0%, transparent 70%)',
                 }}
             />
+
+            {/* ── MID LAYER: Floating amber decorative shapes ── */}
+            {/* Moves at +50px vs background (+120px) and text (-80px) — true 3-layer depth */}
+            <motion.div
+                className="pointer-events-none absolute inset-0 z-[11]"
+                style={{ y: yMid }}
+                aria-hidden="true"
+            >
+                {/* Large soft amber orb — upper-left */}
+                <div
+                    className="absolute left-[5%] top-[10%] size-80 rounded-full opacity-[0.22]"
+                    style={{
+                        background:
+                            'radial-gradient(circle at 40% 40%, #D99F60 0%, transparent 60%)',
+                    }}
+                />
+                {/* Medium orb — lower-right */}
+                <div
+                    className="absolute right-[8%] bottom-[18%] size-56 rounded-full opacity-[0.18]"
+                    style={{
+                        background:
+                            'radial-gradient(circle, #C08A4C 0%, transparent 65%)',
+                    }}
+                />
+                {/* Small accent orb — mid-screen */}
+                <div
+                    className="absolute left-[55%] top-[30%] size-32 rounded-full opacity-[0.14]"
+                    style={{
+                        background:
+                            'radial-gradient(circle, #8C6441 0%, transparent 70%)',
+                    }}
+                />
+                {/* Diagonal amber line — brand texture */}
+                <div
+                    className="absolute left-[28%] top-[42%] h-px w-64 opacity-[0.28]"
+                    style={{
+                        background:
+                            'linear-gradient(to right, transparent, #D99F60 40%, #D99F60 60%, transparent)',
+                        transform: 'rotate(-12deg)',
+                    }}
+                />
+                {/* Second thinner line — rhythm */}
+                <div
+                    className="absolute left-[30%] top-[46%] h-px w-36 opacity-[0.16]"
+                    style={{
+                        background:
+                            'linear-gradient(to right, transparent, #AC9587, transparent)',
+                        transform: 'rotate(-12deg)',
+                    }}
+                />
+            </motion.div>
 
             {/* ── AMBER GEOMETRIC ACCENT (top-right) ── */}
             <div
