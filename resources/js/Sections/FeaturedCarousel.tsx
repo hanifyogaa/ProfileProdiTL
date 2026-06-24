@@ -221,7 +221,7 @@ export function FeaturedCarousel({ featured }: { featured: ActivityItem[] }) {
                                                 {isActive && (
                                                     <div className="shrink-0">
                                                         <Button
-                                                            href={`/berita/${item.slug}`}
+                                                            href={`/agenda/${item.slug}`}
                                                             variant="primary"
                                                         >
                                                             {t({

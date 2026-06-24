@@ -23,9 +23,13 @@ interface DistinctivenessData {
 export function Distinctiveness({
     distinctiveness,
 }: {
-    distinctiveness: DistinctivenessData;
+    distinctiveness?: DistinctivenessData | null;
 }) {
     const { locale, t } = useLocale();
+    const points = distinctiveness?.points ?? [];
+    const body = distinctiveness?.body ?? { id: '', en: '' };
+    const linkHref = distinctiveness?.link_href ?? '/profil';
+    if (!points.length) return null;
 
     return (
         <section className="bg-surface-50 pt-20 pb-32 sm:pb-40">
@@ -40,11 +44,11 @@ export function Distinctiveness({
                                     : 'Our E-Logistics Specialization'}
                             </h2>
                             <p className="text-navy-700 mt-6 text-base leading-relaxed">
-                                <LangText text={distinctiveness.body} />
+                                <LangText text={body} />
                             </p>
                             <div className="mt-8">
                                 <Button
-                                    href={distinctiveness.link_href}
+                                    href={linkHref}
                                     variant="tertiary"
                                 >
                                     {t({
@@ -61,9 +65,9 @@ export function Distinctiveness({
 
                     {/* Right column: one featured point in a dark filled card, rest as a compact list */}
                     <div className="flex flex-col gap-6 lg:col-span-7">
-                        {distinctiveness.points[0] &&
+                        {points[0] &&
                             (() => {
-                                const point = distinctiveness.points[0];
+                                const point = points[0];
                                 return (
                                     <Reveal variant="fade-right" delay={0.1}>
                                         <Card className="relative overflow-hidden p-8 sm:p-10">
@@ -89,7 +93,7 @@ export function Distinctiveness({
                             })()}
 
                         <div className="grid gap-4 sm:grid-cols-2">
-                            {distinctiveness.points
+                            {points
                                 .slice(1)
                                 .map((point, index) => {
                                     const Icon =

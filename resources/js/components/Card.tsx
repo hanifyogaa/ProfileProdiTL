@@ -8,11 +8,14 @@ interface CardProps {
     solid?: boolean;
     /** Suppress the hover lift (for carousel cards, nested contexts) */
     noLift?: boolean;
+    /** Custom inline styles */
+    style?: React.CSSProperties;
 }
 
-export function Card({ children, className, solid = false, noLift = false }: CardProps) {
+export function Card({ children, className, solid = false, noLift = false, style }: CardProps) {
     return (
         <div
+            style={style}
             className={cn(
                 'rounded-2xl transition-all duration-300',
                 solid

@@ -1,8 +1,9 @@
 import { MainLayout } from '@/Layouts/MainLayout';
-import { Card } from '@/components/Card';
+import { PageHero, PillLabel } from '@/components/PageHero';
 import { Reveal } from '@/components/Reveal';
 import { useLocale } from '@/contexts/LocaleContext';
 import { Head } from '@inertiajs/react';
+import { FlaskConical } from 'lucide-react';
 
 interface LabItem {
     id: number;
@@ -19,10 +20,10 @@ interface LabsListProps {
 }
 
 const LAB_FALLBACK_IMAGES = [
-    'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=600&h=450',
-    'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=600&h=450',
-    'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600&h=450',
-    'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=600&h=450',
+    'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=900&h=600',
+    'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=900&h=600',
+    'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=900&h=600',
+    'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=900&h=600',
 ];
 
 const LAB_FALLBACK_DESCRIPTIONS: Record<string, { id: string; en: string }> = {
@@ -44,77 +45,178 @@ const LAB_FALLBACK_DESCRIPTIONS: Record<string, { id: string; en: string }> = {
     },
 };
 
+const HERO_PHOTO =
+    'https://images.unsplash.com/photo-1581093588401-fbb62a02f120?auto=format&fit=crop&q=80&w=1600&h=900';
+
 export default function LabsList({ labs }: LabsListProps) {
     const { locale } = useLocale();
+    const l = locale as 'id' | 'en';
 
-    const title =
-        locale === 'id'
-            ? 'Daftar Laboratorium & Fasilitas Riset'
-            : 'Laboratories & Research Centers';
+    const title   = l === 'id' ? 'Laboratorium & Fasilitas Riset' : 'Laboratories & Research Centers';
+    const subtitle = l === 'id'
+        ? 'Fasilitas modern untuk riset, simulasi, dan praktik logistik digital yang mendukung kompetensi mahasiswa Teknik Logistik.'
+        : 'Modern facilities for research, simulation, and digital logistics practice that support student competencies in Logistics Engineering.';
+
+    const [featuredLab, ...restLabs] = labs;
 
     return (
         <MainLayout>
             <Head title={title} />
 
-            <div className="mx-auto max-w-[1000px] px-6">
-                <Reveal>
-                    <div className="mb-12 text-center">
-                        <h1 className="font-display text-ink-900 mt-6 text-4xl leading-tight font-semibold sm:text-5xl">
-                            {title}
-                        </h1>
-                    </div>
-                </Reveal>
+            {/* ── Hero Cinematic ── */}
+            <PageHero
+                pillLabel={l === 'id' ? 'Fasilitas' : 'Facilities'}
+                title={title}
+                subtitle={subtitle}
+                photoUrl={HERO_PHOTO}
+                photoAlt="Logistics laboratory"
+                stats={[
+                    { value: `${labs.length}`, label: l === 'id' ? 'Laboratorium' : 'Laboratories' },
+                    { value: '200+', label: l === 'id' ? 'Kapasitas Pengguna' : 'User Capacity' },
+                    { value: '24/7', label: l === 'id' ? 'Akses Penelitian' : 'Research Access' },
+                ]}
+            />
 
-                {/* Grid */}
-                <div className="grid gap-8 sm:grid-cols-2">
-                    {labs.map((lab, index) => {
-                        const description =
-                            locale === 'id'
-                                ? lab.description_id ||
-                                  LAB_FALLBACK_DESCRIPTIONS[lab.name]?.id ||
-                                  ''
-                                : lab.description_en ||
-                                  LAB_FALLBACK_DESCRIPTIONS[lab.name]?.en ||
-                                  '';
+            {/* ── Lab Grid ── */}
+            <section className="py-20 sm:py-28" style={{ background: '#FFFDFB' }}>
+                <div className="mx-auto max-w-[1100px] px-6">
+                    <Reveal>
+                        <div className="mb-12">
+                            <PillLabel>{l === 'id' ? 'Daftar Lab' : 'Lab Directory'}</PillLabel>
+                            <h2
+                                className="font-display mt-2 text-3xl font-bold"
+                                style={{ color: '#24141F' }}
+                            >
+                                {l === 'id' ? 'Fasilitas Laboratorium' : 'Laboratory Facilities'}
+                            </h2>
+                        </div>
+                    </Reveal>
 
-                        const coverImg =
-                            lab.photo ||
-                            LAB_FALLBACK_IMAGES[
-                                index % LAB_FALLBACK_IMAGES.length
-                            ];
+                    {labs.length === 0 ? (
+                        <div className="rounded-2xl border py-20 text-center"
+                            style={{ borderColor: 'rgba(172,149,135,0.20)' }}>
+                            <FlaskConical className="mx-auto mb-3 size-10 opacity-20" style={{ color: '#505666' }} />
+                            <p className="text-sm" style={{ color: '#505666' }}>
+                                {l === 'id' ? 'Belum ada data laboratorium.' : 'No laboratory data yet.'}
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="space-y-6">
+                            {/* Featured lab — full-width bento card */}
+                            {featuredLab && (() => {
+                                const desc = l === 'id'
+                                    ? featuredLab.description_id || LAB_FALLBACK_DESCRIPTIONS[featuredLab.name]?.id || ''
+                                    : featuredLab.description_en || LAB_FALLBACK_DESCRIPTIONS[featuredLab.name]?.en || '';
+                                const cover = featuredLab.photo || LAB_FALLBACK_IMAGES[0];
 
-                        return (
-                            <Reveal key={lab.id} delay={index * 0.05}>
-                                <Card className="group border-cream-300/20 bg-surface-0 flex h-full flex-col overflow-hidden border transition-shadow hover:shadow-md">
-                                    <div className="bg-surface-50 relative aspect-[16/10] overflow-hidden">
-                                        <img
-                                            src={coverImg}
-                                            alt={lab.name}
-                                            className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                            loading="lazy"
-                                        />
-                                        {lab.focus && (
-                                            <span className="bg-brand-800 text-surface-0 absolute bottom-3 left-3 rounded px-2.5 py-1 text-[9px] font-bold tracking-wider uppercase">
-                                                {lab.focus}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div className="flex flex-1 flex-col justify-between p-6">
-                                        <div>
-                                            <h3 className="font-display text-ink-900 group-hover:text-brand-700 text-lg font-semibold transition-colors">
-                                                {lab.name}
-                                            </h3>
-                                            <p className="text-navy-700 mt-3 text-sm leading-relaxed">
-                                                {description}
-                                            </p>
+                                return (
+                                    <Reveal variant="fade-up">
+                                        <div
+                                            className="group relative overflow-hidden rounded-3xl border shadow-md transition-all duration-500 hover:-translate-y-1 hover:shadow-xl"
+                                            style={{ borderColor: 'rgba(172,149,135,0.20)' }}
+                                        >
+                                            <div className="grid grid-cols-12">
+                                                {/* Image — 7 cols */}
+                                                <div className="col-span-12 md:col-span-7 relative aspect-[16/9] md:aspect-auto md:min-h-[320px] overflow-hidden">
+                                                    <img
+                                                        src={cover}
+                                                        alt={featuredLab.name}
+                                                        className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                        loading="lazy"
+                                                    />
+                                                    <div
+                                                        className="absolute inset-0"
+                                                        style={{ background: 'linear-gradient(to right, transparent 70%, rgba(255,253,251,1) 100%)' }}
+                                                    />
+                                                </div>
+                                                {/* Content — 5 cols */}
+                                                <div className="col-span-12 md:col-span-5 flex flex-col justify-center p-8 md:p-10 bg-surface-0">
+                                                    {featuredLab.focus && (
+                                                        <span
+                                                            className="mb-4 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
+                                                            style={{ background: 'rgba(140,100,65,0.10)', color: '#8C6441' }}
+                                                        >
+                                                            {featuredLab.focus}
+                                                        </span>
+                                                    )}
+                                                    <h3
+                                                        className="font-display text-2xl font-bold leading-snug"
+                                                        style={{ color: '#24141F' }}
+                                                    >
+                                                        {featuredLab.name}
+                                                    </h3>
+                                                    {desc && (
+                                                        <p
+                                                            className="mt-4 text-sm leading-relaxed"
+                                                            style={{ color: '#505666' }}
+                                                        >
+                                                            {desc}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </Card>
-                            </Reveal>
-                        );
-                    })}
+                                    </Reveal>
+                                );
+                            })()}
+
+                            {/* Rest — 2-column grid */}
+                            {restLabs.length > 0 && (
+                                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                                    {restLabs.map((lab, index) => {
+                                        const desc = l === 'id'
+                                            ? lab.description_id || LAB_FALLBACK_DESCRIPTIONS[lab.name]?.id || ''
+                                            : lab.description_en || LAB_FALLBACK_DESCRIPTIONS[lab.name]?.en || '';
+                                        const cover = lab.photo || LAB_FALLBACK_IMAGES[(index + 1) % LAB_FALLBACK_IMAGES.length];
+
+                                        return (
+                                            <Reveal key={lab.id} delay={index * 0.06} variant="fade-up">
+                                                <div
+                                                    className="group flex h-full flex-col overflow-hidden rounded-2xl border bg-surface-0 shadow-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_24px_48px_-16px_rgba(36,20,31,0.18)]"
+                                                    style={{ borderColor: 'rgba(172,149,135,0.20)' }}
+                                                >
+                                                    <div className="relative aspect-[16/10] overflow-hidden">
+                                                        <img
+                                                            src={cover}
+                                                            alt={lab.name}
+                                                            className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                            loading="lazy"
+                                                        />
+                                                        {lab.focus && (
+                                                            <span
+                                                                className="absolute bottom-3 left-3 rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-white"
+                                                                style={{ background: 'rgba(36,20,31,0.75)', backdropFilter: 'blur(8px)' }}
+                                                            >
+                                                                {lab.focus}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex flex-1 flex-col p-6">
+                                                        <h3
+                                                            className="font-display text-lg font-semibold leading-snug transition-colors group-hover:opacity-80"
+                                                            style={{ color: '#24141F' }}
+                                                        >
+                                                            {lab.name}
+                                                        </h3>
+                                                        {desc && (
+                                                            <p
+                                                                className="mt-3 line-clamp-3 text-sm leading-relaxed"
+                                                                style={{ color: '#505666' }}
+                                                            >
+                                                                {desc}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </Reveal>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
-            </div>
+            </section>
         </MainLayout>
     );
 }

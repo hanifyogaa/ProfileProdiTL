@@ -5,9 +5,11 @@ import { ReactNode } from 'react';
 
 interface MainLayoutProps {
     children: ReactNode;
+    /** Pass true for pages that open with a fullscreen cinematic hero — removes top padding and signals Navbar to use light text */
+    fullHero?: boolean;
 }
 
-export function MainLayout({ children }: MainLayoutProps) {
+export function MainLayout({ children, fullHero = false }: MainLayoutProps) {
     const { props } = usePage();
 
     // Read shared settings from Inertia props with dynamic fallback values
@@ -30,9 +32,9 @@ export function MainLayout({ children }: MainLayoutProps) {
 
     return (
         <div className="bg-surface-50 text-ink-900 flex min-h-screen flex-col font-sans antialiased">
-            <Navbar />
+            <Navbar lightOnTop={fullHero} />
 
-            <main className="flex-1 pt-24 pb-12">{children}</main>
+            <main className={`flex-1 pb-12 ${fullHero ? '' : 'pt-24'}`}>{children}</main>
 
             <Footer settings={settings} />
         </div>

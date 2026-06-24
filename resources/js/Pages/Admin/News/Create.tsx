@@ -1,23 +1,41 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import BilingualInput from '@/components/admin/BilingualInput';
+import { CategoryMetaFields, type NewsMetadata } from '@/components/admin/CategoryMetaFields';
 import ImageUpload from '@/components/admin/ImageUpload';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Save, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 import React from 'react';
+
+const CATEGORY_OPTIONS = [
+    { value: 'Pengumuman',        label: '📢 Pengumuman' },
+    { value: 'Kunjungan Industri',label: '🏭 Kunjungan Industri' },
+    { value: 'Prestasi',          label: '🏆 Prestasi Mahasiswa' },
+    { value: 'Riset',             label: '🔬 Riset & Penelitian' },
+    { value: 'Pengabdian',        label: '🤝 Pengabdian Masyarakat' },
+    { value: 'Kemahasiswaan',     label: '👥 Kemahasiswaan' },
+    { value: 'Akademik',          label: '📚 Akademik' },
+    { value: 'Kegiatan',          label: '📅 Kegiatan / Event' },
+    { value: 'Umum',              label: '📰 Umum' },
+];
 
 export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
-        title_id: '',
-        title_en: '',
-        excerpt_id: '',
-        excerpt_en: '',
-        body_id: '',
-        body_en: '',
-        category: 'Pengumuman',
-        status: 'draft',
-        is_featured: false,
+        title_id:       '',
+        title_en:       '',
+        excerpt_id:     '',
+        excerpt_en:     '',
+        body_id:        '',
+        body_en:        '',
+        category:       'Pengumuman',
+        metadata:       {} as NewsMetadata,
+        status:         'draft',
+        is_featured:    false,
         featured_image: null as File | null,
     });
+
+    const handleMetaChange = (key: keyof NewsMetadata, value: string) => {
+        setData('metadata', { ...data.metadata, [key]: value });
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -43,24 +61,27 @@ export default function Create() {
             <form onSubmit={handleSubmit} className="bg-surface-0 border border-cream-300/40 p-6 md:p-8 rounded-2xl shadow-sm space-y-6 max-w-4xl">
                 <div>
                     <h2 className="text-lg font-bold text-ink-900 mb-1">Buat Artikel Berita Baru</h2>
-                    <p className="text-xs text-navy-700">Lengkapi formulir dengan teks dwibahasa (Indonesia & Inggris) untuk dipublikasikan.</p>
+                    <p className="text-xs text-navy-700">Lengkapi formulir dengan teks dwibahasa (Indonesia &amp; Inggris) untuk dipublikasikan.</p>
                 </div>
 
                 <hr className="border-cream-300/40" />
 
+                {/* ── Kategori & Status ── */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-1">
                         <label className="text-sm font-semibold text-ink-900">Kategori</label>
                         <select
                             value={data.category}
-                            onChange={(e) => setData('category', e.target.value)}
+                            onChange={e => {
+                                setData('category', e.target.value);
+                                // Reset metadata when category changes
+                                setData('metadata', {});
+                            }}
                             className="w-full px-4 py-2.5 rounded-xl border border-cream-300 focus:ring-2 focus:ring-brand-700/10 focus:border-brand-700 outline-none text-sm bg-surface-0"
                         >
-                            <option value="Pengumuman">Pengumuman</option>
-                            <option value="Kegiatan">Kegiatan / Event</option>
-                            <option value="Akademik">Akademik</option>
-                            <option value="Prestasi">Prestasi</option>
-                            <option value="Umum">Umum</option>
+                            {CATEGORY_OPTIONS.map(opt => (
+                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                            ))}
                         </select>
                     </div>
 
@@ -68,7 +89,7 @@ export default function Create() {
                         <label className="text-sm font-semibold text-ink-900">Status</label>
                         <select
                             value={data.status}
-                            onChange={(e) => setData('status', e.target.value)}
+                            onChange={e => setData('status', e.target.value)}
                             className="w-full px-4 py-2.5 rounded-xl border border-cream-300 focus:ring-2 focus:ring-brand-700/10 focus:border-brand-700 outline-none text-sm bg-surface-0"
                         >
                             <option value="draft">Draft (Simpan Sementara)</option>
@@ -77,19 +98,30 @@ export default function Create() {
                     </div>
                 </div>
 
+                {/* ── Dynamic Metadata Fields per Category ── */}
+                <CategoryMetaFields
+                    category={data.category}
+                    metadata={data.metadata}
+                    onChange={handleMetaChange}
+                />
+
+                {/* ── Featured toggle ── */}
                 <div className="flex items-center space-x-3 p-3.5 rounded-xl border border-cream-300/20 bg-surface-50/20 max-w-fit">
                     <input
                         type="checkbox"
                         id="is_featured"
                         checked={data.is_featured}
-                        onChange={(e) => setData('is_featured', e.target.checked)}
+                        onChange={e => setData('is_featured', e.target.checked)}
                         className="rounded text-brand-700 focus:ring-brand-700 border-cream-300 w-4 h-4 cursor-pointer"
                     />
                     <label htmlFor="is_featured" className="text-xs font-semibold text-ink-900 cursor-pointer">
-                        Jadikan Berita Utama (Featured) - Tampil di halaman depan
+                        Jadikan Berita Utama (Featured) — Tampil di halaman depan
                     </label>
                 </div>
 
+                <hr className="border-cream-300/40" />
+
+                {/* ── Bilingual Title + Content ── */}
                 <BilingualInput
                     label="Judul Berita"
                     idName="title_id"
@@ -98,8 +130,8 @@ export default function Create() {
                     enValue={data.title_en}
                     idError={errors.title_id}
                     enError={errors.title_en}
-                    onChangeId={(val) => setData('title_id', val)}
-                    onChangeEn={(val) => setData('title_en', val)}
+                    onChangeId={val => setData('title_id', val)}
+                    onChangeEn={val => setData('title_en', val)}
                     required
                 />
 
@@ -113,8 +145,8 @@ export default function Create() {
                     enError={errors.excerpt_en}
                     type="textarea"
                     rows={2}
-                    onChangeId={(val) => setData('excerpt_id', val)}
-                    onChangeEn={(val) => setData('excerpt_en', val)}
+                    onChangeId={val => setData('excerpt_id', val)}
+                    onChangeEn={val => setData('excerpt_en', val)}
                 />
 
                 <BilingualInput
@@ -127,17 +159,17 @@ export default function Create() {
                     enError={errors.body_en}
                     type="textarea"
                     rows={10}
-                    onChangeId={(val) => setData('body_id', val)}
-                    onChangeEn={(val) => setData('body_en', val)}
+                    onChangeId={val => setData('body_id', val)}
+                    onChangeEn={val => setData('body_en', val)}
                 />
 
                 <ImageUpload
                     label="Gambar Utama (Featured Image)"
-                    onChange={(file) => setData('featured_image', file)}
+                    onChange={file => setData('featured_image', file)}
                     error={errors.featured_image}
                 />
 
-                {/* Submit Actions */}
+                {/* ── Submit ── */}
                 <div className="pt-4 border-t border-cream-300/40 flex justify-end space-x-3">
                     <Link
                         href={route('admin.news.index')}

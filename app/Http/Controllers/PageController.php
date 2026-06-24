@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Achievement;
 use App\Models\Activity;
+use App\Models\CommunityService;
 use App\Models\Course;
 use App\Models\Faq;
 use App\Models\Gallery;
@@ -11,6 +12,7 @@ use App\Models\Lab;
 use App\Models\Lecturer;
 use App\Models\News;
 use App\Models\Partner;
+use App\Models\Research;
 use App\Models\Setting;
 use App\Models\Stat;
 use Inertia\Inertia;
@@ -21,9 +23,16 @@ class PageController extends Controller
     public function about(): Response
     {
         return Inertia::render('About', [
-            'greeting'        => Setting::getValue('greeting'),
-            'distinctiveness' => Setting::getValue('distinctiveness'),
-            'aboutContent'    => Setting::getValue('about_content'),
+            'greeting'     => Setting::getValue('greeting'),
+            'aboutContent' => Setting::getValue('about_content'),
+            'siteMeta'     => Setting::getValue('site_meta'),
+            'prodiStats'   => Setting::getValue('prodi_stats'),
+            'stats'        => Stat::whereIn('metric', [
+                'active_students',
+                'alumni',
+                'lecturer_count',
+                'research_count'
+            ])->orderBy('order')->get(),
         ]);
     }
 
@@ -31,20 +40,32 @@ class PageController extends Controller
     {
         return Inertia::render('Accreditation', [
             'accreditation' => Setting::getValue('accreditation'),
+            'prodiStats' => Setting::getValue('prodi_stats'),
+        ]);
+    }
+
+    public function orgStructure(): Response
+    {
+        return Inertia::render('OrgStructure', [
+            'orgContent' => Setting::getValue('org_structure'),
         ]);
     }
 
     public function curriculum(): Response
     {
         return Inertia::render('Curriculum', [
-            'courses' => Course::orderBy('semester')->orderBy('code')->get(),
+            'courses'        => Course::orderBy('semester')->orderBy('code')->get(),
+            'curriculumMeta' => Setting::getValue('curriculum_summary'),
         ]);
     }
 
     public function lecturers(): Response
     {
+        $all = Lecturer::active()->orderBy('order')->get();
         return Inertia::render('Lecturers', [
-            'lecturers' => Lecturer::active()->orderBy('order')->get(),
+            'kaprodi'   => $all->filter(fn($l) => str_contains(strtolower($l->position_id ?? ''), 'kaprodi'))->first(),
+            'labHeads'  => $all->filter(fn($l) => str_contains(strtolower($l->position_id ?? ''), 'pembina lab') || str_contains(strtolower($l->position_id ?? ''), 'lab head'))->values(),
+            'lecturers' => $all->filter(fn($l) => !str_contains(strtolower($l->position_id ?? ''), 'kaprodi') && !str_contains(strtolower($l->position_id ?? ''), 'pembina lab') && !str_contains(strtolower($l->position_id ?? ''), 'lab head'))->values(),
         ]);
     }
 
@@ -88,6 +109,15 @@ class PageController extends Controller
         ]);
     }
 
+    public function activityDetail(string $slug): Response
+    {
+        $item = Activity::where('slug', $slug)->firstOrFail();
+        return Inertia::render('ActivityDetail', [
+            'item'    => $item,
+            'related' => Activity::where('id', '!=', $item->id)->orderByDesc('date')->limit(3)->get(),
+        ]);
+    }
+
     public function labs(): Response
     {
         return Inertia::render('LabsList', [
@@ -105,7 +135,39 @@ class PageController extends Controller
     public function research(): Response
     {
         return Inertia::render('Research', [
-            'researchAreas' => Setting::getValue('research_areas'),
+            'researches' => Research::orderByDesc('year')->orderBy('order')->get(),
+        ]);
+    }
+
+    public function researchDetail(int $id): Response
+    {
+        $item = Research::findOrFail($id);
+        return Inertia::render('ResearchDetail', [
+            'item' => $item,
+            'related' => Research::where('id', '!=', $item->id)->orderByDesc('year')->limit(3)->get(),
+        ]);
+    }
+
+    public function communityService(): Response
+    {
+        return Inertia::render('CommunityService', [
+            'services' => CommunityService::orderByDesc('year')->orderBy('order')->get(),
+        ]);
+    }
+
+    public function communityServiceDetail(int $id): Response
+    {
+        $item = CommunityService::findOrFail($id);
+        return Inertia::render('CommunityServiceDetail', [
+            'item' => $item,
+            'related' => CommunityService::where('id', '!=', $item->id)->orderByDesc('year')->limit(3)->get(),
+        ]);
+    }
+
+    public function studentAssociation(): Response
+    {
+        return Inertia::render('StudentAssociation', [
+            'orgContent' => Setting::getValue('student_association'),
         ]);
     }
 
@@ -121,6 +183,42 @@ class PageController extends Controller
         return Inertia::render('Statistics', [
             'tracerStats' => Setting::getValue('tracer_stats'),
             'stats' => Stat::orderBy('order')->get(),
+        ]);
+    }
+
+    public function kalenderAkademik(): Response
+    {
+        return Inertia::render('AkademikEmbed', [
+            'title' => ['id' => 'Kalender Akademik', 'en' => 'Academic Calendar'],
+            'url'   => '/panduan/kalender-akademik-2025-2026.pdf',
+            'description' => [
+                'id' => 'Jadwal kegiatan akademik resmi Telkom University, termasuk masa perkuliahan, ujian, dan libur semester.',
+                'en' => 'Official Telkom University academic calendar, including lecture periods, exams, and semester breaks.',
+            ],
+        ]);
+    }
+
+    public function pedomanAkademik(): Response
+    {
+        return Inertia::render('AkademikEmbed', [
+            'title' => ['id' => 'Pedoman Akademik', 'en' => 'Academic Handbook'],
+            'url'   => '/panduan/pedoman-akademik-telkom.pdf',
+            'description' => [
+                'id' => 'Panduan lengkap peraturan dan tata tertib akademik Telkom University untuk mahasiswa dan dosen.',
+                'en' => 'Complete guide to academic regulations and rules at Telkom University for students and faculty.',
+            ],
+        ]);
+    }
+
+    public function kodeEtik(): Response
+    {
+        return Inertia::render('AkademikEmbed', [
+            'title' => ['id' => 'Kode Etik', 'en' => 'Code of Ethics'],
+            'url'   => '/panduan/kode-etik-telkom.pdf',
+            'description' => [
+                'id' => 'Kode etik dan tata nilai yang berlaku bagi seluruh civitas akademika Telkom University.',
+                'en' => 'Code of ethics and values applicable to all members of the Telkom University academic community.',
+            ],
         ]);
     }
 

@@ -92,7 +92,7 @@ export function PartnersMarquee({ partners }: { partners: PartnerItem[] }) {
                         return (
                             <div
                                 key={`${partner.id}-${index}`}
-                                className="partner-card border-cream-300/30 bg-surface-0 text-navy-700/60 flex h-20 w-44 shrink-0 items-center justify-center rounded-2xl border px-8 text-sm font-semibold tracking-wider uppercase shadow-[0_10px_28px_-12px_rgba(36,20,31,0.14)] select-none"
+                                className="partner-card border-cream-300/30 bg-surface-0 text-navy-700/60 flex h-24 w-52 shrink-0 items-center justify-center rounded-2xl border px-4 text-sm font-semibold tracking-wider uppercase shadow-[0_10px_28px_-12px_rgba(36,20,31,0.14)] select-none"
                                 style={
                                     shouldReduceMotion
                                         ? undefined
@@ -105,7 +105,7 @@ export function PartnersMarquee({ partners }: { partners: PartnerItem[] }) {
                                     <img
                                         src={partner.logo}
                                         alt={partner.name}
-                                        className="h-8 max-w-[120px] object-contain grayscale filter transition-all hover:grayscale-0"
+                                        className="max-h-[80%] max-w-[90%] object-contain grayscale filter transition-all hover:grayscale-0"
                                     />
                                 ) : (
                                     <span>{partner.name}</span>

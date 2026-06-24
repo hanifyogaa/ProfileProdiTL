@@ -25,6 +25,7 @@ export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
         nidn: '',
+        nip: '',
         functional_position: '',
         position_id: '',
         position_en: '',
@@ -157,16 +158,29 @@ export default function Create() {
                         {errors.name && <p className="text-xs text-red-600 font-medium">{errors.name}</p>}
                     </div>
 
-                    <div className="space-y-1">
-                        <label className="text-sm font-semibold text-ink-900">NIDN</label>
-                        <input
-                            type="text"
-                            value={data.nidn}
-                            onChange={(e) => setData('nidn', e.target.value)}
-                            placeholder="Contoh: 0412345678"
-                            className="w-full px-4 py-2.5 rounded-xl border border-cream-300 focus:ring-2 focus:ring-brand-700/10 focus:border-brand-700 outline-none text-sm bg-surface-0"
-                        />
-                        {errors.nidn && <p className="text-xs text-red-600 font-medium">{errors.nidn}</p>}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                            <label className="text-sm font-semibold text-ink-900">NIDN</label>
+                            <input
+                                type="text"
+                                value={data.nidn}
+                                onChange={(e) => setData('nidn', e.target.value)}
+                                placeholder="Contoh: 0412345678"
+                                className="w-full px-4 py-2.5 rounded-xl border border-cream-300 focus:ring-2 focus:ring-brand-700/10 focus:border-brand-700 outline-none text-sm bg-surface-0"
+                            />
+                            {errors.nidn && <p className="text-xs text-red-600 font-medium">{errors.nidn}</p>}
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-sm font-semibold text-ink-900">NIP <span className="font-normal text-cream-300">(opsional)</span></label>
+                            <input
+                                type="text"
+                                value={data.nip}
+                                onChange={(e) => setData('nip', e.target.value)}
+                                placeholder="Contoh: 198703122015041001"
+                                className="w-full px-4 py-2.5 rounded-xl border border-cream-300 focus:ring-2 focus:ring-brand-700/10 focus:border-brand-700 outline-none text-sm bg-surface-0"
+                            />
+                            {errors.nip && <p className="text-xs text-red-600 font-medium">{errors.nip}</p>}
+                        </div>
                     </div>
 
                     <div className="space-y-1">
@@ -206,15 +220,20 @@ export default function Create() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <BilingualInput
-                        label="Jabatan Struktural / Posisi (Contoh: Kaprodi)"
-                        idName="position_id"
-                        enName="position_en"
-                        idValue={data.position_id}
-                        enValue={data.position_en}
-                        onChangeId={(val) => setData('position_id', val)}
-                        onChangeEn={(val) => setData('position_en', val)}
-                    />
+                    <div>
+                        <BilingualInput
+                            label="Jabatan Struktural / Posisi"
+                            idName="position_id"
+                            enName="position_en"
+                            idValue={data.position_id}
+                            enValue={data.position_en}
+                            onChangeId={(val) => setData('position_id', val)}
+                            onChangeEn={(val) => setData('position_en', val)}
+                        />
+                        <p className="mt-1.5 text-[11px] text-navy-700/60">
+                            Pengelompokan otomatis di halaman /dosen: mengandung <strong>"Kaprodi"</strong> → ditampilkan sebagai Ketua Prodi · mengandung <strong>"Pembina Lab"</strong> → Pembina Laboratorium · lainnya → Staf Pengajar.
+                        </p>
+                    </div>
 
                     <div className="space-y-1 flex flex-col justify-end pb-3">
                         <div className="flex items-center space-x-3">

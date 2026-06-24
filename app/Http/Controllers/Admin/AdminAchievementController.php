@@ -45,13 +45,16 @@ class AdminAchievementController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title_id' => 'required|string|max:255',
-            'title_en' => 'required|string|max:255',
-            'level' => 'required|in:national,international',
-            'date' => 'required|date',
-            'holder' => 'required|string|max:255',
-            'cover' => 'nullable|image|max:2048',
-            'order' => 'integer',
+            'title_id'       => 'required|string|max:255',
+            'title_en'       => 'required|string|max:255',
+            'level'          => 'required|in:national,international',
+            'date'           => 'required|date',
+            'holder'         => 'required|string|max:255',
+            'category'       => 'nullable|string|max:100',
+            'description_id' => 'nullable|string',
+            'description_en' => 'nullable|string',
+            'cover'          => 'nullable|image|max:2048',
+            'order'          => 'integer',
         ]);
 
         if ($request->hasFile('cover')) {
@@ -74,13 +77,16 @@ class AdminAchievementController extends Controller
     public function update(Request $request, Achievement $achievement)
     {
         $validated = $request->validate([
-            'title_id' => 'required|string|max:255',
-            'title_en' => 'required|string|max:255',
-            'level' => 'required|in:national,international',
-            'date' => 'required|date',
-            'holder' => 'required|string|max:255',
-            'cover_file' => 'nullable|image|max:2048',
-            'order' => 'integer',
+            'title_id'       => 'required|string|max:255',
+            'title_en'       => 'required|string|max:255',
+            'level'          => 'required|in:national,international',
+            'date'           => 'required|date',
+            'holder'         => 'required|string|max:255',
+            'category'       => 'nullable|string|max:100',
+            'description_id' => 'nullable|string',
+            'description_en' => 'nullable|string',
+            'cover_file'     => 'nullable|image|max:2048',
+            'order'          => 'integer',
         ]);
 
         if ($request->hasFile('cover_file')) {

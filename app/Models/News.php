@@ -8,13 +8,14 @@ class News extends Model
 {
     protected $fillable = [
         'title_id', 'title_en', 'slug', 'excerpt_id', 'excerpt_en',
-        'body_id', 'body_en', 'category', 'featured_image', 'status',
+        'body_id', 'body_en', 'category', 'metadata', 'featured_image', 'status',
         'is_featured', 'published_at', 'views',
     ];
 
     protected $casts = [
-        'is_featured' => 'boolean',
+        'is_featured'  => 'boolean',
         'published_at' => 'datetime',
+        'metadata'     => 'array',
     ];
 
     public function scopePublished($query)

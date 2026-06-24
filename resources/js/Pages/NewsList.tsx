@@ -1,9 +1,11 @@
-import { MainLayout } from '@/Layouts/MainLayout';
+﻿import { MainLayout } from '@/Layouts/MainLayout';
 import { Card } from '@/components/Card';
+import { PageHero, PillLabel } from '@/components/PageHero';
 import { Reveal } from '@/components/Reveal';
 import { useLocale } from '@/contexts/LocaleContext';
 import { Head, Link } from '@inertiajs/react';
-import { Calendar } from 'lucide-react';
+import { Calendar, ChevronRight } from 'lucide-react';
+import React, { useState } from 'react';
 
 interface NewsItem {
     id: number;
@@ -14,6 +16,7 @@ interface NewsItem {
     excerpt_en: string | null;
     category: string | null;
     featured_image: string | null;
+    is_featured?: boolean;
     published_at: string;
 }
 
@@ -28,128 +31,233 @@ interface NewsListProps {
 
 const NEWS_FALLBACKS: Record<string, string> = {
     'pendaftaran-mahasiswa-baru-2026-2027':
-        'https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&q=80&w=600&h=400',
+        'https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&q=80&w=800&h=500',
     'seminar-nasional-rantai-pasok-digital':
-        'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=600&h=400',
+        'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=800&h=500',
     'update-kurikulum-145-sks':
-        'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=600&h=400',
+        'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=800&h=500',
 };
 
 const DEFAULT_NEWS_BG =
-    'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=600&h=400';
+    'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800&h=500';
+
+const HERO_PHOTO =
+    'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1600&h=900';
+
+const ALL_CATEGORIES = ['Semua', 'Pengumuman', 'Kunjungan Industri', 'Prestasi', 'Riset', 'Pengabdian', 'Kemahasiswaan', 'Akademik', 'Kegiatan', 'Umum'];
+
+function formatDate(dateStr: string, locale: string) {
+    return new Date(dateStr).toLocaleDateString(locale === 'id' ? 'id-ID' : 'en-US', {
+        year: 'numeric', month: 'long', day: 'numeric',
+    });
+}
 
 export default function NewsList({ news }: NewsListProps) {
     const { locale } = useLocale();
+    const l = locale as 'id' | 'en';
+    const [activeCategory, setActiveCategory] = useState('Semua');
 
-    const title =
-        locale === 'id' ? 'Berita & Kegiatan Terbaru' : 'News & Activities';
+    const title    = l === 'id' ? 'Berita & Pengumuman' : 'News & Announcements';
+    const subtitle = l === 'id'
+        ? 'Informasi terkini tentang kegiatan, prestasi, dan pengumuman dari Program Studi Teknik Logistik Telkom University.'
+        : 'Latest information on activities, achievements, and announcements from the Logistics Engineering Program.';
+
+    // Client-side category filter
+    const allItems = news.data;
+    const featured = allItems.find(n => n.is_featured);
+    const filtered = activeCategory === 'Semua'
+        ? allItems
+        : allItems.filter(n => n.category === activeCategory);
+    const gridItems = filtered.filter(n => n.id !== featured?.id || activeCategory !== 'Semua');
+
+    // Only show categories that actually have items
+    const presentCategories = ['Semua', ...Array.from(new Set(allItems.map(n => n.category).filter(Boolean) as string[]))];
 
     return (
-        <MainLayout>
+        <MainLayout fullHero>
             <Head title={title} />
 
-            <div className="mx-auto max-w-[1000px] px-6">
-                <Reveal>
-                    <div className="mb-12 text-center">
-                        <h1 className="font-display text-ink-900 mt-6 text-4xl leading-tight font-semibold sm:text-5xl">
-                            {title}
-                        </h1>
-                    </div>
-                </Reveal>
+            {/* ── Hero Cinematic ── */}
+            <PageHero
+                pillLabel={l === 'id' ? 'Berita & Info' : 'News & Info'}
+                title={title}
+                subtitle={subtitle}
+                photoUrl={HERO_PHOTO}
+                photoAlt="Conference and seminar"
+            >
+                {/* Category filter pills inside hero */}
+                <div className="flex flex-wrap gap-2 mt-2">
+                    {presentCategories.map(cat => (
+                        <button
+                            key={cat}
+                            type="button"
+                            onClick={() => setActiveCategory(cat)}
+                            className="rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest transition-all duration-200"
+                            style={
+                                activeCategory === cat
+                                    ? { background: '#D99F60', color: '#24141F' }
+                                    : { background: 'rgba(255,253,251,0.12)', color: 'rgba(172,149,135,0.85)', border: '1px solid rgba(172,149,135,0.30)' }
+                            }
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
+            </PageHero>
 
-                {/* News Grid */}
-                <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                    {news.data.map((item, index) => {
-                        const titleText =
-                            locale === 'id' ? item.title_id : item.title_en;
-                        const excerpt =
-                            locale === 'id' ? item.excerpt_id : item.excerpt_en;
-                        const coverImg =
-                            item.featured_image ||
-                            NEWS_FALLBACKS[item.slug] ||
-                            DEFAULT_NEWS_BG;
+            <div className="py-16 sm:py-20" style={{ background: '#FFFDFB' }}>
+                <div className="mx-auto max-w-[1100px] px-6">
+
+                    {/* ── Featured news card (only when "Semua" and there's a featured item) ── */}
+                    {activeCategory === 'Semua' && featured && (() => {
+                        const titleText = l === 'id' ? featured.title_id : featured.title_en;
+                        const excerpt   = l === 'id' ? featured.excerpt_id : featured.excerpt_en;
+                        const coverImg  = featured.featured_image || NEWS_FALLBACKS[featured.slug] || DEFAULT_NEWS_BG;
 
                         return (
-                            <Reveal key={item.id} delay={index * 0.05}>
-                                <Card className="group border-cream-300/20 bg-surface-0 flex h-full flex-col overflow-hidden border transition-shadow hover:shadow-md">
-                                    <div className="bg-surface-50 relative aspect-[16/10] overflow-hidden">
-                                        <img
-                                            src={coverImg}
-                                            alt={titleText}
-                                            className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                            loading="lazy"
-                                        />
-                                        {item.category && (
-                                            <span className="bg-brand-700 text-surface-0 absolute top-3 left-3 rounded px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase">
-                                                {item.category}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div className="flex flex-1 flex-col justify-between p-6">
-                                        <div>
-                                            <div className="text-navy-700 mb-2 flex items-center gap-1.5 text-[10px] font-semibold uppercase">
-                                                <Calendar className="size-3 text-amber-600" />
-                                                <span>
-                                                    {new Date(
-                                                        item.published_at,
-                                                    ).toLocaleDateString(
-                                                        locale === 'id'
-                                                            ? 'id-ID'
-                                                            : 'en-US',
-                                                        {
-                                                            year: 'numeric',
-                                                            month: 'long',
-                                                            day: 'numeric',
-                                                        },
-                                                    )}
-                                                </span>
+                            <Reveal variant="fade-up">
+                                <div className="mb-16">
+                                    <PillLabel>{l === 'id' ? 'Berita Unggulan' : 'Featured Story'}</PillLabel>
+                                    <Link href={`/berita/${featured.slug}`}>
+                                        <div
+                                            className="group mt-4 grid grid-cols-12 overflow-hidden rounded-3xl border shadow-md transition-all duration-500 hover:-translate-y-1 hover:shadow-xl"
+                                            style={{ borderColor: 'rgba(172,149,135,0.20)' }}
+                                        >
+                                            {/* Image */}
+                                            <div className="col-span-12 md:col-span-7 relative aspect-[16/9] md:aspect-auto md:min-h-[300px] overflow-hidden">
+                                                <img
+                                                    src={coverImg}
+                                                    alt={titleText}
+                                                    className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                />
+                                                <div
+                                                    className="absolute inset-0"
+                                                    style={{ background: 'linear-gradient(to right, transparent 60%, rgba(255,253,251,1) 100%)' }}
+                                                />
+                                                {featured.category && (
+                                                    <span
+                                                        className="absolute top-4 left-4 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white"
+                                                        style={{ background: 'rgba(140,100,65,0.90)' }}
+                                                    >
+                                                        {featured.category}
+                                                    </span>
+                                                )}
                                             </div>
-                                            <Link href={`/berita/${item.slug}`}>
-                                                <h3 className="font-display text-ink-900 group-hover:text-brand-700 text-base leading-snug font-semibold transition-colors">
+                                            {/* Content */}
+                                            <div className="col-span-12 md:col-span-5 flex flex-col justify-center p-8 md:p-10 bg-surface-0">
+                                                <div className="mb-3 flex items-center gap-1.5 text-xs font-semibold" style={{ color: '#505666' }}>
+                                                    <Calendar className="size-3.5" style={{ color: '#C08A4C' }} />
+                                                    {formatDate(featured.published_at, l)}
+                                                </div>
+                                                <h2
+                                                    className="font-display text-2xl font-bold leading-snug transition-colors group-hover:opacity-75"
+                                                    style={{ color: '#24141F' }}
+                                                >
                                                     {titleText}
-                                                </h3>
-                                            </Link>
-                                            {excerpt && (
-                                                <p className="text-navy-700 mt-3 line-clamp-3 text-xs leading-relaxed">
-                                                    {excerpt}
-                                                </p>
-                                            )}
+                                                </h2>
+                                                {excerpt && (
+                                                    <p className="mt-4 line-clamp-3 text-sm leading-relaxed" style={{ color: '#505666' }}>
+                                                        {excerpt}
+                                                    </p>
+                                                )}
+                                                <div className="mt-6 inline-flex items-center gap-1 text-xs font-bold" style={{ color: '#8C6441' }}>
+                                                    {l === 'id' ? 'Baca Selengkapnya' : 'Read More'}
+                                                    <ChevronRight className="size-3.5" />
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </Card>
+                                    </Link>
+                                </div>
                             </Reveal>
                         );
-                    })}
-                </div>
+                    })()}
 
-                {/* Pagination */}
-                {news.last_page > 1 && (
-                    <Reveal>
-                        <div className="mt-16 flex items-center justify-center gap-4">
-                            {news.links.map((link, idx) => {
-                                if (link.url === null) return null;
-
-                                const isNext = link.label.includes('Next');
-                                const isPrev = link.label.includes('Previous');
+                    {/* ── News Grid ── */}
+                    {gridItems.length > 0 ? (
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                            {gridItems.map((item, index) => {
+                                const titleText = l === 'id' ? item.title_id : item.title_en;
+                                const excerpt   = l === 'id' ? item.excerpt_id : item.excerpt_en;
+                                const coverImg  = item.featured_image || NEWS_FALLBACKS[item.slug] || DEFAULT_NEWS_BG;
 
                                 return (
-                                    <Link
-                                        key={idx}
-                                        href={link.url}
-                                        className={`flex size-10 items-center justify-center rounded-lg border text-sm font-semibold transition-colors ${
-                                            link.active
-                                                ? 'bg-brand-700 border-brand-700 text-surface-0'
-                                                : 'bg-surface-0 border-cream-300/30 text-ink-900 hover:bg-surface-50'
-                                        }`}
-                                        dangerouslySetInnerHTML={{
-                                            __html: link.label,
-                                        }}
-                                    />
+                                    <Reveal key={item.id} delay={index * 0.06} variant="fade-up">
+                                        <Card
+                                            className="group flex h-full flex-col overflow-hidden border bg-surface-0 shadow-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_24px_48px_-16px_rgba(36,20,31,0.15)]"
+                                            style={{ borderColor: 'rgba(172,149,135,0.20)' }}
+                                        >
+                                            <div className="relative aspect-[16/10] overflow-hidden">
+                                                <img
+                                                    src={coverImg}
+                                                    alt={titleText}
+                                                    className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                    loading="lazy"
+                                                />
+                                                {item.category && (
+                                                    <span
+                                                        className="absolute top-3 left-3 rounded-full px-2.5 py-0.5 text-[9px] font-bold tracking-widest uppercase"
+                                                        style={{ background: 'rgba(140,100,65,0.88)', color: '#FFFDFB' }}
+                                                    >
+                                                        {item.category}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <div className="flex flex-1 flex-col p-6">
+                                                <div className="mb-2 flex items-center gap-1.5 text-[10px] font-semibold uppercase" style={{ color: '#505666' }}>
+                                                    <Calendar className="size-3" style={{ color: '#C08A4C' }} />
+                                                    {formatDate(item.published_at, l)}
+                                                </div>
+                                                <Link href={`/berita/${item.slug}`}>
+                                                    <h3
+                                                        className="font-display text-base font-semibold leading-snug transition-colors group-hover:opacity-70"
+                                                        style={{ color: '#24141F' }}
+                                                    >
+                                                        {titleText}
+                                                    </h3>
+                                                </Link>
+                                                {excerpt && (
+                                                    <p className="mt-3 line-clamp-3 text-xs leading-relaxed" style={{ color: '#505666' }}>
+                                                        {excerpt}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </Card>
+                                    </Reveal>
                                 );
                             })}
                         </div>
-                    </Reveal>
-                )}
+                    ) : (
+                        <div className="rounded-2xl border py-16 text-center" style={{ borderColor: 'rgba(172,149,135,0.20)' }}>
+                            <p className="text-sm" style={{ color: '#505666' }}>
+                                {l === 'id' ? 'Tidak ada berita untuk kategori ini.' : 'No news for this category.'}
+                            </p>
+                        </div>
+                    )}
+
+                    {/* ── Pagination ── */}
+                    {news.last_page > 1 && (
+                        <Reveal>
+                            <div className="mt-16 flex items-center justify-center gap-3">
+                                {news.links.map((link, idx) => {
+                                    if (link.url === null) return null;
+                                    return (
+                                        <Link
+                                            key={idx}
+                                            href={link.url}
+                                            className="flex size-10 items-center justify-center rounded-xl border text-sm font-semibold transition-all"
+                                            style={
+                                                link.active
+                                                    ? { background: '#8C6441', borderColor: '#8C6441', color: '#FFFDFB' }
+                                                    : { background: '#FFFDFB', borderColor: 'rgba(172,149,135,0.30)', color: '#24141F' }
+                                            }
+                                            dangerouslySetInnerHTML={{ __html: link.label }}
+                                        />
+                                    );
+                                })}
+                            </div>
+                        </Reveal>
+                    )}
+                </div>
             </div>
         </MainLayout>
     );

@@ -231,20 +231,6 @@ export function Hero({ hero }: { hero: HeroData }) {
                 ))}
             </div>
 
-            {/* ── FLOATING METRICS ── */}
-            <FloatingMetric
-                value="4,200+"
-                label="Alumni"
-                delay={1.2}
-                position="right-24 top-[28%]"
-            />
-            <FloatingMetric
-                value="95%"
-                label="Absorption Rate"
-                delay={1.5}
-                position="right-10 top-[45%]"
-            />
-
             {/* ── MAIN TEXT CONTENT ── */}
             <motion.div
                 className="absolute inset-0 z-20 flex flex-col justify-end"

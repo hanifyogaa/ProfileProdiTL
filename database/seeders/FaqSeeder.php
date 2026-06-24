@@ -73,6 +73,42 @@ class FaqSeeder extends Seeder
                 'order'       => 7,
                 'is_active'   => true,
             ],
+            [
+                'question_id' => 'Apakah ada mata kuliah pilihan yang mempelajari teknologi terkini?',
+                'question_en' => 'Are there elective courses studying current technologies?',
+                'answer_id'   => 'Ya, kurikulum kami menyediakan mata kuliah pilihan seperti E-Commerce Logistics dan Sistem Logistik Halal yang dirancang untuk membekali mahasiswa dengan perkembangan teknologi dan regulasi industri terbaru.',
+                'answer_en'   => 'Yes, our curriculum provides elective courses such as E-Commerce Logistics and Halal Logistics Systems designed to equip students with the latest technological developments and industry regulations.',
+                'category' => 'akademik',
+                'order' => 8,
+                'is_active' => true,
+            ],
+            [
+                'question_id' => 'Apa saja fasilitas laboratorium yang dimiliki oleh Teknik Logistik?',
+                'question_en' => 'What laboratory facilities does Logistics Engineering have?',
+                'answer_id'   => 'Kami memiliki 10 laboratorium spesialis seperti Lab E-Logistik, Lab Otomasi Gudang (dilengkapi robot AGV dan IoT), Lab Simulasi Rantai Pasok, serta Lab Sistem Informasi Logistik.',
+                'answer_en'   => 'We have 10 specialized laboratories such as the E-Logistics Lab, Warehouse Automation Lab (equipped with AGVs and IoT), Supply Chain Simulation Lab, and Logistics Information Systems Lab.',
+                'category' => 'umum',
+                'order' => 9,
+                'is_active' => true,
+            ],
+            [
+                'question_id' => 'Apakah mahasiswa tingkat akhir diwajibkan magang?',
+                'question_en' => 'Are final year students required to take an internship?',
+                'answer_id'   => 'Magang tidak diwajibkan bagi seluruh mahasiswa, namun sangat direkomendasikan melalui program MBKM Magang Industri Bersertifikat selama 6 bulan yang setara dengan konversi hingga 20 SKS.',
+                'answer_en'   => 'Internships are not mandatory for all students, but are highly recommended through the 6-month Certified Industry Internship MBKM program, equivalent to up to 20 credits.',
+                'category' => 'mbkm',
+                'order' => 10,
+                'is_active' => true,
+            ],
+            [
+                'question_id' => 'Bagaimana tingkat kepuasan perusahaan pengguna lulusan?',
+                'question_en' => 'What is the employer satisfaction level with graduates?',
+                'answer_id'   => 'Berdasarkan data tracer study terbaru, tingkat kepuasan industri pengguna lulusan Teknik Logistik mencapai 95%, terutama dalam hal penguasaan IT logistik dan kerjasama tim.',
+                'answer_en'   => 'Based on recent tracer study data, the employer satisfaction level for Logistics Engineering graduates reaches 95%, especially in IT logistics mastery and teamwork.',
+                'category' => 'karir',
+                'order' => 11,
+                'is_active' => true,
+            ],
         ];
 
         foreach ($faqs as $faq) {

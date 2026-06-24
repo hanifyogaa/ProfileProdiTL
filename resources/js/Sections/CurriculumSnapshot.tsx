@@ -139,17 +139,20 @@ export function CurriculumSnapshot({
                                                 ? 'Mata Kuliah Unggulan'
                                                 : 'Featured Courses'}
                                         </h4>
-                                        <div className="flex flex-wrap gap-2.5">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             {curriculumSummary.signature_courses.map(
                                                 (course, idx) => (
-                                                    <span
+                                                    <div
                                                         key={idx}
-                                                        className="bg-surface-0 border-cream-300/40 text-ink-900 inline-flex items-center rounded-lg border px-3.5 py-2 text-xs font-semibold shadow-sm"
+                                                        className="bg-brand-700/[0.04] border-brand-700/10 text-brand-800 hover:bg-brand-700/[0.08] hover:border-brand-700/25 hover:scale-[1.01] flex items-start rounded-xl border px-3.5 py-2.5 text-xs font-semibold shadow-sm transition-all duration-300 select-none w-full"
                                                     >
-                                                        {locale === 'id'
-                                                            ? course.name_id
-                                                            : course.name_en}
-                                                    </span>
+                                                        <span className="bg-amber-500/80 mr-2.5 mt-1.5 size-1.5 rounded-full shrink-0" />
+                                                        <span className="leading-relaxed">
+                                                            {locale === 'id'
+                                                                ? course.name_id
+                                                                : course.name_en}
+                                                        </span>
+                                                    </div>
                                                 ),
                                             )}
                                         </div>

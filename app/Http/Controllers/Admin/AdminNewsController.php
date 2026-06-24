@@ -41,16 +41,17 @@ class AdminNewsController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title_id' => 'required|string|max:255',
-            'title_en' => 'required|string|max:255',
-            'excerpt_id' => 'nullable|string',
-            'excerpt_en' => 'nullable|string',
-            'body_id' => 'nullable|string',
-            'body_en' => 'nullable|string',
-            'category' => 'nullable|string|max:255',
-            'status' => 'required|in:draft,published',
-            'is_featured' => 'boolean',
-            'featured_image' => 'nullable|image|max:2048', // max 2MB
+            'title_id'       => 'required|string|max:255',
+            'title_en'       => 'required|string|max:255',
+            'excerpt_id'     => 'nullable|string',
+            'excerpt_en'     => 'nullable|string',
+            'body_id'        => 'nullable|string',
+            'body_en'        => 'nullable|string',
+            'category'       => 'nullable|string|max:255',
+            'metadata'       => 'nullable|array',
+            'status'         => 'required|in:draft,published',
+            'is_featured'    => 'boolean',
+            'featured_image' => 'nullable|image|max:2048',
         ]);
 
         $validated['slug'] = Str::slug($validated['title_id']);
@@ -86,15 +87,16 @@ class AdminNewsController extends Controller
     {
         // Support Inertia PATCH/PUT with multipart data using _method='PUT' override
         $validated = $request->validate([
-            'title_id' => 'required|string|max:255',
-            'title_en' => 'required|string|max:255',
-            'excerpt_id' => 'nullable|string',
-            'excerpt_en' => 'nullable|string',
-            'body_id' => 'nullable|string',
-            'body_en' => 'nullable|string',
-            'category' => 'nullable|string|max:255',
-            'status' => 'required|in:draft,published',
-            'is_featured' => 'boolean',
+            'title_id'            => 'required|string|max:255',
+            'title_en'            => 'required|string|max:255',
+            'excerpt_id'          => 'nullable|string',
+            'excerpt_en'          => 'nullable|string',
+            'body_id'             => 'nullable|string',
+            'body_en'             => 'nullable|string',
+            'category'            => 'nullable|string|max:255',
+            'metadata'            => 'nullable|array',
+            'status'              => 'required|in:draft,published',
+            'is_featured'         => 'boolean',
             'featured_image_file' => 'nullable|image|max:2048',
         ]);
 

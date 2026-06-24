@@ -25,7 +25,12 @@ class HomeController extends Controller
 
         return Inertia::render('Home', [
             'hero' => Setting::getValue('hero'),
-            'stats' => Stat::orderBy('order')->get(),
+            'stats' => Stat::whereIn('metric', [
+                'active_students',
+                'alumni',
+                'lecturer_count',
+                'research_count'
+            ])->orderBy('order')->get(),
             'distinctiveness' => Setting::getValue('distinctiveness'),
             'greeting' => Setting::getValue('greeting'),
             'featured' => $featured,

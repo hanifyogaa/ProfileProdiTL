@@ -11,6 +11,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Public Program Pages
 Route::get('/profil', [PageController::class, 'about'])->name('about');
 Route::get('/profil/akreditasi', [PageController::class, 'accreditation'])->name('accreditation');
+Route::get('/profil/struktur-organisasi', fn() => redirect('/dosen#org', 301))->name('org-structure');
 Route::get('/kurikulum', [PageController::class, 'curriculum'])->name('curriculum');
 Route::get('/dosen', [PageController::class, 'lecturers'])->name('lecturers');
 Route::get('/berita', [PageController::class, 'news'])->name('news');
@@ -18,11 +19,19 @@ Route::get('/berita/{slug}', [PageController::class, 'newsDetail'])->name('news.
 Route::get('/galeri', [PageController::class, 'gallery'])->name('gallery');
 Route::get('/prestasi', [PageController::class, 'achievements'])->name('achievements');
 Route::get('/agenda', [PageController::class, 'activities'])->name('activities');
+Route::get('/agenda/{slug}', [PageController::class, 'activityDetail'])->name('activity.detail');
 Route::get('/laboratorium', [PageController::class, 'labs'])->name('labs');
 Route::get('/kemitraan', [PageController::class, 'partnerships'])->name('partnerships');
 Route::get('/riset', [PageController::class, 'research'])->name('research');
+Route::get('/riset/{id}', [PageController::class, 'researchDetail'])->name('research.detail');
+Route::get('/pengabdian', [PageController::class, 'communityService'])->name('community-service');
+Route::get('/pengabdian/{id}', [PageController::class, 'communityServiceDetail'])->name('community-service.detail');
+Route::get('/kemahasiswaan', [PageController::class, 'studentAssociation'])->name('student-association');
 Route::get('/mbkm', [PageController::class, 'mbkm'])->name('mbkm');
 Route::get('/statistik', [PageController::class, 'statistics'])->name('statistics');
+Route::get('/akademik/kalender-akademik', [PageController::class, 'kalenderAkademik'])->name('kalender-akademik');
+Route::get('/akademik/pedoman-akademik', [PageController::class, 'pedomanAkademik'])->name('pedoman-akademik');
+Route::get('/akademik/kode-etik', [PageController::class, 'kodeEtik'])->name('kode-etik');
 Route::get('/faq', [PageController::class, 'faq'])->name('faq');
 Route::get('/kontak', [PageController::class, 'contact'])->name('contact');
 
@@ -44,6 +53,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('stats', \App\Http\Controllers\Admin\AdminStatController::class);
     Route::resource('galleries', \App\Http\Controllers\Admin\AdminGalleryController::class);
     Route::resource('faqs', \App\Http\Controllers\Admin\AdminFaqController::class);
+    Route::resource('researches', \App\Http\Controllers\Admin\AdminResearchController::class);
+    Route::resource('community-services', \App\Http\Controllers\Admin\AdminCommunityServiceController::class);
     
     Route::get('settings', [\App\Http\Controllers\Admin\AdminSettingsController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [\App\Http\Controllers\Admin\AdminSettingsController::class, 'update'])->name('settings.update');
