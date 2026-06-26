@@ -1,4 +1,4 @@
-﻿import { MainLayout } from '@/Layouts/MainLayout';
+import { MainLayout } from '@/Layouts/MainLayout';
 import { Reveal } from '@/components/Reveal';
 import { useLocale } from '@/contexts/LocaleContext';
 import { Head } from '@inertiajs/react';
@@ -64,7 +64,7 @@ export default function Gallery({ photos }: { photos?: GalleryItem[] }) {
             <Head title={title} />
 
             {/* ── HERO — mosaic collage background ── */}
-            <section ref={heroRef} className="relative flex min-h-[52vh] items-end overflow-hidden" style={{ background: '#24141F' }}>
+            <section ref={heroRef} className="relative flex min-h-[64vh] items-end overflow-hidden" style={{ background: '#24141F' }}>
                 {/* Mosaic grid bg */}
                 <motion.div className="absolute inset-0 grid grid-cols-4" style={shouldReduceMotion ? {} : { y: yBg }}>
                     {mosaicPhotos.map((p) => (
@@ -80,7 +80,7 @@ export default function Gallery({ photos }: { photos?: GalleryItem[] }) {
                 <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-40" style={{ background: 'linear-gradient(to bottom, rgba(36,20,31,0) 0%, rgba(36,20,31,0.4) 20%, #ECEBE9 100%)' }} />
                 <div className="absolute left-0 top-0 h-full w-1" style={{ background: 'linear-gradient(to bottom, transparent, #D99F60, transparent)' }} />
 
-                <div className="relative z-10 mx-auto w-full max-w-[1100px] px-6 pb-14 pt-36 text-center">
+                <div className="relative z-10 mx-auto w-full max-w-[1100px] px-6 pb-16 pt-40 text-center">
                     <Reveal>
                         <span className="mb-4 inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
                             style={{ background: 'rgba(217,159,96,0.15)', color: '#D99F60', border: '1px solid rgba(217,159,96,0.25)' }}>

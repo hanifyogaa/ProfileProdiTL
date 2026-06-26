@@ -28,6 +28,25 @@ const NEWS_FALLBACKS: Record<string, string> = {
 const DEFAULT_NEWS_BG =
     'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=800&h=500';
 
+const getCategoryLabel = (category: string | null, locale: string) => {
+    if (!category) return '';
+    const key = category.toLowerCase().trim();
+    const translations: Record<string, { id: string; en: string }> = {
+        'semua': { id: 'Semua', en: 'All' },
+        'pengumuman': { id: 'Pengumuman', en: 'Announcement' },
+        'kunjungan industri': { id: 'Kunjungan Industri', en: 'Industrial Visit' },
+        'prestasi': { id: 'Prestasi', en: 'Achievement' },
+        'riset': { id: 'Riset', en: 'Research' },
+        'pengabdian': { id: 'Pengabdian', en: 'Community Service' },
+        'kemahasiswaan': { id: 'Kemahasiswaan', en: 'Student Affairs' },
+        'akademik': { id: 'Akademik', en: 'Academics' },
+        'kegiatan': { id: 'Kegiatan', en: 'Event' },
+        'umum': { id: 'Umum', en: 'General' }
+    };
+    const l = locale === 'id' ? 'id' : 'en';
+    return translations[key]?.[l] ?? category;
+};
+
 export function LatestNews({ latestNews }: { latestNews: NewsItem[] }) {
     const { locale, t } = useLocale();
 
@@ -89,7 +108,7 @@ export function LatestNews({ latestNews }: { latestNews: NewsItem[] }) {
                                             />
                                             {item.category && (
                                                 <span className="bg-brand-700 text-surface-0 absolute top-4 left-4 rounded-full px-3 py-1 text-xs font-bold tracking-wide uppercase">
-                                                    {item.category}
+                                                    {getCategoryLabel(item.category, locale)}
                                                 </span>
                                             )}
                                         </div>
@@ -174,7 +193,7 @@ export function LatestNews({ latestNews }: { latestNews: NewsItem[] }) {
                                             <div className="text-navy-700/80 mb-1.5 flex items-center gap-2 text-[11px] font-medium">
                                                 {item.category && (
                                                     <span className="text-brand-700 font-bold tracking-wide uppercase">
-                                                        {item.category}
+                                                        {getCategoryLabel(item.category, locale)}
                                                     </span>
                                                 )}
                                                 <span aria-hidden="true">

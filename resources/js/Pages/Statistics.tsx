@@ -46,7 +46,7 @@ export default function Statistics({ tracerStats, stats }: StatisticsProps) {
     }));
 
     return (
-        <MainLayout>
+        <MainLayout fullHero>
             <Head title={title} />
 
             {/* ── Hero Cinematic ── */}

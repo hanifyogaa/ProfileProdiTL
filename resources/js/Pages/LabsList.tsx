@@ -60,7 +60,7 @@ export default function LabsList({ labs }: LabsListProps) {
     const [featuredLab, ...restLabs] = labs;
 
     return (
-        <MainLayout>
+        <MainLayout fullHero>
             <Head title={title} />
 
             {/* ── Hero Cinematic ── */}

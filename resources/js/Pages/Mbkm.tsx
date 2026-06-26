@@ -1,4 +1,4 @@
-﻿import { MainLayout } from '@/Layouts/MainLayout';
+import { MainLayout } from '@/Layouts/MainLayout';
 import { Reveal } from '@/components/Reveal';
 import { useLocale } from '@/contexts/LocaleContext';
 import { Head } from '@inertiajs/react';
@@ -78,7 +78,7 @@ export default function Mbkm() {
             <Head title={title} />
 
             {/* ── HERO ── */}
-            <section ref={heroRef} className="relative flex min-h-[60vh] items-end overflow-hidden" style={{ background: '#24141F' }}>
+            <section ref={heroRef} className="relative flex min-h-[64vh] items-end overflow-hidden" style={{ background: '#24141F' }}>
                 <motion.div className="absolute inset-0" style={shouldReduceMotion ? {} : { y: yBg }}>
                     <img src={HERO_BG} alt="" className="size-full object-cover" style={{ opacity: 0.32 }} fetchPriority="high" />
                 </motion.div>

@@ -5,9 +5,30 @@ import type { Bilingual } from '@/types';
 import { Award, Briefcase, TrendingUp } from 'lucide-react';
 
 interface TrackItem {
-    title: Bilingual;
-    description: Bilingual;
+    // Nested bilingual format
+    title?: Bilingual;
+    description?: Bilingual;
+    // Flat format (from admin panel / DB)
+    title_id?: string;
+    title_en?: string;
+    description_id?: string;
+    description_en?: string;
 }
+
+function getTrackTitle(track: TrackItem, locale: string): string {
+    if (track.title && (track.title.id || track.title.en)) {
+        return locale === 'id' ? (track.title.id || track.title.en || '') : (track.title.en || track.title.id || '');
+    }
+    return locale === 'id' ? (track.title_id || '') : (track.title_en || '');
+}
+
+function getTrackDesc(track: TrackItem, locale: string): string {
+    if (track.description && (track.description.id || track.description.en)) {
+        return locale === 'id' ? (track.description.id || track.description.en || '') : (track.description.en || track.description.id || '');
+    }
+    return locale === 'id' ? (track.description_id || '') : (track.description_en || '');
+}
+
 
 interface ProspectsData {
     heading: Bilingual;
@@ -50,12 +71,10 @@ export function CareerProspects({ prospects }: { prospects: ProspectsData }) {
                                     </span>
                                     <div className="flex-1">
                                         <h3 className="font-display text-ink-900 text-xl font-bold">
-                                            <LangText text={track.title} />
+                                            {getTrackTitle(track, locale)}
                                         </h3>
                                         <p className="text-navy-700 mt-2 max-w-xl text-sm leading-relaxed">
-                                            <LangText
-                                                text={track.description}
-                                            />
+                                            {getTrackDesc(track, locale)}
                                         </p>
                                     </div>
                                     <Icon

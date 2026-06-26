@@ -50,7 +50,7 @@ export default function CommunityService({ services }: CommunityServiceProps) {
     ];
 
     return (
-        <MainLayout>
+        <MainLayout fullHero>
             <Head title={title} />
 
             {/* ── Hero Cinematic ── */}

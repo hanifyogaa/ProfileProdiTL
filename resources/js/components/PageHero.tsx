@@ -95,7 +95,7 @@ export function PageHero({ pillLabel, title, subtitle, photoUrl, photoAlt, stats
     return (
         <section
             ref={ref}
-            className="relative flex min-h-[56vh] items-end overflow-hidden"
+            className="relative flex min-h-[64vh] items-end overflow-hidden"
             style={{ background: '#24141F' }}
         >
             {/* Layer 1 — parallax background photo */}
@@ -128,37 +128,51 @@ export function PageHero({ pillLabel, title, subtitle, photoUrl, photoAlt, stats
 
             {/* Layer 4 — content */}
             <div className="relative z-10 mx-auto w-full max-w-[1100px] px-6 pb-16 pt-40">
-                <Reveal variant="fade-up">
-                    <PillLabel>{pillLabel}</PillLabel>
-                    <h1
-                        className="font-display mt-3 text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl"
-                        style={{ color: '#FFFDFB' }}
-                    >
-                        {title}
-                    </h1>
-                    {subtitle && (
-                        <p
-                            className="mt-5 max-w-2xl text-base leading-relaxed sm:text-lg"
-                            style={{ color: 'rgba(172,149,135,0.90)' }}
-                        >
-                            {subtitle}
-                        </p>
-                    )}
-                </Reveal>
-
-                {stats && stats.length > 0 && (
-                    <Reveal delay={0.15} variant="fade-up">
-                        <div className="mt-12 pt-10 border-t" style={{ borderColor: 'rgba(172,149,135,0.20)' }}>
-                            <StatsRow stats={stats} dark />
-                        </div>
-                    </Reveal>
-                )}
-
-                {children && (
-                    <div className="mt-8">
-                        {children}
+                <div className="grid items-end gap-8 md:grid-cols-12">
+                    {/* Left: text */}
+                    <div className={stats && stats.length > 0 ? "col-span-12 md:col-span-8 w-full" : "col-span-12 w-full"}>
+                        <Reveal variant="fade-up">
+                            <PillLabel>{pillLabel}</PillLabel>
+                            <h1
+                                className="font-display mt-3 text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl"
+                                style={{ color: '#FFFDFB' }}
+                            >
+                                {title}
+                            </h1>
+                            {subtitle && (
+                                <p
+                                    className="mt-5 max-w-2xl text-base leading-relaxed sm:text-lg"
+                                    style={{ color: 'rgba(172,149,135,0.90)' }}
+                                >
+                                    {subtitle}
+                                </p>
+                            )}
+                        </Reveal>
+                        {children && (
+                            <div className="mt-8">
+                                {children}
+                            </div>
+                        )}
                     </div>
-                )}
+
+                    {/* Right: stats */}
+                    {stats && stats.length > 0 && (
+                        <div className="col-span-12 md:col-span-4 w-full">
+                            <Reveal delay={0.15} variant="fade-up">
+                                <div className="rounded-3xl p-6" style={{ background: 'rgba(140,100,65,0.18)', backdropFilter: 'blur(12px)', border: '1px solid rgba(217,159,96,0.20)' }}>
+                                    <div className="flex flex-col gap-5">
+                                        {stats.map((s, i) => (
+                                            <div key={i} className={i > 0 ? "border-t pt-4" : ""} style={{ borderColor: 'rgba(255,255,255,0.10)' }}>
+                                                <p className="font-display text-2xl font-bold" style={{ color: '#D99F60' }}>{s.value}</p>
+                                                <p className="mt-1 text-xs uppercase tracking-widest font-semibold" style={{ color: 'rgba(172,149,135,0.70)' }}>{s.label}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </Reveal>
+                        </div>
+                    )}
+                </div>
             </div>
         </section>
     );

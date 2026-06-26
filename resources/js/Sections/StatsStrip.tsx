@@ -56,8 +56,32 @@ function StatCounter({ value }: { value: string }) {
     );
 }
 
-export function StatsStrip({ stats }: { stats: StatItem[] }) {
+export function StatsStrip({ stats: _stats }: { stats: StatItem[] }) {
     const { locale } = useLocale();
+
+    const displayStats = [
+        {
+            id: 1,
+            metric: 'lecturer_count',
+            value: '14',
+            label_id: 'Dosen',
+            label_en: 'Lecturers',
+        },
+        {
+            id: 2,
+            metric: 'active_students',
+            value: '457',
+            label_id: 'Mahasiswa',
+            label_en: 'Students',
+        },
+        {
+            id: 3,
+            metric: 'alumni',
+            value: '200+',
+            label_id: 'Lulusan',
+            label_en: 'Graduates',
+        },
+    ];
 
     return (
         <section
@@ -100,11 +124,11 @@ export function StatsStrip({ stats }: { stats: StatItem[] }) {
                 aria-hidden="true"
             />
 
-            <div className="relative mx-auto max-w-[1200px] px-6">
-                <div className="grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-4">
-                    {stats.map((stat, index) => (
+            <div className="relative mx-auto max-w-[1000px] px-6">
+                <div className="flex flex-wrap items-center justify-center gap-x-16 gap-y-12 sm:gap-x-24">
+                    {displayStats.map((stat, index) => (
                         <Reveal key={stat.id} delay={index * 0.12} variant="zoom-in">
-                            <div className="flex flex-col items-center text-center">
+                            <div className="flex flex-col items-center text-center min-w-[160px]">
                                 <div
                                     className="font-display text-4xl font-semibold sm:text-5xl"
                                     style={{ color: '#8C6441' }}

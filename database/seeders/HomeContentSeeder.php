@@ -85,7 +85,7 @@ class HomeContentSeeder extends Seeder
         ]]);
 
         Setting::updateOrCreate(['key' => 'greeting'], ['value' => [
-            'name' => 'Dr. Ir. Wahyu Hidayat, M.T.',
+            'name' => 'Dr. Femi Yulianti, S.Si., M.T., CPLM., ESLog.',
             'photo' => null,
             'quote' => [
                 'id' => 'Selamat datang di Program Studi S1 Teknik Logistik Universitas Telkom. Kurikulum kami dirancang 145 SKS dalam delapan semester, memadukan matematika dan ilmu dasar, pendidikan umum, dan topik keteknikan logistik dengan kekhasan e-logistik dan supply chain digital.',
@@ -223,31 +223,59 @@ class HomeContentSeeder extends Seeder
                 ],
             ],
             'history' => [
-                'id' => 'Program Studi S1 Teknik Logistik Universitas Telkom didirikan di bawah naungan Fakultas Rekayasa Industri (FRI). Dengan dukungan PT Telkom Indonesia sebagai BUMN platform telekomunikasi, program studi ini mengembangkan kekhasan keilmuan e-logistik yang memadukan rekayasa industri, teknologi informasi, dan manajemen rantai pasok digital. Sejak berdirinya, program ini konsisten mencetak lulusan yang terserap di berbagai sektor industri logistik nasional maupun internasional, dan telah meraih predikat Akreditasi "Unggul" dari LAM Teknik.',
-                'en' => 'The S1 Logistics Engineering Program at Telkom University was established under the Faculty of Industrial Engineering (FRI). With the support of PT Telkom Indonesia, a state-owned telecommunications platform company, this program develops a distinctive e-logistics specialization that integrates industrial engineering, information technology, and digital supply chain management. Since its founding, the program has consistently produced graduates absorbed across various national and international logistics industry sectors, and has earned the "Unggul" (Excellent) accreditation from LAM Teknik.',
+                'id' => 'Program Studi S1 Teknik Logistik Universitas Telkom didirikan di bawah naungan Fakultas Rekayasa Industri (FRI). Dengan dukungan PT Telkom Indonesia sebagai BUMN platform telekomunikasi, program studi ini mengembangkan kekhasan keilmuan e-logistik yang memadukan rekayasa industri, teknologi informasi, dan manajemen rantai pasok digital. Sejak berdirinya, program ini konsisten mencetak lulusan yang terserap di berbagai sektor industri logistik nasional maupun internasional, dan telah mendapatkan akreditasi "B" dari BAN-PT.',
+                'en' => 'The S1 Logistics Engineering Program at Telkom University was established under the Faculty of Industrial Engineering (FRI). With the support of PT Telkom Indonesia, a state-owned telecommunications platform company, this program develops a distinctive e-logistics specialization that integrates industrial engineering, information technology, and digital supply chain management. Since its founding, the program has consistently produced graduates absorbed across various national and international logistics industry sectors, and has been accredited with a "B" rating by BAN-PT.',
             ],
         ]]);
 
         Setting::updateOrCreate(['key' => 'accreditation'], ['value' => [
-            'body_name' => 'LAM Teknik',
+            'body_name' => 'BAN-PT',
             'status' => [
-                'id' => 'Terakreditasi: UNGGUL',
-                'en' => 'Accreditation Rank: UNGGUL (Excellent)',
+                'id' => 'Terakreditasi: B',
+                'en' => 'Accreditation Rank: B',
             ],
             'description' => [
-                'id' => '"Unggul" adalah predikat akreditasi tertinggi yang diberikan oleh Lembaga Akreditasi Mandiri Teknik (LAM Teknik) kepada program studi yang memenuhi standar kualitas pendidikan tinggi secara komprehensif.',
-                'en' => '"Unggul" is the highest accreditation rank awarded by the Independent Engineering Accreditation Institute (LAM Teknik) to study programs that comprehensively meet higher education quality standards.',
+                'id' => 'Program Studi S1 Teknik Logistik Telkom University telah mendapatkan akreditasi dari Badan Akreditasi Nasional Perguruan Tinggi (BAN-PT) dengan peringkat B.',
+                'en' => 'The S1 Logistics Engineering Study Program at Telkom University has been accredited by the National Accreditation Board for Higher Education (BAN-PT) with a B rating.',
             ],
             'decrees' => [
                 [
                     'title' => [
-                        'id' => 'SK Akreditasi LAM Teknik 2025',
-                        'en' => 'LAM Teknik Accreditation Decree (2025)',
+                        'id' => 'SK Pendirian Program Studi',
+                        'en' => 'Study Program Establishment Decree',
                     ],
-                    'number' => 'No: 0451/SK/LAM-Teknik/IV/2025',
+                    'number' => '1195/KPT/I/2018',
+                    'date' => '28/12/2018',
+                    'grade' => '–',
                     'description' => [
-                        'id' => 'Menetapkan predikat Akreditasi "Unggul" untuk Program Studi S1 Teknik Logistik, berlaku selama 5 tahun hingga tahun 2030.',
-                        'en' => 'Establishes the "Unggul" accreditation rank for the S1 Logistics Engineering Program, valid for 5 years through 2030.',
+                        'id' => 'Surat keputusan pendirian Program Studi S1 Teknik Logistik oleh Kementerian Riset, Teknologi dan Pendidikan Tinggi.',
+                        'en' => 'Decree establishing the S1 Logistics Engineering Study Program by the Ministry of Research, Technology and Higher Education.',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'id' => 'SK Akreditasi BAN-PT — Peringkat Baik',
+                        'en' => 'BAN-PT Accreditation Decree — Good Standing',
+                    ],
+                    'number' => '1915/SK/BAN-PT/Ak-PKP/S/IV/2021',
+                    'date' => '13/04/2021',
+                    'grade' => 'Baik',
+                    'description' => [
+                        'id' => 'Menetapkan predikat Akreditasi "Baik" untuk Program Studi S1 Teknik Logistik Telkom University oleh BAN-PT.',
+                        'en' => 'Established the "Baik" (Good) accreditation rank for the S1 Logistics Engineering Study Program at Telkom University by BAN-PT.',
+                    ],
+                ],
+                [
+                    'title' => [
+                        'id' => 'SK Akreditasi BAN-PT — Peringkat B',
+                        'en' => 'BAN-PT Accreditation Decree — Rank B',
+                    ],
+                    'number' => '10735/SK/BAN-PT/Akred/S/IX/2021',
+                    'date' => '08/09/2021',
+                    'grade' => 'B',
+                    'description' => [
+                        'id' => 'Menetapkan predikat Akreditasi "B" untuk Program Studi S1 Teknik Logistik Telkom University oleh BAN-PT.',
+                        'en' => 'Established the "B" accreditation rank for the S1 Logistics Engineering Study Program at Telkom University by BAN-PT.',
                     ],
                 ],
             ],
@@ -328,12 +356,12 @@ class HomeContentSeeder extends Seeder
             'chart_image' => null,
             'members' => [
                 [
-                    'name' => 'Dr. Ir. Wahyu Hidayat, M.T.',
+                    'name' => 'Dr. Femi Yulianti, S.Si., M.T., CPLM., ESLog.',
                     'role' => [
-                        'id' => 'Ketua Program Studi (Kaprodi)',
-                        'en' => 'Head of Program (Kaprodi)',
+                        'id' => 'Kepala Program Studi S1 DSC',
+                        'en' => 'Head of Study Program S1 DSC',
                     ],
-                    'email' => 'wahyu.hidayat@proditl.ac.id',
+                    'email' => 'femiyulianti@telkomuniversity.ac.id',
                 ],
                 [
                     'name' => 'Dr. Akbar, M.T.',
@@ -382,9 +410,9 @@ class HomeContentSeeder extends Seeder
     private function seedStats(): void
     {
         $rows = [
-            ['metric' => 'accreditation', 'value' => 'Unggul', 'label_id' => 'Akreditasi', 'label_en' => 'Accreditation', 'order' => 1],
+            ['metric' => 'accreditation', 'value' => 'B', 'label_id' => 'Akreditasi', 'label_en' => 'Accreditation', 'order' => 1],
             ['metric' => 'sks', 'value' => '145', 'label_id' => 'SKS · 8 Semester', 'label_en' => 'Credits · 8 Semesters', 'order' => 2],
-            ['metric' => 'partners', 'value' => '30+', 'label_id' => 'Mitra Industri', 'label_en' => 'Industry Partners', 'order' => 3],
+            ['metric' => 'partners', 'value' => '30', 'label_id' => 'Mitra Industri', 'label_en' => 'Industry Partners', 'order' => 3],
             ['metric' => 'employment', 'value' => '92%', 'label_id' => 'Lulusan Terserap < 6 Bulan', 'label_en' => 'Graduates Employed < 6 Months', 'order' => 4],
             ['metric' => 'active_students', 'value' => '1,250+', 'label_id' => 'Mahasiswa Aktif', 'label_en' => 'Active Students', 'order' => 5],
             ['metric' => 'alumni', 'value' => '850+', 'label_id' => 'Alumni Tersebar', 'label_en' => 'Alumni Network', 'order' => 6],
@@ -834,24 +862,44 @@ class HomeContentSeeder extends Seeder
 
     private function seedPartners(): void
     {
+        // Clear existing partners first to avoid stale data
+        Partner::query()->delete();
+
         $rows = [
-            ['name' => 'HAVI Logistics', 'type' => 'industry', 'url' => 'https://www.havi.com', 'logo' => 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=150&auto=format&fit=crop'],
-            ['name' => 'Garuda Food', 'type' => 'industry', 'url' => 'https://www.garudafood.com', 'logo' => 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=150&auto=format&fit=crop'],
-            ['name' => 'Pertamina', 'type' => 'industry', 'url' => 'https://www.pertamina.com', 'logo' => 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=150&auto=format&fit=crop'],
-            ['name' => 'PT Pos Indonesia', 'type' => 'industry', 'url' => 'https://www.posindonesia.co.id', 'logo' => 'https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=150&auto=format&fit=crop'],
-            ['name' => 'DHL Express Indonesia', 'type' => 'industry', 'url' => 'https://www.dhl.co.id', 'logo' => 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=150&auto=format&fit=crop'],
-            ['name' => 'Lazada Logistics', 'type' => 'industry', 'url' => 'https://logistics.lazada.co.id', 'logo' => 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=150&auto=format&fit=crop'],
-            
-            ['name' => 'Institut Teknologi Bandung', 'type' => 'academic', 'url' => 'https://www.itb.ac.id', 'logo' => 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=150&auto=format&fit=crop'],
-            ['name' => 'Universitas Indonesia', 'type' => 'academic', 'url' => 'https://www.ui.ac.id', 'logo' => 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=150&auto=format&fit=crop'],
-            ['name' => 'Chulalongkorn University', 'type' => 'academic', 'url' => 'https://www.chula.ac.th', 'logo' => 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=150&auto=format&fit=crop'],
-            ['name' => 'Universiti Teknologi Malaysia', 'type' => 'academic', 'url' => 'https://www.utm.my', 'logo' => 'https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=150&auto=format&fit=crop'],
-            ['name' => 'National University of Singapore', 'type' => 'academic', 'url' => 'https://www.nus.edu.sg', 'logo' => 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=150&auto=format&fit=crop'],
-            ['name' => 'Tokyo Institute of Technology', 'type' => 'academic', 'url' => 'https://www.titech.ac.jp', 'logo' => 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=150&auto=format&fit=crop'],
+            ['name' => 'LSP-LI',                              'logo' => '/images/partners/lspli.png',                  'url' => 'https://lsp-lingkunganindonesia.com/',              'description' => 'Penyelenggaraan Sertifikasi Warehouse Supervisor'],
+            ['name' => 'Asosiasi Logistik Indonesia (ALI)',   'logo' => '/images/partners/ali.jpg',                    'url' => 'https://asosiasilogistikindonesia.or.id/',          'description' => 'Penyelenggaraan Sertifikasi European Senior Logistician'],
+            ['name' => 'Ninja Express',                       'logo' => '/images/partners/ninjaexpress.png',           'url' => 'https://www.ninjaxpress.co/id-id',                  'description' => 'Program Logistics Talk Series: Achieving Success Various Job Fields Experienced'],
+            ['name' => 'PT Star Karlo Indonesia',             'logo' => '/images/partners/karlo.png',                  'url' => 'https://www.karlo.id/',                             'description' => 'Program Magang, Kuliah Umum, dan Review Lab'],
+            ['name' => 'Truku',                               'logo' => '/images/partners/truku.png',                  'url' => 'https://truku.id/',                                 'description' => 'Program Sharing from the Expert "Improving Road Safety for Better Logistics in Indonesia"'],
+            ['name' => 'Phillips Seafood',                    'logo' => null,                                          'url' => null,                                                'description' => 'Program Logistics Talk Series Vol. 7 How to Manage your Material Flow: Inbound, Internal, and Outbound Logistics'],
+            ['name' => 'PT Eroco Petronesia (BMW Group)',     'logo' => null,                                          'url' => 'https://www.erocopetronesia.com/',                  'description' => 'Program Magang Mahasiswa'],
+            ['name' => 'Bababos',                             'logo' => '/images/partners/bababos.png',                'url' => 'https://www.bababos.com/',                          'description' => 'Kuliah Umum Vol.1 "Organizational Transformation in the Logistics Industry in the Era of Industry 4.0"'],
+            ['name' => 'PT Pertamina Hulu Indonesia',         'logo' => '/images/partners/pertamina-hulu.png',         'url' => 'https://phi.pertamina.com/',                        'description' => 'Program Logistics Talk Series: Peranan Market Intelligence & Assessment untuk Proses Pengadaan yang Efektif dan Efisien'],
+            ['name' => 'PT Sumber Alfaria Trijaya',           'logo' => '/images/partners/alfamart.png',               'url' => 'https://www.alfamart.co.id/',                       'description' => 'Program Magang Mahasiswa'],
+            ['name' => 'PT Industri Susu Alam Murni',         'logo' => '/images/partners/susu-alam-murni.png',        'url' => 'https://isam.co.id/id/',                            'description' => 'Program Magang'],
+            ['name' => 'Scomi Oil Tools',                     'logo' => '/images/partners/logoFinalScomi.png',         'url' => 'https://scomigroup.com.my/oilfield-2/',             'description' => 'Program Magang'],
+            ['name' => 'Garuda Indonesia',                    'logo' => '/images/partners/garuda-indonesia.jpg',       'url' => 'https://www.garuda-indonesia.com/id/id/',           'description' => 'Program Magang Mahasiswa'],
+            ['name' => 'Adorable Project',                    'logo' => '/images/partners/adorable-project.jpg',       'url' => 'https://adorableprojects.store/',                   'description' => 'Program Magang dan Kuliah Umum'],
+            ['name' => 'PT Krakatau Jasa Logistik',           'logo' => '/images/partners/kraktau-jasa-logistik.png', 'url' => 'https://krakataujasalogistik.co.id/',               'description' => 'Program Magang'],
+            ['name' => 'PT Samudera Agencies Indonesia',      'logo' => '/images/partners/samudera-indonesia.png',    'url' => 'https://www.samudera.id/sai',                       'description' => 'Program Magang Mahasiswa'],
+            ['name' => 'PT BGR Logistik Indonesia',           'logo' => '/images/partners/bgr-logistik.png',          'url' => 'https://www.bgrlogistik.id/id',                     'description' => 'Program Magang'],
+            ['name' => 'PT Cipta Krida Bahari',               'logo' => '/images/partners/cipta-krida-bahari.png',    'url' => 'https://www.ckb.co.id/',                            'description' => 'Program Magang Mahasiswa'],
+            ['name' => 'ISCEA',                               'logo' => '/images/partners/iscea.jpg',                 'url' => 'https://www.iscea.org/',                            'description' => 'Program Logistics Talk Series x ISCEA: Empowering Growth: Global Supply Chain Strategies & Career Elevation with ISCEA'],
+            ['name' => 'Zhoukou Vocational and Technical College', 'logo' => '/images/partners/zkvtc.png',            'url' => 'https://www.zkvtc.edu.cn/',                         'description' => 'Pelatihan Smart Warehouse dan Distribution Operation'],
+            ['name' => 'PT Els Hayati Teknologi',             'logo' => '/images/partners/els-hayati-companieshouse.png', 'url' => 'https://companieshouse.id/els-hayati-teknologi', 'description' => 'Program Magang Mahasiswa'],
+            ['name' => 'PKT Logistics Group',                 'logo' => null,                                          'url' => null,                                                'description' => "Program 'Logistics Industry Competency Certification Course'"],
+            ['name' => 'Orang Tua Group',                     'logo' => '/images/partners/ot-orangtua',               'url' => 'https://www.ot.id/',                                'description' => 'Program Logistics Talk Series: Hard and Soft Skill Competencies in Logistics Industry: HR Perspectives'],
+            ['name' => 'Plastic Industries Sdn. Bhd.',        'logo' => '/images/partners/plastics-industry.png',     'url' => 'https://www.jimzhengplastic.com/',                  'description' => 'Program Logistics Talk Series: Catch Your Dream: Study and Build a Career in Logistics Field Abroad'],
+            ['name' => 'Infia Group',                         'logo' => '/images/partners/infia',                     'url' => 'https://infiacorp.com/',                            'description' => 'Program Logistics Talk Series: Peluang dan Prospek kerja Teknik Logistik "Logistics: Today, Tomorrow, the Future"'],
+            ['name' => 'PT Amman Mineral Nusa Tenggara',      'logo' => '/images/partners/amman.png',                 'url' => 'https://www.amman.co.id/',                          'description' => 'Program Logistics Talk Series: Measuring Port Capacity as a Baseline for Effective Maritime Logistics'],
+            ['name' => 'Segari',                              'logo' => null,                                          'url' => null,                                                'description' => 'Program Logistics Talk Series: Streamlining Procurement and Warehouse Synergy: Turning Pain Points into Strategic Advantage'],
+            ['name' => 'Softskills Academy',                  'logo' => null,                                          'url' => null,                                                'description' => 'Program Logistics Talk Series: Mind in Balance: Mengubah Stres Jadi Kekuatan'],
+            ['name' => 'PLN',                                 'logo' => null,                                          'url' => null,                                                'description' => 'Program Logistics Talk Series: How To Manage Your Material Flow: Inbound, Internal and Outbond Logistics Activities'],
+            ['name' => 'PT Krakatau Bandar Samudera',         'logo' => null,                                          'url' => null,                                                'description' => 'Perancangan Penjadwalan Truck'],
         ];
 
         foreach ($rows as $i => $row) {
-            Partner::updateOrCreate(['name' => $row['name']], $row + ['order' => $i + 1]);
+            Partner::create($row + ['type' => 'industry', 'order' => $i + 1]);
         }
     }
 
@@ -1119,32 +1167,25 @@ class HomeContentSeeder extends Seeder
     {
         $rows = [
             [
-                'name' => 'Dr. Ir. Wahyu Hidayat, M.T.',
-                'nidn' => '0412087501',
-                'nip' => '197508122002121001',
-                'functional_position' => 'Lektor Kepala',
-                'position_id' => 'Ketua Program Studi (Kaprodi)',
-                'position_en' => 'Head of Study Program (Kaprodi)',
-                'bio_id' => 'Kepala Program Studi S1 Teknik Logistik Universitas Telkom. Berfokus pada riset operasional dan pemodelan transportasi logistik maritim nasional.',
-                'bio_en' => 'Head of the S1 Logistics Engineering Program at Telkom University. Focuses on operations research and modeling of national maritime logistics transportation.',
-                'expertise' => ['Operations Research', 'Maritime Logistics', 'Transportation Modeling'],
-                'education' => [
-                    ['degree' => 'S1', 'institution' => 'Institut Teknologi Bandung', 'year' => 1998],
-                    ['degree' => 'S2', 'institution' => 'Institut Teknologi Bandung', 'year' => 2002],
-                    ['degree' => 'S3', 'institution' => 'Tokyo Institute of Technology', 'year' => 2012],
-                ],
-                'teaching_history' => [
-                    ['semester' => 'Ganjil 2025/2026', 'courses' => ['Kalkulus I', 'Riset Operasional I']],
-                    ['semester' => 'Genap 2025/2026', 'courses' => ['Simulasi Sistem Logistik', 'Tugas Akhir']],
-                ],
-                'photo' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=300&auto=format&fit=crop',
-                'scholar_url' => 'https://scholar.google.com',
-                'sinta_url' => 'https://sinta.kemdikbud.go.id',
-                'scopus_url' => 'https://www.scopus.com',
-                'scholar_id' => 'scholar_wahyu_hidayat',
-                'sinta_id' => 'sinta_wahyu_hidayat',
-                'scopus_id' => 'scopus_wahyu_hidayat',
-                'email' => 'wahyu.hidayat@proditl.ac.id',
+                'name' => 'Dr. Femi Yulianti, S.Si., M.T., CPLM., ESLog.',
+                'nidn' => '19820002',
+                'nip' => '402078204',
+                'functional_position' => 'Lektor',
+                'position_id' => 'Kepala Program Studi S1 DSC',
+                'position_en' => 'Head of Study Program S1 DSC',
+                'bio_id' => 'Kepala Program Studi S1 Digital Supply Chain (DSC) Universitas Telkom. Memiliki sertifikasi CPLM dan ESLog, berfokus pada manajemen logistik dan rantai pasok digital.',
+                'bio_en' => 'Head of the S1 Digital Supply Chain (DSC) Study Program at Telkom University. Holds CPLM and ESLog certifications, focusing on logistics management and digital supply chain.',
+                'expertise' => ['Logistics Management', 'Digital Supply Chain', 'Supply Chain Engineering'],
+                'education' => [],
+                'teaching_history' => [],
+                'photo' => null,
+                'scholar_url' => 'https://scholar.google.com/citations?user=9EnYw10AAAAJ&hl=en&oi=ao',
+                'sinta_url' => 'https://sinta.kemdiktisaintek.go.id/authors/profile/6727281',
+                'scopus_url' => 'https://www.scopus.com/authid/detail.uri?authorId=57215416344',
+                'scholar_id' => '9EnYw10AAAAJ',
+                'sinta_id' => '6727281',
+                'scopus_id' => '57215416344',
+                'email' => 'femiyulianti@telkomuniversity.ac.id',
                 'order' => 1,
                 'is_active' => true,
             ],

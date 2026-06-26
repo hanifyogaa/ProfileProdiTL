@@ -228,16 +228,34 @@ export function Navbar({ lightOnTop = false }: { lightOnTop?: boolean }) {
     const [searchOpen, setSearchOpen] = useState(false);
     const dropdownTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+    const expandScrollPos = useRef(0);
+
+    // Keep track of scroll position when manually expanded
+    useEffect(() => {
+        if (manualExpanded) {
+            expandScrollPos.current = window.scrollY;
+        }
+    }, [manualExpanded]);
+
     useEffect(() => {
         const onScroll = () => {
-            const isScrolled = window.scrollY > 80;
+            const currentScroll = window.scrollY;
+            const isScrolled = currentScroll > 80;
             setScrolled(isScrolled);
-            if (!isScrolled) setManualExpanded(false);
+            
+            if (!isScrolled) {
+                setManualExpanded(false);
+            } else if (manualExpanded) {
+                // If scrolled down by more than 40px since manually expanding, minimize it again
+                if (currentScroll > expandScrollPos.current + 40) {
+                    setManualExpanded(false);
+                }
+            }
         };
         onScroll();
         window.addEventListener('scroll', onScroll, { passive: true });
         return () => window.removeEventListener('scroll', onScroll);
-    }, []);
+    }, [manualExpanded]);
 
     // Ctrl/Cmd+K opens search
     useEffect(() => {
@@ -284,26 +302,20 @@ export function Navbar({ lightOnTop = false }: { lightOnTop?: boolean }) {
     return (
         <LayoutGroup>
             <header className="fixed inset-x-0 top-0 z-50">
-
-                {/* ── FULL NAVBAR ── */}
-                <AnimatePresence>
-                    {showFull && (
-                        <motion.div
-                            key="full-navbar"
-                            className="px-4 pt-4 sm:px-6 sm:pt-5"
-                            initial={{ opacity: 0, y: -16 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -12, transition: { duration: 0.45, ease: 'easeIn' } }}
-                            transition={{ duration: 0.55, ease: 'easeOut' }}
-                        >
-                            <nav className={`mx-auto flex max-w-[1200px] items-center justify-between gap-4 rounded-2xl px-4 py-3 transition-all duration-500 ${
-                                scrolled
-                                    ? 'border-cream-300/30 bg-surface-0/80 border shadow-[0_8px_24px_-12px_rgba(36,20,31,0.18)] backdrop-blur-xl backdrop-saturate-150'
-                                    : isLight
-                                        ? 'border border-white/10 bg-black/20 backdrop-blur-md'
-                                        : 'border border-transparent bg-surface-0/40 backdrop-blur-md'
-                            }`}>
-
+                <AnimatePresence mode="popLayout">
+                    {showFull ? (
+                        <div key="full-navbar-wrapper" className="px-4 pt-4 sm:px-6 sm:pt-5">
+                            <motion.nav
+                                layoutId="navbar-card"
+                                transition={LOGO_SPRING}
+                                className={`mx-auto flex max-w-[1200px] items-center justify-between gap-4 rounded-2xl px-4 py-3 transition-colors duration-500 ${
+                                    scrolled
+                                        ? 'border-cream-300/30 bg-surface-0/80 border shadow-[0_8px_24px_-12px_rgba(36,20,31,0.18)] backdrop-blur-xl backdrop-saturate-150'
+                                        : isLight
+                                            ? 'border border-white/10 bg-black/20 backdrop-blur-md'
+                                            : 'border border-transparent bg-surface-0/40 backdrop-blur-md'
+                                }`}
+                            >
                                 {/* Logo */}
                                 <Link href="/" className="flex shrink-0 items-center gap-3">
                                     <motion.div layoutId="nav-logo" transition={LOGO_SPRING} className="size-10 overflow-hidden rounded-xl">
@@ -312,7 +324,13 @@ export function Navbar({ lightOnTop = false }: { lightOnTop?: boolean }) {
                                 </Link>
 
                                 {/* Desktop nav links */}
-                                <div className="hidden items-center gap-4 xl:flex">
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.15 }}
+                                    className="hidden items-center gap-4 xl:flex shrink-0"
+                                >
                                     {NAV_LINKS.map((link) =>
                                         'children' in link ? (
                                             <div key={t(link.label)} className="relative"
@@ -361,10 +379,16 @@ export function Navbar({ lightOnTop = false }: { lightOnTop?: boolean }) {
                                             </Link>
                                         ),
                                     )}
-                                </div>
+                                </motion.div>
 
                                 {/* Actions */}
-                                <div className="flex items-center gap-2.5">
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.15 }}
+                                    className="flex items-center gap-2.5 shrink-0"
+                                >
                                     <button type="button" aria-label="Search" onClick={() => setSearchOpen(true)} className={actionBtnCls}>
                                         <Search className="size-4" />
                                     </button>
@@ -375,32 +399,41 @@ export function Navbar({ lightOnTop = false }: { lightOnTop?: boolean }) {
                                     <button type="button" onClick={() => setDrawerOpen(true)} aria-label="Open menu" className={menuBtnCls}>
                                         <Menu className="size-5" />
                                     </button>
-                                </div>
-                            </nav>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-
-                {/* ── MINI LOGO ── */}
-                <AnimatePresence>
-                    {showMini && (
-                        <motion.button
-                            key="mini-logo"
-                            type="button"
-                            onClick={() => setManualExpanded(true)}
-                            aria-label="Tampilkan navigasi"
-                            title="Klik untuk tampilkan navbar"
-                            className="absolute top-4 left-4 sm:top-5 sm:left-6"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.15 } }}
-                            exit={{ opacity: 0, transition: { duration: 0.25 } }}
-                            whileHover={{ scale: 1.08 }}
-                            whileTap={{ scale: 0.93 }}
-                        >
-                            <motion.div layoutId="nav-logo" transition={LOGO_SPRING} className="size-12 overflow-hidden rounded-2xl">
-                                <LogoImage />
-                            </motion.div>
-                        </motion.button>
+                                </motion.div>
+                            </motion.nav>
+                        </div>
+                    ) : (
+                        <div key="mini-navbar-wrapper" className="absolute top-4 left-4 sm:top-5 sm:left-6">
+                            <motion.button
+                                layoutId="navbar-card"
+                                transition={LOGO_SPRING}
+                                type="button"
+                                onClick={() => setManualExpanded(true)}
+                                aria-label="Tampilkan navigasi"
+                                title="Klik untuk tampilkan navbar"
+                                className="flex items-center gap-3 rounded-2xl p-1.5 pr-4 bg-surface-0/80 border border-cream-300/30 shadow-[0_8px_24px_-12px_rgba(36,20,31,0.18)] backdrop-blur-xl backdrop-saturate-150 hover:bg-surface-0/95 transition-colors group"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                <motion.div
+                                    layoutId="nav-logo"
+                                    transition={LOGO_SPRING}
+                                    className="size-10 overflow-hidden rounded-xl shrink-0"
+                                >
+                                    <LogoImage />
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.8 }}
+                                    transition={{ delay: 0.1 }}
+                                    className="flex items-center gap-2 shrink-0 text-ink-900/70 group-hover:text-brand-700 transition-colors"
+                                >
+                                    <div className="w-[1px] h-5 bg-cream-300/40" /> {/* Clean separator line */}
+                                    <Menu className="size-5 transition-transform duration-300 group-hover:rotate-90" />
+                                </motion.div>
+                            </motion.button>
+                        </div>
                     )}
                 </AnimatePresence>
 

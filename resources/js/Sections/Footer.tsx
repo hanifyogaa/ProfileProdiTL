@@ -58,28 +58,27 @@ export function Footer({ settings }: { settings: FooterSettings }) {
     ];
 
     return (
-        <footer className="bg-surface-0 text-navy-700 pt-16 pb-8">
-            <div className="mx-auto max-w-[1200px] px-6">
-                <div className="grid gap-12 lg:grid-cols-12">
+        <footer className="bg-surface-0 text-navy-700 pt-12 pb-6">
+            <div className="mx-auto max-w-[1000px] px-6">
+                <div className="flex flex-col gap-8 md:flex-row md:justify-between lg:justify-center lg:gap-20">
                     {/* Brand Lockup & Address */}
-                    <div className="lg:col-span-5">
+                    <div className="w-full md:w-72 shrink-0">
                         <Link
                             href="/"
-                            className="font-display text-brand-800 mb-6 block text-xl font-bold"
+                            className="font-display text-brand-800 mb-4 block text-lg font-bold"
                         >
                             Teknik Logistik{' '}
-                            <span className="text-amber-500">·</span> Digital
-                            Supply Chain
+                            <span className="text-amber-500">·</span>
                         </Link>
-                        <p className="text-navy-700/80 mb-6 max-w-sm text-sm leading-relaxed">
+                        <p className="text-navy-700/80 mb-4 text-xs leading-relaxed">
                             {locale === 'id'
                                 ? 'Program Studi S1 Teknik Logistik Universitas Telkom mengintegrasikan keilmuan teknik industri dan teknologi rantai pasok digital.'
                                 : 'Telkom University Logistics Engineering program integrates industrial engineering and digital supply chain technologies.'}
                         </p>
 
-                        <div className="space-y-3.5 text-sm">
-                            <div className="flex items-start gap-3">
-                                <MapPin className="mt-0.5 size-4.5 shrink-0 text-amber-500" />
+                        <div className="space-y-2.5 text-xs">
+                            <div className="flex items-start gap-2.5">
+                                <MapPin className="mt-0.5 size-4 shrink-0 text-amber-500" />
                                 <span className="text-navy-700/85">
                                     {siteAddress}
                                 </span>
@@ -88,18 +87,18 @@ export function Footer({ settings }: { settings: FooterSettings }) {
                     </div>
 
                     {/* Quick Links */}
-                    <div className="lg:col-span-3">
-                        <h4 className="font-display text-brand-800 mb-6 text-base font-semibold">
+                    <div className="w-full md:w-[220px] shrink-0">
+                        <h4 className="font-display text-brand-800 mb-4 text-sm font-semibold">
                             {locale === 'id'
                                 ? 'Navigasi Pintar'
                                 : 'Quick Links'}
                         </h4>
-                        <ul className="space-y-3 text-sm">
+                        <ul className="grid grid-cols-2 gap-x-4 gap-y-2.5 text-xs">
                             {sitemaps.map((link) => (
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}
-                                        className="text-navy-700 hover:text-brand-700 transition-colors"
+                                        className="text-navy-700 hover:text-brand-700 transition-colors block py-0.5"
                                     >
                                         {t(link.label)}
                                     </Link>
@@ -109,14 +108,14 @@ export function Footer({ settings }: { settings: FooterSettings }) {
                     </div>
 
                     {/* Contact & Socials */}
-                    <div className="lg:col-span-4">
-                        <h4 className="font-display text-brand-800 mb-6 text-base font-semibold">
+                    <div className="w-full md:w-60 shrink-0">
+                        <h4 className="font-display text-brand-800 mb-4 text-sm font-semibold">
                             {locale === 'id' ? 'Hubungi Kami' : 'Get In Touch'}
                         </h4>
 
-                        <div className="mb-6 space-y-3.5 text-sm">
-                            <div className="flex items-center gap-3">
-                                <Mail className="text-brand-700 size-4.5" />
+                        <div className="mb-4 space-y-2.5 text-xs">
+                            <div className="flex items-center gap-2.5">
+                                <Mail className="text-brand-700 size-4" />
                                 <a
                                     href={`mailto:${email}`}
                                     className="text-navy-700 hover:text-brand-700 transition-colors"
@@ -124,8 +123,8 @@ export function Footer({ settings }: { settings: FooterSettings }) {
                                     {email}
                                 </a>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <Phone className="text-brand-700 size-4.5" />
+                            <div className="flex items-center gap-2.5">
+                                <Phone className="text-brand-700 size-4" />
                                 <a
                                     href={`tel:${phone}`}
                                     className="text-navy-700 hover:text-brand-700 transition-colors"
@@ -136,36 +135,36 @@ export function Footer({ settings }: { settings: FooterSettings }) {
                         </div>
 
                         {/* Social Icons */}
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2.5">
                             <a
                                 href={instagramUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="bg-brand-700/10 text-brand-700 hover:bg-brand-700 hover:text-surface-0 flex size-9 items-center justify-center rounded-lg transition-colors"
+                                className="bg-brand-700/10 text-brand-700 hover:bg-brand-700 hover:text-surface-0 flex size-8 items-center justify-center rounded-lg transition-colors"
                                 aria-label="Instagram"
                             >
-                                <Instagram className="size-4" />
+                                <Instagram className="size-3.5" />
                             </a>
                             <a
                                 href="https://telkomuniversity.ac.id"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="bg-brand-700/10 text-brand-700 hover:bg-brand-700 hover:text-surface-0 flex size-9 items-center justify-center rounded-lg transition-colors"
+                                className="bg-brand-700/10 text-brand-700 hover:bg-brand-700 hover:text-surface-0 flex size-8 items-center justify-center rounded-lg transition-colors"
                                 aria-label="Telkom University Website"
                             >
-                                <Globe className="size-4" />
+                                <Globe className="size-3.5" />
                             </a>
                         </div>
                     </div>
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="border-cream-300/20 text-navy-700/60 mt-16 flex flex-col items-center justify-between gap-6 border-t pt-8 text-xs font-medium sm:flex-row">
+                <div className="border-cream-300/20 text-navy-700/60 mt-10 flex flex-col items-center justify-between gap-4 border-t pt-6 text-[10px] font-medium sm:flex-row">
                     <p>
                         © {new Date().getFullYear()} {siteName}. All Rights
                         Reserved.
                     </p>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         <span>
                             {locale === 'id'
                                 ? 'Akreditasi: UNGGUL'

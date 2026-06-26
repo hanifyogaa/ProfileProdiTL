@@ -1,11 +1,11 @@
-﻿import { MainLayout } from '@/Layouts/MainLayout';
+import { MainLayout } from '@/Layouts/MainLayout';
 import { Reveal } from '@/components/Reveal';
 import { KaprodiGreeting } from '@/Sections/KaprodiGreeting';
 import { StatsStrip } from '@/Sections/StatsStrip';
 import { useLocale } from '@/contexts/LocaleContext';
 import { Head } from '@inertiajs/react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
-import { Award, CheckCircle2, ExternalLink, ShieldCheck } from 'lucide-react';
+import { Award, BookOpen, CheckCircle2, ExternalLink, GraduationCap, Lightbulb, ShieldCheck, Target } from 'lucide-react';
 import { useRef } from 'react';
 
 interface BilingualStr { id: string; en: string }
@@ -14,6 +14,8 @@ interface AboutContent {
     visi?: BilingualStr;
     misi?: BilingualStr[];
     history?: BilingualStr;
+    tujuan?: { title: BilingualStr; description: BilingualStr }[];
+    strategi?: BilingualStr[];
 }
 
 interface GreetingData {
@@ -88,6 +90,49 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
         ? 'Program Studi S1 Teknik Logistik Universitas Telkom didirikan di bawah Fakultas Rekayasa Industri (FRI) untuk merespons kebutuhan masif industri akan tenaga ahli logistik yang melek teknologi. Kurikulum kami memadukan fondasi teknik industri dengan kemampuan analitik sistem informasi logistik terkini, menghasilkan lulusan yang siap bersaing di era Digital Supply Chain.'
         : "Telkom University's S1 Logistics Engineering program was established under the Faculty of Industrial Engineering (FRI) to address the critical industry shortage of tech-savvy logistics engineers. Our curriculum bridges traditional industrial engineering with state-of-the-art information systems, producing graduates ready to compete in the Digital Supply Chain era.");
 
+    const tujuanItems = aboutContent?.tujuan ?? [
+        {
+            title: { id: 'Logistics Engineer', en: 'Logistics Engineer' },
+            description: {
+                id: 'Ahli yang mampu merancang, memperbaiki, dan menginstalasi sistem logistik kompleks berbasis data.',
+                en: 'An expert capable of designing, improving, and installing complex data-driven logistics systems.',
+            },
+        },
+        {
+            title: { id: 'Researcher', en: 'Researcher' },
+            description: {
+                id: 'Akademisi yang solutif, adaptif terhadap TIK, dan berkomitmen pada pembelajaran sepanjang hayat.',
+                en: 'A solution-oriented academic who is adaptive to ICT and committed to lifelong learning.',
+            },
+        },
+        {
+            title: { id: 'Technopreneur', en: 'Technopreneur' },
+            description: {
+                id: 'Wirausahawan inovatif yang mampu menciptakan nilai ekonomi baru dalam ekosistem rantai pasok.',
+                en: 'An innovative entrepreneur capable of creating new economic value within the supply chain ecosystem.',
+            },
+        },
+    ];
+
+
+    const strategiItems = aboutContent?.strategi?.map(s => s[l]) ?? (l === 'id' ? [
+        'Pendidikan: Meningkatkan kualitas pendidikan berbasis Logistics 4.0, rantai pasok digital, dan Outcome-Based Education (OBE).',
+        'Riset: Meningkatkan kualitas dan kuantitas penelitian, publikasi internasional, serta kolaborasi riset global.',
+        'SDM: Mengembangkan kapasitas dosen dan tenaga kependidikan agar kompeten dan berdaya saing internasional.',
+        'Internasionalisasi: Mendorong mobilitas global, dual degree, dan kerja sama akademik global.',
+        'Inovasi: Mengembangkan ekosistem inovasi, technopreneurship, dan hilirisasi riset sesuai kebutuhan industri dan masyarakat.',
+        'Tata Kelola: Memperkuat tata kelola, implementasi VMTS, dan sistem penjaminan mutu berbasis digital dan outcome.',
+        'Daya Saing Lulusan: Meningkatkan daya saing melalui sertifikasi profesional, MBKM industri, dan pengalaman global.',
+    ] : [
+        'Education: Enhancing education quality based on Logistics 4.0, digital supply chain, and Outcome-Based Education (OBE).',
+        'Research: Improving research quality and quantity, international publications, and global collaborations.',
+        'HR: Developing faculty and staff capacity to be internationally competent and competitive.',
+        'Internationalization: Promoting global mobility, dual degree programs, and global academic cooperation.',
+        'Innovation: Developing an innovation ecosystem, technopreneurship, and research commercialization.',
+        'Governance: Strengthening governance, VMTS implementation, and digital quality assurance systems.',
+        'Graduate Competitiveness: Enhancing competitiveness through professional certifications, industry MBKM, and global experience.',
+    ]);
+
     const iabeeDesc  = prodiStats?.iabee_desc?.[l]  ?? (l === 'id'
         ? 'Program Studi S1 Teknik Logistik Telkom University telah mendapatkan General Accreditation IABEE sebagai pengakuan mutu pendidikan teknik bertaraf internasional.'
         : 'The S1 Logistics Engineering Study Program at Telkom University has been awarded General Accreditation by IABEE, recognizing our internationally-standard engineering education quality.');
@@ -95,9 +140,9 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
     const iabeeBadge = prodiStats?.iabee_badge  ?? null;
 
     const unggulDesc  = prodiStats?.unggul_desc?.[l] ?? (l === 'id'
-        ? 'Berdasarkan Keputusan LAM Teknik, Program Studi S1 Teknik Logistik Telkom University memperoleh Akreditasi Unggul — peringkat tertinggi dalam sistem akreditasi nasional.'
-        : 'Based on the Decree of LAM Teknik, the S1 Logistics Engineering Study Program at Telkom University has been awarded the "Unggul" (Excellent) Accreditation — the highest national accreditation rank.');
-    const unggulSK    = prodiStats?.unggul_sk   ?? '';
+        ? 'Program Studi S1 Teknik Logistik Telkom University telah mendapatkan akreditasi dari Badan Akreditasi Nasional Perguruan Tinggi (BAN-PT) dengan peringkat B, sebagaimana ditetapkan dalam SK No. 10735/SK/BAN-PT/Akred/S/IX/2021.'
+        : 'The S1 Logistics Engineering Study Program at Telkom University has been accredited by the National Accreditation Board for Higher Education (BAN-PT) with a B rating, as stipulated in Decree No. 10735/SK/BAN-PT/Akred/S/IX/2021.');
+    const unggulSK    = prodiStats?.unggul_sk   ?? '10735/SK/BAN-PT/Akred/S/IX/2021';
     const unggulBadge = prodiStats?.unggul_badge ?? null;
 
     return (
@@ -161,7 +206,7 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
                                         { val: 'S1', desc: l === 'id' ? 'Jenjang' : 'Degree Level' },
                                         { val: '145', desc: l === 'id' ? 'Total SKS' : 'Total Credits' },
                                         { val: '8', desc: l === 'id' ? 'Semester' : 'Semesters' },
-                                        { val: 'Unggul', desc: l === 'id' ? 'Akreditasi' : 'Accreditation' },
+                                        { val: 'B', desc: l === 'id' ? 'Akreditasi BAN-PT' : 'BAN-PT Accreditation' },
                                     ].map(({ val, desc }, i) => (
                                         <div key={i} className="rounded-2xl p-4 text-center"
                                             style={{ background: 'rgba(255,253,251,0.07)', border: '1px solid rgba(172,149,135,0.18)', backdropFilter: 'blur(12px)' }}>
@@ -178,7 +223,8 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
 
             {/* ── SAMBUTAN KAPRODI ── */}
             <div className="mt-0">
-                <KaprodiGreeting greeting={{
+                <KaprodiGreeting inlineModal greeting={{
+
                     name:        greeting?.name        ?? null,
                     photo:       greeting?.photo       ?? null,
                     quote:       greeting?.quote       ?? { id: '', en: '' },
@@ -208,76 +254,54 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
                     </div>
                 </Reveal>
 
-                {/* IABEE + Unggul side-by-side cards */}
-                <div className="mb-20 grid gap-6 md:grid-cols-2">
-                    {/* IABEE */}
-                    <Reveal delay={0.05}>
-                        <div className="flex h-full flex-col rounded-3xl border p-8 transition-shadow hover:shadow-lg"
-                            style={{ borderColor: 'rgba(217,159,96,0.25)', background: 'rgba(217,159,96,0.04)' }}>
-                            <div className="mb-6 flex items-center justify-between">
-                                <span className="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                                    style={{ background: 'rgba(217,159,96,0.15)', color: '#C08A4C' }}>
-                                    {l === 'id' ? 'Internasional' : 'International'}
-                                </span>
-                                {iabeeBadge ? (
-                                    <img src={iabeeBadge} alt="IABEE" className="h-16 w-16 object-contain drop-shadow-lg" />
-                                ) : (
-                                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl"
-                                        style={{ background: 'rgba(217,159,96,0.12)' }}>
-                                        <Award className="size-8" style={{ color: '#D99F60' }} />
-                                    </div>
-                                )}
-                            </div>
-                            <h3 className="font-display text-ink-900 mb-3 text-xl font-bold">Akreditasi IABEE</h3>
-                            <p className="text-navy-700 flex-1 text-sm leading-relaxed">{iabeeDesc}</p>
-                            {iabeeNo && (
-                                <div className="mt-5 inline-flex items-center gap-2 rounded-xl border px-4 py-2.5"
-                                    style={{ borderColor: 'rgba(217,159,96,0.30)', background: 'rgba(217,159,96,0.06)' }}>
-                                    <Award className="size-4 shrink-0" style={{ color: '#C08A4C' }} />
-                                    <p className="text-ink-900 text-xs font-bold">No. {iabeeNo}</p>
+                {/* BAN-PT National — full width */}
+                <Reveal delay={0.05}>
+                    <div className="mb-20 flex flex-col rounded-3xl border p-8 transition-shadow hover:shadow-lg sm:flex-row sm:items-center sm:gap-10"
+                        style={{ borderColor: 'rgba(140,100,65,0.25)', background: 'rgba(140,100,65,0.04)' }}>
+                        {/* Icon / Badge */}
+                        <div className="mb-6 shrink-0 sm:mb-0">
+                            {unggulBadge ? (
+                                <img src={unggulBadge} alt="BAN-PT" className="h-24 w-24 object-contain drop-shadow-lg" />
+                            ) : (
+                                <div className="flex h-20 w-20 items-center justify-center rounded-2xl"
+                                    style={{ background: 'rgba(140,100,65,0.10)' }}>
+                                    <ShieldCheck className="size-10" style={{ color: '#8C6441' }} />
                                 </div>
                             )}
-                            <a href="https://iabee.or.id" target="_blank" rel="noopener noreferrer"
-                                className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold hover:underline"
-                                style={{ color: '#8C6441' }}>
-                                <ExternalLink className="size-3.5" />
-                                {l === 'id' ? 'Pelajari lebih lanjut' : 'Learn more about IABEE'}
-                            </a>
                         </div>
-                    </Reveal>
 
-                    {/* Unggul */}
-                    <Reveal delay={0.10}>
-                        <div className="flex h-full flex-col rounded-3xl border p-8 transition-shadow hover:shadow-lg"
-                            style={{ borderColor: 'rgba(140,100,65,0.25)', background: 'rgba(140,100,65,0.04)' }}>
-                            <div className="mb-6 flex items-center justify-between">
+                        {/* Content */}
+                        <div className="flex-1">
+                            <div className="mb-3 flex flex-wrap items-center gap-3">
                                 <span className="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
                                     style={{ background: 'rgba(140,100,65,0.12)', color: '#8C6441' }}>
                                     {l === 'id' ? 'Nasional' : 'National'}
                                 </span>
-                                {unggulBadge ? (
-                                    <img src={unggulBadge} alt="Unggul" className="h-16 w-16 object-contain drop-shadow-lg" />
-                                ) : (
-                                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl"
-                                        style={{ background: 'rgba(140,100,65,0.10)' }}>
-                                        <ShieldCheck className="size-8" style={{ color: '#8C6441' }} />
-                                    </div>
-                                )}
+                                <span className="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
+                                    style={{ background: 'rgba(217,159,96,0.15)', color: '#C08A4C' }}>
+                                    {l === 'id' ? 'Peringkat B' : 'Rank B'}
+                                </span>
                             </div>
-                            <h3 className="font-display text-ink-900 mb-3 text-xl font-bold">
-                                {l === 'id' ? 'Akreditasi "Unggul"' : '"Unggul" Accreditation'}
+                            <h3 className="font-display text-ink-900 mb-2 text-2xl font-bold">
+                                {l === 'id' ? 'Akreditasi BAN-PT' : 'BAN-PT Accreditation'}
                             </h3>
-                            <p className="text-navy-700 flex-1 text-sm leading-relaxed">{unggulDesc}</p>
-                            {unggulSK && (
-                                <div className="mt-5 inline-flex items-center gap-2 rounded-xl border px-4 py-2.5"
+                            <p className="text-navy-700 mb-5 max-w-2xl text-sm leading-relaxed">{unggulDesc}</p>
+                            <div className="flex flex-wrap items-center gap-3">
+                                <div className="inline-flex items-center gap-2 rounded-xl border px-4 py-2.5"
                                     style={{ borderColor: 'rgba(140,100,65,0.25)', background: 'rgba(140,100,65,0.05)' }}>
                                     <CheckCircle2 className="size-4 shrink-0" style={{ color: '#8C6441' }} />
                                     <p className="text-ink-900 text-xs font-bold">{unggulSK}</p>
                                 </div>
-                            )}
+                                <a href="/profil/akreditasi"
+                                    className="inline-flex items-center gap-1.5 text-xs font-semibold hover:underline"
+                                    style={{ color: '#8C6441' }}>
+                                    <ExternalLink className="size-3.5" />
+                                    {l === 'id' ? 'Lihat riwayat SK lengkap' : 'View full decree history'}
+                                </a>
+                            </div>
                         </div>
-                    </Reveal>
-                </div>
+                    </div>
+                </Reveal>
 
                 {/* ── VISI & MISI ── */}
                 <section id="visi-misi" className="mb-20 scroll-mt-24">
@@ -332,6 +356,81 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
                             </Reveal>
                         </div>
                     </div>
+                </section>
+
+                {/* ── PROFIL LULUSAN (TUJUAN) ── */}
+                <section id="profil-lulusan" className="mb-20 scroll-mt-24">
+                    <Reveal>
+                        <div className="mb-8">
+                            <span className="mb-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
+                                style={{ background: 'rgba(217,159,96,0.12)', color: '#C08A4C' }}>
+                                <GraduationCap className="size-3" />
+                                {l === 'id' ? 'Profil Lulusan' : 'Graduate Profiles'}
+                            </span>
+                            <h2 className="font-display text-ink-900 mt-2 text-2xl font-semibold sm:text-3xl">
+                                {l === 'id' ? 'Tujuan Pendidikan' : 'Educational Objectives'}
+                            </h2>
+                            <p className="mt-2 max-w-2xl text-sm leading-relaxed" style={{ color: '#505666' }}>
+                                {l === 'id'
+                                    ? 'Program studi ini menghasilkan tiga profil lulusan utama yang siap berkontribusi di industri, akademia, dan ekosistem kewirausahaan.'
+                                    : 'This study program produces three main graduate profiles ready to contribute in industry, academia, and the entrepreneurship ecosystem.'}
+                            </p>
+                        </div>
+                    </Reveal>
+                    <div className="grid gap-5 md:grid-cols-3">
+                        {[
+                            { icon: <Target className="size-6" />, color: '#D99F60' },
+                            { icon: <BookOpen className="size-6" />, color: '#8C6441' },
+                            { icon: <Lightbulb className="size-6" />, color: '#C08A4C' },
+                        ].map(({ icon, color }, i) => {
+                            const item = tujuanItems[i];
+                            if (!item) return null;
+                            return (
+                                <Reveal key={i} delay={0.06 * i}>
+                                    <div className="flex h-full flex-col rounded-3xl border p-7 transition-shadow hover:shadow-lg"
+                                        style={{ borderColor: 'rgba(172,149,135,0.20)', background: 'rgba(255,253,251,0.7)' }}>
+                                        <div className="mb-5 flex size-12 items-center justify-center rounded-2xl"
+                                            style={{ background: `rgba(${color === '#D99F60' ? '217,159,96' : color === '#8C6441' ? '140,100,65' : '192,138,76'},0.12)`, color }}>
+                                            {icon}
+                                        </div>
+                                        <h3 className="font-display text-ink-900 mb-3 text-base font-bold">{item.title[l]}</h3>
+                                        <p className="flex-1 text-sm leading-relaxed" style={{ color: '#505666' }}>{item.description[l]}</p>
+                                        <div className="mt-5 h-0.5 w-10 rounded-full" style={{ background: color }} />
+                                    </div>
+                                </Reveal>
+                            );
+                        })}
+                    </div>
+                </section>
+
+                {/* ── STRATEGI PENGEMBANGAN ── */}
+                <section id="strategi" className="mb-20 scroll-mt-24">
+                    <Reveal>
+                        <div className="mb-8">
+                            <span className="mb-3 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
+                                style={{ background: 'rgba(140,100,65,0.12)', color: '#8C6441' }}>
+                                {l === 'id' ? 'Strategi Pengembangan' : 'Development Strategy'}
+                            </span>
+                            <h2 className="font-display text-ink-900 mt-2 text-2xl font-semibold sm:text-3xl">
+                                {l === 'id' ? '7 Tujuan Strategis' : '7 Strategic Objectives'}
+                            </h2>
+                        </div>
+                    </Reveal>
+                    <Reveal delay={0.08}>
+                        <div className="rounded-3xl border p-8" style={{ borderColor: 'rgba(172,149,135,0.18)', background: 'rgba(255,253,251,0.7)' }}>
+                            <div className="grid gap-3 sm:grid-cols-2">
+                                {strategiItems.map((item, i) => (
+                                    <div key={i} className="flex gap-3 rounded-2xl p-4 transition-colors hover:bg-amber-50/60">
+                                        <span className="flex size-7 shrink-0 items-center justify-center rounded-full text-[11px] font-bold"
+                                            style={{ background: 'rgba(217,159,96,0.18)', color: '#C08A4C' }}>
+                                            {i + 1}
+                                        </span>
+                                        <p className="text-sm leading-relaxed" style={{ color: '#24141F' }}>{item}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </Reveal>
                 </section>
             </div>
 

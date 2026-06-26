@@ -49,7 +49,7 @@ export default function Research({ researches }: ResearchProps) {
     ];
 
     return (
-        <MainLayout>
+        <MainLayout fullHero>
             <Head title={title} />
 
             {/* ── Hero Cinematic ── */}

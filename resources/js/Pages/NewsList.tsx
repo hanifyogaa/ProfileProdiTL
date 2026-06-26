@@ -1,4 +1,4 @@
-﻿import { MainLayout } from '@/Layouts/MainLayout';
+import { MainLayout } from '@/Layouts/MainLayout';
 import { Card } from '@/components/Card';
 import { PageHero, PillLabel } from '@/components/PageHero';
 import { Reveal } from '@/components/Reveal';
@@ -52,6 +52,25 @@ function formatDate(dateStr: string, locale: string) {
     });
 }
 
+const getCategoryLabel = (category: string | null, locale: string) => {
+    if (!category) return '';
+    const key = category.toLowerCase().trim();
+    const translations: Record<string, { id: string; en: string }> = {
+        'semua': { id: 'Semua', en: 'All' },
+        'pengumuman': { id: 'Pengumuman', en: 'Announcement' },
+        'kunjungan industri': { id: 'Kunjungan Industri', en: 'Industrial Visit' },
+        'prestasi': { id: 'Prestasi', en: 'Achievement' },
+        'riset': { id: 'Riset', en: 'Research' },
+        'pengabdian': { id: 'Pengabdian', en: 'Community Service' },
+        'kemahasiswaan': { id: 'Kemahasiswaan', en: 'Student Affairs' },
+        'akademik': { id: 'Akademik', en: 'Academics' },
+        'kegiatan': { id: 'Kegiatan', en: 'Event' },
+        'umum': { id: 'Umum', en: 'General' }
+    };
+    const l = locale === 'id' ? 'id' : 'en';
+    return translations[key]?.[l] ?? category;
+};
+
 export default function NewsList({ news }: NewsListProps) {
     const { locale } = useLocale();
     const l = locale as 'id' | 'en';
@@ -99,7 +118,7 @@ export default function NewsList({ news }: NewsListProps) {
                                     : { background: 'rgba(255,253,251,0.12)', color: 'rgba(172,149,135,0.85)', border: '1px solid rgba(172,149,135,0.30)' }
                             }
                         >
-                            {cat}
+                            {getCategoryLabel(cat, locale)}
                         </button>
                     ))}
                 </div>
@@ -139,7 +158,7 @@ export default function NewsList({ news }: NewsListProps) {
                                                         className="absolute top-4 left-4 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white"
                                                         style={{ background: 'rgba(140,100,65,0.90)' }}
                                                     >
-                                                        {featured.category}
+                                                        {getCategoryLabel(featured.category, locale)}
                                                     </span>
                                                 )}
                                             </div>
@@ -198,7 +217,7 @@ export default function NewsList({ news }: NewsListProps) {
                                                         className="absolute top-3 left-3 rounded-full px-2.5 py-0.5 text-[9px] font-bold tracking-widest uppercase"
                                                         style={{ background: 'rgba(140,100,65,0.88)', color: '#FFFDFB' }}
                                                     >
-                                                        {item.category}
+                                                        {getCategoryLabel(item.category, locale)}
                                                     </span>
                                                 )}
                                             </div>

@@ -35,6 +35,25 @@ const NEWS_FALLBACKS: Record<string, string> = {
 const DEFAULT_NEWS_BG =
     'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1200&h=600';
 
+const getCategoryLabel = (category: string | null, locale: string) => {
+    if (!category) return '';
+    const key = category.toLowerCase().trim();
+    const translations: Record<string, { id: string; en: string }> = {
+        'semua': { id: 'Semua', en: 'All' },
+        'pengumuman': { id: 'Pengumuman', en: 'Announcement' },
+        'kunjungan industri': { id: 'Kunjungan Industri', en: 'Industrial Visit' },
+        'prestasi': { id: 'Prestasi', en: 'Achievement' },
+        'riset': { id: 'Riset', en: 'Research' },
+        'pengabdian': { id: 'Pengabdian', en: 'Community Service' },
+        'kemahasiswaan': { id: 'Kemahasiswaan', en: 'Student Affairs' },
+        'akademik': { id: 'Akademik', en: 'Academics' },
+        'kegiatan': { id: 'Kegiatan', en: 'Event' },
+        'umum': { id: 'Umum', en: 'General' }
+    };
+    const l = locale === 'id' ? 'id' : 'en';
+    return translations[key]?.[l] ?? category;
+};
+
 export default function NewsDetail({ item, related }: NewsDetailProps) {
     const { locale, t } = useLocale();
 
@@ -66,7 +85,7 @@ export default function NewsDetail({ item, related }: NewsDetailProps) {
                     <div className="mb-6">
                         {item.category && (
                             <span className="bg-brand-700 text-surface-0 rounded px-2.5 py-1 text-xs font-bold tracking-wide uppercase">
-                                {item.category}
+                                {getCategoryLabel(item.category, locale)}
                             </span>
                         )}
                         <h1 className="font-display text-ink-900 mt-4 text-3xl leading-tight font-semibold sm:text-4xl lg:text-5xl">

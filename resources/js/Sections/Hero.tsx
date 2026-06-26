@@ -67,11 +67,62 @@ function FloatingMetric({
 }
 
 export function Hero({ hero }: { hero: HeroData }) {
-    const { t } = useLocale();
+    const { locale, t } = useLocale();
     const shouldReduceMotion = useReducedMotion();
     const ref = useRef<HTMLElement>(null);
     const [slideIndex, setSlideIndex] = useState(0);
     const [loaded, setLoaded] = useState(false);
+
+    // Typewriter effect state
+    const sentences = locale === 'id' ? [
+        "Pusat Logistik dan Rantai Pasok Digital Berstandar Internasional.",
+        "Profesional Rantai Pasok Berbasis Data dan Teknologi Digital.",
+        "Mencetak Wirausaha dan Intrapreneur Bidang Logistik.",
+        "Inovasi Rantai Pasok yang Mendukung SDGs."
+    ] : [
+        "International Standard Center for Digital Logistics and Supply Chain.",
+        "Data-Driven and Digital Technology Supply Chain Professionals.",
+        "Nurturing Entrepreneurs and Intrapreneurs in the Field of Logistics.",
+        "Supply Chain Innovation Supporting SDGs."
+    ];
+
+    const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
+    const [typedText, setTypedText] = useState("");
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    useEffect(() => {
+        setTypedText("");
+        setIsDeleting(false);
+        setCurrentSentenceIndex(0);
+    }, [locale]);
+
+    useEffect(() => {
+        let timer: ReturnType<typeof setTimeout>;
+        const currentFullText = sentences[currentSentenceIndex];
+
+        if (isDeleting) {
+            timer = setTimeout(() => {
+                setTypedText((prev) => prev.slice(0, -1));
+            }, 30);
+        } else {
+            timer = setTimeout(() => {
+                setTypedText((prev) => currentFullText.slice(0, prev.length + 1));
+            }, 60);
+        }
+
+        if (!isDeleting && typedText === currentFullText) {
+            timer = setTimeout(() => {
+                setIsDeleting(true);
+            }, 2500);
+        }
+
+        if (isDeleting && typedText === "") {
+            setIsDeleting(false);
+            setCurrentSentenceIndex((prev) => (prev + 1) % sentences.length);
+        }
+
+        return () => clearTimeout(timer);
+    }, [typedText, isDeleting, currentSentenceIndex, locale]);
 
     // Track scroll progress of the hero section
     const { scrollYProgress } = useScroll({
@@ -248,17 +299,10 @@ export function Hero({ hero }: { hero: HeroData }) {
                         }
                         transition={{ duration: 0.9, ease: 'easeOut' }}
                     >
-                        {/* Eyebrow label */}
-                        <div className="mb-5 flex items-center gap-3">
-                            <div className="h-px w-10 bg-amber-500" />
-                            <span className="text-amber-400 text-xs font-bold tracking-[0.2em] uppercase">
-                                Telkom University · FRI
-                            </span>
-                        </div>
-
                         {/* Main heading */}
-                        <h1 className="font-display text-surface-0 text-[clamp(2.8rem,6vw,5rem)] leading-[1.05] font-bold">
-                            {t(hero.title)}
+                        <h1 className="font-display text-surface-0 text-[clamp(2.8rem,6vw,5rem)] leading-[1.05] font-bold min-h-[180px] sm:min-h-[150px] md:min-h-[130px] lg:min-h-[115px]">
+                            <span>{typedText}</span>
+                            <span className="ml-1 inline-block w-[3px] h-[0.85em] bg-amber-500 animate-pulse align-middle" style={{ animationDuration: '0.8s' }} />
                         </h1>
 
                         {/* Amber underline stroke */}

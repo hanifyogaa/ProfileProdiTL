@@ -607,20 +607,20 @@ export default function Edit({ settings }: SettingsProps) {
 
                             <hr className="border-cream-300/40" />
 
-                            {/* ── Akreditasi Unggul ── */}
+                            {/* ── Akreditasi BAN-PT ── */}
                             <div>
                                 <h4 className="mb-4 flex items-center gap-2 text-sm font-bold text-ink-900">
                                     <ShieldCheck className="size-4 text-brand-700" />
-                                    Akreditasi "Unggul" (BAN-PT / LAM Teknik)
+                                    Akreditasi BAN-PT
                                 </h4>
                                 <div className="mb-4 space-y-1">
-                                    <label className="text-sm font-semibold text-ink-900">Nomor SK Akreditasi Unggul</label>
+                                    <label className="text-sm font-semibold text-ink-900">Nomor SK Akreditasi</label>
                                     <input type="text" value={data.prodi_stats.unggul_sk} className={inputCls}
-                                        placeholder="No: 0451/SK/LAM-Teknik/IV/2025"
+                                        placeholder="10735/SK/BAN-PT/Akred/S/IX/2021"
                                         onChange={(e) => setData('prodi_stats', { ...data.prodi_stats, unggul_sk: e.target.value })} />
                                 </div>
                                 <BilingualInput
-                                    label="Deskripsi Akreditasi Unggul"
+                                    label="Deskripsi Akreditasi BAN-PT"
                                     idName="prodi_stats.unggul_desc.id" enName="prodi_stats.unggul_desc.en"
                                     idValue={data.prodi_stats.unggul_desc.id} enValue={data.prodi_stats.unggul_desc.en}
                                     type="textarea" rows={4}
@@ -629,7 +629,7 @@ export default function Edit({ settings }: SettingsProps) {
                                 />
                                 <div className="mt-4">
                                     <ImageUpload
-                                        label="Logo / Badge Akreditasi Unggul"
+                                        label="Logo / Badge Akreditasi BAN-PT"
                                         existingUrl={data.prodi_stats.unggul_badge}
                                         onChange={(f) => setData('unggul_badge_file', f)}
                                         onClearExisting={() => setData('prodi_stats', { ...data.prodi_stats, unggul_badge: null })}

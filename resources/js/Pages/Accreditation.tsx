@@ -8,6 +8,8 @@ import { Award, ShieldCheck, CheckCircle2, ExternalLink } from 'lucide-react';
 interface AccreditationDecree {
     title: { id: string; en: string };
     number: string;
+    date?: string;
+    grade?: string;
     description: { id: string; en: string };
 }
 
@@ -39,29 +41,57 @@ export default function Accreditation({ accreditation, prodiStats }: Accreditati
 
     // National Accreditation data from prodiStats with fallback to accreditation setting/static
     const nationalDesc = prodiStats?.unggul_desc?.[l] || accreditation?.description?.[l] || (l === 'id'
-        ? 'Peringkat akreditasi tertinggi yang diberikan oleh Lembaga Akreditasi Mandiri Program Studi Keteknikan (LAM Teknik) Republik Indonesia.'
-        : 'The highest accreditation tier evaluated and issued by the Independent Accreditation Board for Engineering Education (LAM Teknik) of Indonesia.');
+        ? 'Program Studi S1 Teknik Logistik Telkom University telah mendapatkan akreditasi dari Badan Akreditasi Nasional Perguruan Tinggi (BAN-PT) dengan peringkat B, sebagaimana ditetapkan dalam SK No. 10735/SK/BAN-PT/Akred/S/IX/2021.'
+        : 'The S1 Logistics Engineering Study Program at Telkom University has been accredited by the National Accreditation Board for Higher Education (BAN-PT) with a B rating, as stipulated in Decree No. 10735/SK/BAN-PT/Akred/S/IX/2021.');
 
     const nationalStatus = prodiStats?.unggul_sk
-        ? (l === 'id' ? 'Terakreditasi: UNGGUL' : 'Accreditation Rank: UNGGUL (Excellent)')
-        : (accreditation?.status?.[l] || (l === 'id' ? 'Terakreditasi: UNGGUL' : 'Accreditation Rank: UNGGUL (Excellent)'));
+        ? (l === 'id' ? 'Terakreditasi: B' : 'Accreditation Rank: B')
+        : (accreditation?.status?.[l] || (l === 'id' ? 'Terakreditasi: B' : 'Accreditation Rank: B'));
 
-    const nationalSK = prodiStats?.unggul_sk || 'No: 0451/SK/LAM-Teknik/IV/2025';
+    const nationalSK = prodiStats?.unggul_sk || '10735/SK/BAN-PT/Akred/S/IX/2021';
 
     const nationalBadge = prodiStats?.unggul_badge || null;
 
     const decreesList = accreditation?.decrees?.length ? accreditation.decrees : [
         {
             title: {
-                id: 'SK Akreditasi LAM Teknik 2025',
-                en: 'LAM Teknik Accreditation Decree (2025)',
+                id: 'SK Pendirian Program Studi',
+                en: 'Study Program Establishment Decree',
             },
-            number: nationalSK,
+            number: '1195/KPT/I/2018',
+            date: '28/12/2018',
+            grade: '–',
             description: {
-                id: 'Menetapkan predikat Akreditasi "Unggul" yang berlaku hingga tahun 2030.',
-                en: 'Established the "Unggul" rank valid for 5 years through 2030.',
+                id: 'Surat keputusan pendirian Program Studi S1 Teknik Logistik oleh Kementerian Riset, Teknologi dan Pendidikan Tinggi.',
+                en: 'Decree establishing the S1 Logistics Engineering Study Program by the Ministry of Research, Technology and Higher Education.',
             }
-        }
+        },
+        {
+            title: {
+                id: 'SK Akreditasi BAN-PT — Peringkat Baik',
+                en: 'BAN-PT Accreditation Decree — Good Standing',
+            },
+            number: '1915/SK/BAN-PT/Ak-PKP/S/IV/2021',
+            date: '13/04/2021',
+            grade: 'Baik',
+            description: {
+                id: 'Menetapkan predikat Akreditasi "Baik" untuk Program Studi S1 Teknik Logistik Telkom University oleh BAN-PT.',
+                en: 'Established the "Baik" (Good) accreditation rank for the S1 Logistics Engineering Study Program at Telkom University by BAN-PT.',
+            }
+        },
+        {
+            title: {
+                id: 'SK Akreditasi BAN-PT — Peringkat B',
+                en: 'BAN-PT Accreditation Decree — Rank B',
+            },
+            number: '10735/SK/BAN-PT/Akred/S/IX/2021',
+            date: '08/09/2021',
+            grade: 'B',
+            description: {
+                id: 'Menetapkan predikat Akreditasi "B" untuk Program Studi S1 Teknik Logistik Telkom University oleh BAN-PT.',
+                en: 'Established the "B" accreditation rank for the S1 Logistics Engineering Study Program at Telkom University by BAN-PT.',
+            }
+        },
     ];
 
     // International Accreditation (IABEE)
@@ -123,26 +153,49 @@ export default function Accreditation({ accreditation, prodiStats }: Accreditati
                         </Card>
                     </Reveal>
 
-                    {/* History decrees timeline */}
+                    {/* History decrees table */}
                     <Reveal delay={0.1}>
-                        <div className="space-y-6 rounded-2xl border border-cream-300/10 bg-surface-0 p-6 shadow-sm">
-                            <h4 className="font-display text-ink-900 text-sm font-semibold uppercase tracking-wider text-navy-700/60">
-                                {l === 'id' ? 'Keputusan & Surat SK' : 'Accreditation Decrees'}
+                        <div className="rounded-2xl border border-cream-300/10 bg-surface-0 p-6 shadow-sm overflow-hidden">
+                            <h4 className="font-display text-ink-900 text-sm font-semibold uppercase tracking-wider mb-5" style={{ color: 'rgba(80,86,102,0.60)' }}>
+                                {l === 'id' ? 'Riwayat SK Akreditasi — S1 Teknik Logistik' : 'Accreditation Decree History — S1 Logistics Engineering'}
                             </h4>
 
-                            <div className="ml-3 space-y-8 border-l-2 border-amber-500 pl-6">
+                            {/* Table header */}
+                            <div className="grid grid-cols-12 gap-3 border-b pb-3 mb-1 text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(80,86,102,0.50)', borderColor: 'rgba(172,149,135,0.20)' }}>
+                                <div className="col-span-4">{l === 'id' ? 'Keterangan' : 'Description'}</div>
+                                <div className="col-span-2 text-center">{l === 'id' ? 'Peringkat' : 'Grade'}</div>
+                                <div className="col-span-4">{l === 'id' ? 'Nomor SK' : 'Decree No.'}</div>
+                                <div className="col-span-2 text-right">{l === 'id' ? 'Tanggal' : 'Date'}</div>
+                            </div>
+
+                            {/* Table rows */}
+                            <div className="divide-y" style={{ borderColor: 'rgba(172,149,135,0.12)' }}>
                                 {decreesList.map((dec, i) => (
-                                    <div key={i} className="relative">
-                                        <div className="bg-surface-50 absolute top-1.5 -left-[31px] size-4 rounded-full border-2 border-amber-500" />
-                                        <h5 className="text-ink-900 text-sm font-semibold">
-                                            {dec.title[l]}
-                                        </h5>
-                                        <p className="text-brand-700 mt-1 text-xs font-bold">
-                                            {dec.number}
-                                        </p>
-                                        <p className="text-navy-700 mt-2 text-xs font-medium">
-                                            {dec.description[l]}
-                                        </p>
+                                    <div key={i} className="grid grid-cols-12 gap-3 py-4 items-center">
+                                        <div className="col-span-4">
+                                            <p className="text-sm font-semibold leading-snug" style={{ color: '#24141F' }}>{dec.title[l]}</p>
+                                            <p className="mt-1 text-xs leading-relaxed" style={{ color: '#505666' }}>{dec.description[l]}</p>
+                                        </div>
+                                        <div className="col-span-2 flex justify-center">
+                                            <span className="rounded-full px-3 py-1 text-xs font-bold"
+                                                style={{
+                                                    background: dec.grade === 'B' ? 'rgba(140,100,65,0.12)' :
+                                                                dec.grade === 'Baik' ? 'rgba(217,159,96,0.15)' :
+                                                                'rgba(80,86,102,0.08)',
+                                                    color: dec.grade === 'B' ? '#8C6441' :
+                                                           dec.grade === 'Baik' ? '#C08A4C' :
+                                                           '#505666'
+                                                }}
+                                            >
+                                                {dec.grade || '–'}
+                                            </span>
+                                        </div>
+                                        <div className="col-span-4">
+                                            <span className="text-xs font-bold" style={{ color: '#8C6441' }}>{dec.number}</span>
+                                        </div>
+                                        <div className="col-span-2 text-right">
+                                            <span className="text-xs font-medium" style={{ color: 'rgba(80,86,102,0.60)' }}>{dec.date || '–'}</span>
+                                        </div>
                                     </div>
                                 ))}
                             </div>

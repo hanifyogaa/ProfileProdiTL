@@ -58,7 +58,7 @@ export default function AchievementsList({ achievements }: AchievementsListProps
     ];
 
     return (
-        <MainLayout>
+        <MainLayout fullHero>
             <Head title={title} />
 
             {/* ── Hero Cinematic ── */}
@@ -69,30 +69,32 @@ export default function AchievementsList({ achievements }: AchievementsListProps
                 photoUrl={HERO_PHOTO}
                 photoAlt="Award ceremony podium"
                 stats={heroStats}
-            >
-                {/* Level filter pills */}
-                <div className="flex flex-wrap gap-2 mt-2">
-                    {FILTER_OPTS.map(opt => (
-                        <button
-                            key={opt.key}
-                            type="button"
-                            onClick={() => setFilter(opt.key)}
-                            className="rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest transition-all duration-200"
-                            style={
-                                filter === opt.key
-                                    ? { background: '#D99F60', color: '#24141F' }
-                                    : { background: 'rgba(255,253,251,0.12)', color: 'rgba(172,149,135,0.85)', border: '1px solid rgba(172,149,135,0.30)' }
-                            }
-                        >
-                            {opt.label}
-                        </button>
-                    ))}
-                </div>
-            </PageHero>
+            />
 
             {/* ── List ── */}
             <section className="py-16 sm:py-20" style={{ background: '#FFFDFB' }}>
                 <div className="mx-auto max-w-[1000px] px-6">
+                    {/* Level filter pills below hero */}
+                    <Reveal variant="fade-up">
+                        <div className="mb-12 flex flex-wrap justify-center gap-2">
+                            {FILTER_OPTS.map(opt => (
+                                <button
+                                    key={opt.key}
+                                    type="button"
+                                    onClick={() => setFilter(opt.key)}
+                                    className="rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200"
+                                    style={
+                                        filter === opt.key
+                                            ? { background: '#8C6441', color: '#FFFDFB', boxShadow: '0 4px 14px -4px rgba(140,100,65,0.45)' }
+                                            : { background: '#ECEBE9', color: '#505666' }
+                                    }
+                                >
+                                    {opt.label}
+                                </button>
+                            ))}
+                        </div>
+                    </Reveal>
+
                     <Reveal>
                         <div className="mb-10">
                             <PillLabel>{l === 'id' ? 'Daftar Prestasi' : 'Achievement List'}</PillLabel>
