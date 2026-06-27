@@ -174,11 +174,13 @@ export function Hero({ hero }: { hero: HeroData }) {
                     animate={{ opacity: i === slideIndex ? 1 : 0 }}
                     transition={{ duration: 1.4, ease: 'easeInOut' }}
                 >
+                    {/* eslint-disable-next-line react/no-unknown-property */}
                     <img
                         src={slide.src}
                         alt={slide.alt}
                         className="size-full object-cover"
-                        fetchPriority={i === 0 ? 'high' : 'low'}
+                        // @ts-expect-error -- React 18 only recognizes the lowercase HTML attribute, not the camelCase JSX prop
+                        fetchpriority={i === 0 ? 'high' : 'low'}
                     />
                 </motion.div>
             ))}
@@ -350,13 +352,11 @@ export function Hero({ hero }: { hero: HeroData }) {
                     </span>
                     <motion.div
                         className="h-10 w-px bg-gradient-to-b from-white/40 to-transparent"
+                        style={{ transformOrigin: 'top' }}
                         animate={
                             shouldReduceMotion
                                 ? {}
-                                : {
-                                      scaleY: [0, 1, 0],
-                                      transformOrigin: 'top',
-                                  }
+                                : { scaleY: [0, 1, 0] }
                         }
                         transition={{
                             duration: 1.4,

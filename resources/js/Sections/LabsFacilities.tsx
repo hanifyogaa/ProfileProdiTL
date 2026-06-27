@@ -130,7 +130,7 @@ export function LabsFacilities({ labs }: { labs: LabItem[] }) {
     }
 
     return (
-        <section ref={sectionRef} className="bg-surface-50 py-20">
+        <section ref={sectionRef} className="bg-surface-50 relative py-20">
             <div className="mx-auto max-w-[1200px] px-6">
                 {/* Header */}
                 <Reveal variant="fade-down">
