@@ -1,4 +1,4 @@
-﻿import { MainLayout } from '@/Layouts/MainLayout';
+import { MainLayout } from '@/Layouts/MainLayout';
 import { Reveal } from '@/components/Reveal';
 import { useLocale } from '@/contexts/LocaleContext';
 import { Head } from '@inertiajs/react';
@@ -88,11 +88,6 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                         {/* Left: text */}
                         <div className="md:col-span-8">
                             <Reveal>
-                                <span className="mb-4 inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
-                                    style={{ background: 'rgba(217,159,96,0.15)', color: '#D99F60', border: '1px solid rgba(217,159,96,0.25)' }}>
-                                    <Users className="size-3.5" />
-                                    {l === 'id' ? 'Kemahasiswaan' : 'Student Life'}
-                                </span>
                                 <h1 className="font-display mt-3 text-4xl font-bold leading-tight text-white sm:text-5xl">{orgName}</h1>
                                 <p className="mt-4 max-w-xl text-base leading-relaxed" style={{ color: 'rgba(172,149,135,0.85)' }}>
                                     {description}

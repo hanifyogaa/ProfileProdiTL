@@ -34,6 +34,7 @@ interface CurriculumMeta {
     pdf_url?: string;
     total_sks?: number;
     semesters?: number;
+    hero_image?: string;
 }
 
 interface CurriculumProps {
@@ -105,7 +106,7 @@ export default function Curriculum({ courses, curriculumMeta }: CurriculumProps)
             {/* ── CINEMATIC HERO ── */}
             <section ref={heroRef} className="relative flex min-h-[64vh] items-end overflow-hidden" style={{ background: '#24141F' }}>
                 <motion.div className="absolute inset-0" style={shouldReduceMotion ? {} : { y: yBg }}>
-                    <img src={HERO_BG} alt="" className="size-full object-cover" style={{ opacity: 0.35 }} fetchPriority="high" />
+                    <img src={curriculumMeta?.hero_image || HERO_BG} alt="" className="size-full object-cover" style={{ opacity: 0.35 }} fetchPriority="high" />
                 </motion.div>
                 <div className="pointer-events-none absolute inset-0" style={{
                     background: 'linear-gradient(to top, rgba(36,20,31,0.97) 0%, rgba(36,20,31,0.50) 55%, rgba(36,20,31,0.15) 100%)',
@@ -118,11 +119,6 @@ export default function Curriculum({ courses, curriculumMeta }: CurriculumProps)
                     <div className="grid items-end gap-10 md:grid-cols-12">
                         <div className="md:col-span-7">
                             <Reveal>
-                                <span className="mb-4 inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
-                                    style={{ background: 'rgba(217,159,96,0.15)', color: '#D99F60', border: '1px solid rgba(217,159,96,0.25)' }}>
-                                    <BookOpen className="size-3.5" />
-                                    {l === 'id' ? 'Akademik' : 'Academic'}
-                                </span>
                                 <h1 className="font-display mt-3 text-4xl font-bold leading-tight text-white sm:text-5xl">{title}</h1>
                                 <p className="mt-5 max-w-lg text-base leading-relaxed" style={{ color: 'rgba(172,149,135,0.85)' }}>
                                     {l === 'id'
@@ -165,10 +161,6 @@ export default function Curriculum({ courses, curriculumMeta }: CurriculumProps)
                 {/* ── Profil Lulusan ── */}
                 <section id="profil-lulusan" className="scroll-mt-24 mb-12">
                     <Reveal>
-                        <span className="mb-3 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                            style={{ background: 'rgba(140,100,65,0.12)', color: '#8C6441' }}>
-                            {l === 'id' ? 'Lulusan' : 'Graduates'}
-                        </span>
                         <h2 className="font-display text-ink-900 mb-5 mt-2 text-2xl font-semibold sm:text-3xl">
                             {l === 'id' ? 'Profil Lulusan' : 'Graduate Profile'}
                         </h2>

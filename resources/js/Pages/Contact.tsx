@@ -1,4 +1,4 @@
-﻿import { MainLayout } from '@/Layouts/MainLayout';
+import { MainLayout } from '@/Layouts/MainLayout';
 import { Card } from '@/components/Card';
 import { Reveal } from '@/components/Reveal';
 import { useLocale } from '@/contexts/LocaleContext';
@@ -8,7 +8,7 @@ import { Instagram, Mail, MapPin, MessageSquare, Phone, Send } from 'lucide-reac
 import { useRef, useState } from 'react';
 
 interface ContactData { email?: string | null; phone?: string | null; }
-interface SiteMeta { name?: string | null; address?: string | null; }
+interface SiteMeta { name?: string | null; address?: string | null; hero_image?: string | null; }
 interface Socials { instagram?: string | null; line?: string | null; tiktok?: string | null; }
 
 const HERO_BG = 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=85&w=1920';
@@ -51,7 +51,7 @@ export default function Contact({
             {/* ── HERO ── */}
             <section ref={heroRef} className="relative flex min-h-[52vh] items-end overflow-hidden" style={{ background: '#24141F' }}>
                 <motion.div className="absolute inset-0" style={shouldReduceMotion ? {} : { y: yBg }}>
-                    <img src={HERO_BG} alt="" className="size-full object-cover" style={{ opacity: 0.28 }} fetchPriority="high" />
+                    <img src={siteMeta?.hero_image || HERO_BG} alt="" className="size-full object-cover" style={{ opacity: 0.28 }} fetchPriority="high" />
                 </motion.div>
                 <div className="pointer-events-none absolute inset-0" style={{
                     background: 'linear-gradient(to top, rgba(36,20,31,0.97) 0%, rgba(36,20,31,0.55) 55%, rgba(36,20,31,0.18) 100%)',
@@ -61,11 +61,6 @@ export default function Contact({
 
                 <motion.div className="relative z-10 mx-auto w-full max-w-[1000px] px-6 pb-14 pt-40" style={shouldReduceMotion ? {} : { y: yText }}>
                     <Reveal>
-                        <span className="mb-4 inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
-                            style={{ background: 'rgba(217,159,96,0.15)', color: '#D99F60', border: '1px solid rgba(217,159,96,0.25)' }}>
-                            <MessageSquare className="size-3.5" />
-                            {l === 'id' ? 'Kontak' : 'Contact'}
-                        </span>
                         <h1 className="font-display mt-3 text-4xl font-bold leading-tight text-white sm:text-5xl">{title}</h1>
                         <p className="mt-4 max-w-lg text-base leading-relaxed" style={{ color: 'rgba(172,149,135,0.85)' }}>
                             {l === 'id'

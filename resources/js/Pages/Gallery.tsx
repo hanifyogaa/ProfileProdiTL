@@ -82,11 +82,6 @@ export default function Gallery({ photos }: { photos?: GalleryItem[] }) {
 
                 <div className="relative z-10 mx-auto w-full max-w-[1100px] px-6 pb-16 pt-40 text-center">
                     <Reveal>
-                        <span className="mb-4 inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
-                            style={{ background: 'rgba(217,159,96,0.15)', color: '#D99F60', border: '1px solid rgba(217,159,96,0.25)' }}>
-                            <Images className="size-3.5" />
-                            {l === 'id' ? 'Dokumentasi' : 'Documentation'}
-                        </span>
                         <h1 className="font-display mt-3 text-4xl font-bold leading-tight text-white sm:text-5xl">{title}</h1>
                         <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed" style={{ color: 'rgba(172,149,135,0.85)' }}>
                             {l === 'id'

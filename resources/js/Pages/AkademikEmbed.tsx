@@ -23,10 +23,6 @@ export default function AkademikEmbed({ title, url, description }: AkademikEmbed
             <div className="mx-auto max-w-[1100px] px-6">
                 <Reveal>
                     <div className="mb-8">
-                        <span className="bg-amber-500/12 text-brand-700 mb-4 inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold">
-                            <Monitor className="size-3.5" />
-                            {l === 'id' ? 'Portal Akademik' : 'Academic Portal'}
-                        </span>
                         <h1 className="font-display text-ink-900 mt-4 text-3xl font-semibold sm:text-4xl">
                             {pageTitle}
                         </h1>

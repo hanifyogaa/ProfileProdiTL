@@ -132,7 +132,6 @@ export function PageHero({ pillLabel, title, subtitle, photoUrl, photoAlt, stats
                     {/* Left: text */}
                     <div className={stats && stats.length > 0 ? "col-span-12 md:col-span-8 w-full" : "col-span-12 w-full"}>
                         <Reveal variant="fade-up">
-                            <PillLabel>{pillLabel}</PillLabel>
                             <h1
                                 className="font-display mt-3 text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl"
                                 style={{ color: '#FFFDFB' }}
@@ -197,7 +196,6 @@ export function PageHeroSplit({ pillLabel, title, subtitle, photoUrl, photoAlt, 
                 {/* Text — 7 cols */}
                 <div className="col-span-12 md:col-span-7">
                     <Reveal variant="fade-right">
-                        <PillLabel>{pillLabel}</PillLabel>
                         <h1
                             className="font-display mt-3 text-4xl font-bold leading-tight sm:text-5xl"
                             style={{ color: '#24141F' }}
