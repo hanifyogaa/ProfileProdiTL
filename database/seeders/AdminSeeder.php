@@ -15,8 +15,9 @@ class AdminSeeder extends Seeder
             [
                 'name'              => 'Admin Prodi TL',
                 'email'             => 'admin@proditl.ac.id',
-                'password'          => Hash::make('admin123'),
+                'password'          => Hash::make(env('SEED_ADMIN_PASSWORD', 'change-me-now')),
                 'email_verified_at' => now(),
+                'is_admin'          => true,
             ]
         );
     }

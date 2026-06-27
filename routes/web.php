@@ -40,7 +40,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Admin Panel Routes
-Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [\App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('dashboard');
     
     Route::resource('news', \App\Http\Controllers\Admin\AdminNewsController::class);
