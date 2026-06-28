@@ -68,7 +68,7 @@ export default function Edit({ lecturer }: EditProps) {
     const [teachingRows, setTeachingRows] = useState<TeachingRow[]>(initialTeaching);
     const [expertiseInput, setExpertiseInput] = useState(initialExpertise);
 
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, transform, processing, errors } = useForm({
         _method: 'PUT',
         name: lecturer.name || '',
         nidn: lecturer.nidn || '',
@@ -139,13 +139,15 @@ export default function Edit({ lecturer }: EditProps) {
                 courses: row.coursesString.split(',').map(c => c.trim()).filter(Boolean)
             }));
 
+        transform((formData) => ({
+            ...formData,
+            expertise: expertiseArray,
+            education: cleanEdu,
+            teaching_history: cleanTeaching,
+        }));
+
         post(route('admin.lecturers.update', lecturer.id), {
             forceFormData: true,
-            onBefore: () => {
-                data.expertise = expertiseArray;
-                data.education = cleanEdu;
-                data.teaching_history = cleanTeaching;
-            }
         });
     };
 

@@ -22,7 +22,7 @@ export default function Create() {
     const [teachingRows, setTeachingRows] = useState<TeachingRow[]>([{ semester: '', coursesString: '' }]);
     const [expertiseInput, setExpertiseInput] = useState('');
 
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, transform, processing, errors } = useForm({
         name: '',
         nidn: '',
         nip: '',
@@ -94,30 +94,15 @@ export default function Create() {
                 courses: row.coursesString.split(',').map(c => c.trim()).filter(Boolean)
             }));
 
-        // Use Inertia's data assignment directly or via local form submission payload
-        // We set the processed arrays into the useForm state, then submit
-        setData((prev) => {
-            const nextData = {
-                ...prev,
-                expertise: expertiseArray,
-                education: cleanEdu,
-                teaching_history: cleanTeaching
-            };
-            
-            // Due to Inertia set data being async, we can submit directly using router,
-            // or perform a trick: wait a render. However, useForm provides submit actions.
-            // A safer, instant way to do this with useForm is to pass values inside submit method:
-            return nextData;
-        });
+        transform((formData) => ({
+            ...formData,
+            expertise: expertiseArray,
+            education: cleanEdu,
+            teaching_history: cleanTeaching,
+        }));
 
-        // We can pass data overrides directly inside the submit call
         post(route('admin.lecturers.store'), {
             forceFormData: true,
-            onBefore: () => {
-                data.expertise = expertiseArray;
-                data.education = cleanEdu;
-                data.teaching_history = cleanTeaching;
-            }
         });
     };
 
