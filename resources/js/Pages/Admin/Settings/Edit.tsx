@@ -35,6 +35,41 @@ interface DivisionForm {
     description: { id: string; en: string };
 }
 
+interface DiscaLeadershipForm {
+    name: string;
+    role: { id: string; en: string };
+    description: { id: string; en: string };
+    photo: string | null;
+}
+
+interface DiscaDepartmentForm {
+    abbr: string;
+    name: { id: string; en: string };
+    description: { id: string; en: string };
+}
+
+interface DiscaCommissionForm {
+    name: { id: string; en: string };
+    description: { id: string; en: string };
+}
+
+interface DiscaActivityForm {
+    label: { id: string; en: string };
+    title: { id: string; en: string };
+    description: { id: string; en: string };
+    photos: string[];
+}
+
+interface DiscaLogoMeaningForm {
+    title: { id: string; en: string };
+    description: { id: string; en: string };
+}
+
+interface DiscaStatForm {
+    value: string;
+    label: { id: string; en: string };
+}
+
 interface ProspectTrackForm {
     title_id: string;
     title_en: string;
@@ -76,10 +111,17 @@ interface SettingsProps {
 export default function Edit({ settings }: SettingsProps) {
     const [activeTab, setActiveTab] = useState<Tab>('hero');
 
+    // Dynamic per-item photo files (leadership photos: keyed by member index;
+    // activity photos: keyed by "activityIndex_photoIndex"), merged into the
+    // submission via transform() since useForm's typed shape can't hold a
+    // variable number of array-item file slots.
+    const [discaLeadershipPhotoFiles, setDiscaLeadershipPhotoFiles] = useState<Record<number, File>>({});
+    const [discaActivityPhotoFiles, setDiscaActivityPhotoFiles] = useState<Record<string, File>>({});
+
     const cs = settings.curriculum_summary ?? {};
     const initTestimonials: Testimonial[] = cs.testimonials ?? [];
 
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, transform } = useForm({
         _method: 'PUT',
 
         // Hero
@@ -196,7 +238,22 @@ export default function Edit({ settings }: SettingsProps) {
             vision:      { id: settings.student_association?.vision?.id ?? '', en: settings.student_association?.vision?.en ?? '' },
             instagram:   settings.student_association?.instagram ?? '',
             divisions:  (settings.student_association?.divisions ?? []) as DivisionForm[],
+            founded_date:  settings.student_association?.founded_date ?? '',
+            faculty_label: settings.student_association?.faculty_label ?? '',
+            history:    { id: settings.student_association?.history?.id ?? '', en: settings.student_association?.history?.en ?? '' },
+            missions:   (settings.student_association?.missions ?? []) as { id: string; en: string }[],
+            logo_image: settings.student_association?.logo_image ?? null,
+            logo_meanings: (settings.student_association?.logo_meanings ?? []) as DiscaLogoMeaningForm[],
+            leadership: (settings.student_association?.leadership ?? []) as DiscaLeadershipForm[],
+            departments: (settings.student_association?.departments ?? []) as DiscaDepartmentForm[],
+            dpm: {
+                description: { id: settings.student_association?.dpm?.description?.id ?? '', en: settings.student_association?.dpm?.description?.en ?? '' },
+                commissions: (settings.student_association?.dpm?.commissions ?? []) as DiscaCommissionForm[],
+            },
+            activities: (settings.student_association?.activities ?? []) as DiscaActivityForm[],
+            stats: (settings.student_association?.stats ?? []) as DiscaStatForm[],
         },
+        disca_logo_image_file: null as File | null,
 
         // Prospek Karier (homepage)
         prospects: {
@@ -327,6 +384,175 @@ export default function Edit({ settings }: SettingsProps) {
         setData('student_association', { ...data.student_association, divisions: next });
     };
 
+    // --- DISCA: mission helpers ---
+    const addMission = () => {
+        setData('student_association', { ...data.student_association, missions: [...data.student_association.missions, { id: '', en: '' }] });
+    };
+    const removeMission = (i: number) => {
+        setData('student_association', { ...data.student_association, missions: data.student_association.missions.filter((_, idx) => idx !== i) });
+    };
+    const updateMission = (i: number, lang: 'id' | 'en', val: string) => {
+        const next = data.student_association.missions.map((m, idx) => idx === i ? { ...m, [lang]: val } : m);
+        setData('student_association', { ...data.student_association, missions: next });
+    };
+
+    // --- DISCA: logo meaning helpers ---
+    const addLogoMeaning = () => {
+        setData('student_association', {
+            ...data.student_association,
+            logo_meanings: [...data.student_association.logo_meanings, { title: { id: '', en: '' }, description: { id: '', en: '' } }],
+        });
+    };
+    const removeLogoMeaning = (i: number) => {
+        setData('student_association', { ...data.student_association, logo_meanings: data.student_association.logo_meanings.filter((_, idx) => idx !== i) });
+    };
+    const updateLogoMeaning = (i: number, field: 'title' | 'description', lang: 'id' | 'en', val: string) => {
+        const next = data.student_association.logo_meanings.map((m, idx) =>
+            idx === i ? { ...m, [field]: { ...m[field], [lang]: val } } : m
+        );
+        setData('student_association', { ...data.student_association, logo_meanings: next });
+    };
+
+    // --- DISCA: leadership helpers ---
+    const addLeader = () => {
+        setData('student_association', {
+            ...data.student_association,
+            leadership: [...data.student_association.leadership, { name: '', role: { id: '', en: '' }, description: { id: '', en: '' }, photo: null }],
+        });
+    };
+    const removeLeader = (i: number) => {
+        setData('student_association', { ...data.student_association, leadership: data.student_association.leadership.filter((_, idx) => idx !== i) });
+        setDiscaLeadershipPhotoFiles((prev) => {
+            const next = { ...prev };
+            delete next[i];
+            return next;
+        });
+    };
+    const updateLeaderField = (i: number, field: 'name', val: string) => {
+        const next = data.student_association.leadership.map((m, idx) => idx === i ? { ...m, [field]: val } : m);
+        setData('student_association', { ...data.student_association, leadership: next });
+    };
+    const updateLeaderBilingual = (i: number, field: 'role' | 'description', lang: 'id' | 'en', val: string) => {
+        const next = data.student_association.leadership.map((m, idx) =>
+            idx === i ? { ...m, [field]: { ...m[field], [lang]: val } } : m
+        );
+        setData('student_association', { ...data.student_association, leadership: next });
+    };
+    const updateLeaderPhoto = (i: number, file: File | null) => {
+        if (file) {
+            setDiscaLeadershipPhotoFiles((prev) => ({ ...prev, [i]: file }));
+        }
+    };
+    const clearLeaderExistingPhoto = (i: number) => {
+        const next = data.student_association.leadership.map((m, idx) => idx === i ? { ...m, photo: null } : m);
+        setData('student_association', { ...data.student_association, leadership: next });
+    };
+
+    // --- DISCA: department helpers ---
+    const addDepartment = () => {
+        setData('student_association', {
+            ...data.student_association,
+            departments: [...data.student_association.departments, { abbr: '', name: { id: '', en: '' }, description: { id: '', en: '' } }],
+        });
+    };
+    const removeDepartment = (i: number) => {
+        setData('student_association', { ...data.student_association, departments: data.student_association.departments.filter((_, idx) => idx !== i) });
+    };
+    const updateDepartmentAbbr = (i: number, val: string) => {
+        const next = data.student_association.departments.map((d, idx) => idx === i ? { ...d, abbr: val } : d);
+        setData('student_association', { ...data.student_association, departments: next });
+    };
+    const updateDepartmentBilingual = (i: number, field: 'name' | 'description', lang: 'id' | 'en', val: string) => {
+        const next = data.student_association.departments.map((d, idx) =>
+            idx === i ? { ...d, [field]: { ...d[field], [lang]: val } } : d
+        );
+        setData('student_association', { ...data.student_association, departments: next });
+    };
+
+    // --- DISCA: DPM commission helpers ---
+    const addCommission = () => {
+        setData('student_association', {
+            ...data.student_association,
+            dpm: { ...data.student_association.dpm, commissions: [...data.student_association.dpm.commissions, { name: { id: '', en: '' }, description: { id: '', en: '' } }] },
+        });
+    };
+    const removeCommission = (i: number) => {
+        setData('student_association', {
+            ...data.student_association,
+            dpm: { ...data.student_association.dpm, commissions: data.student_association.dpm.commissions.filter((_, idx) => idx !== i) },
+        });
+    };
+    const updateCommission = (i: number, field: 'name' | 'description', lang: 'id' | 'en', val: string) => {
+        const next = data.student_association.dpm.commissions.map((c, idx) =>
+            idx === i ? { ...c, [field]: { ...c[field], [lang]: val } } : c
+        );
+        setData('student_association', { ...data.student_association, dpm: { ...data.student_association.dpm, commissions: next } });
+    };
+    const updateDpmDescription = (lang: 'id' | 'en', val: string) => {
+        setData('student_association', {
+            ...data.student_association,
+            dpm: { ...data.student_association.dpm, description: { ...data.student_association.dpm.description, [lang]: val } },
+        });
+    };
+
+    // --- DISCA: activity documentation helpers ---
+    const addActivity = () => {
+        setData('student_association', {
+            ...data.student_association,
+            activities: [...data.student_association.activities, { label: { id: '', en: '' }, title: { id: '', en: '' }, description: { id: '', en: '' }, photos: [] }],
+        });
+    };
+    const removeActivity = (i: number) => {
+        setData('student_association', { ...data.student_association, activities: data.student_association.activities.filter((_, idx) => idx !== i) });
+        setDiscaActivityPhotoFiles((prev) => {
+            const next = { ...prev };
+            Object.keys(next).forEach((key) => { if (key.startsWith(`${i}_`)) delete next[key]; });
+            return next;
+        });
+    };
+    const updateActivityBilingual = (i: number, field: 'label' | 'title' | 'description', lang: 'id' | 'en', val: string) => {
+        const next = data.student_association.activities.map((a, idx) =>
+            idx === i ? { ...a, [field]: { ...a[field], [lang]: val } } : a
+        );
+        setData('student_association', { ...data.student_association, activities: next });
+    };
+    const addActivityPhotoSlot = (i: number, file: File) => {
+        const activity = data.student_association.activities[i];
+        const slotIndex = activity.photos.length;
+        setDiscaActivityPhotoFiles((prev) => ({ ...prev, [`${i}_${slotIndex}`]: file }));
+        const next = data.student_association.activities.map((a, idx) =>
+            idx === i ? { ...a, photos: [...a.photos, ''] } : a
+        );
+        setData('student_association', { ...data.student_association, activities: next });
+    };
+    const removeActivityPhoto = (i: number, photoIdx: number) => {
+        const next = data.student_association.activities.map((a, idx) =>
+            idx === i ? { ...a, photos: a.photos.filter((_, pIdx) => pIdx !== photoIdx) } : a
+        );
+        setData('student_association', { ...data.student_association, activities: next });
+        setDiscaActivityPhotoFiles((prev) => {
+            const next2 = { ...prev };
+            delete next2[`${i}_${photoIdx}`];
+            return next2;
+        });
+    };
+
+    // --- DISCA: footer stat helpers ---
+    const addDiscaStat = () => {
+        setData('student_association', { ...data.student_association, stats: [...data.student_association.stats, { value: '', label: { id: '', en: '' } }] });
+    };
+    const removeDiscaStat = (i: number) => {
+        setData('student_association', { ...data.student_association, stats: data.student_association.stats.filter((_, idx) => idx !== i) });
+    };
+    const updateDiscaStat = (i: number, field: 'value', val: string) => {
+        const next = data.student_association.stats.map((s, idx) => idx === i ? { ...s, [field]: val } : s);
+        setData('student_association', { ...data.student_association, stats: next });
+    };
+    const updateDiscaStatLabel = (i: number, lang: 'id' | 'en', val: string) => {
+        const next = data.student_association.stats.map((s, idx) => idx === i ? { ...s, label: { ...s.label, [lang]: val } } : s);
+        setData('student_association', { ...data.student_association, stats: next });
+    };
+
     // --- Career prospect track helpers ---
     const addTrack = () => {
         setData('prospects', {
@@ -416,6 +642,16 @@ export default function Edit({ settings }: SettingsProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        transform((formData) => {
+            const extra: Record<string, File> = {};
+            Object.entries(discaLeadershipPhotoFiles).forEach(([i, file]) => {
+                extra[`disca_leadership_photo_${i}`] = file;
+            });
+            Object.entries(discaActivityPhotoFiles).forEach(([key, file]) => {
+                extra[`disca_activity_photo_${key}`] = file;
+            });
+            return { ...formData, ...extra };
+        });
         post(route('admin.settings.update'), { forceFormData: true });
     };
 
@@ -1217,6 +1453,418 @@ export default function Edit({ settings }: SettingsProps) {
                                     {data.student_association.divisions.length === 0 && (
                                         <p className="rounded-xl border border-dashed border-cream-300 py-6 text-center text-xs text-navy-700/40">
                                             Belum ada divisi. Klik "Tambah Divisi" untuk menambahkan.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <hr className="border-cream-300/40" />
+
+                            {/* Hero chips */}
+                            <div>
+                                <h4 className="mb-3 text-sm font-bold text-ink-900">Info Hero (chip di bawah deskripsi)</h4>
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-semibold text-navy-700">Tanggal Berdiri</label>
+                                        <input type="text" value={data.student_association.founded_date} className={inputCls}
+                                            placeholder="6 April 2023"
+                                            onChange={(e) => setData('student_association', { ...data.student_association, founded_date: e.target.value })} />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-semibold text-navy-700">Label Fakultas</label>
+                                        <input type="text" value={data.student_association.faculty_label} className={inputCls}
+                                            placeholder="FRI · Universitas Telkom"
+                                            onChange={(e) => setData('student_association', { ...data.student_association, faculty_label: e.target.value })} />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr className="border-cream-300/40" />
+
+                            {/* History */}
+                            <BilingualInput label="Sejarah / Asal Mula" type="textarea" rows={4}
+                                idName="student_association.history.id" enName="student_association.history.en"
+                                idValue={data.student_association.history.id} enValue={data.student_association.history.en}
+                                onChangeId={(v) => setData('student_association', { ...data.student_association, history: { ...data.student_association.history, id: v } })}
+                                onChangeEn={(v) => setData('student_association', { ...data.student_association, history: { ...data.student_association.history, en: v } })}
+                            />
+
+                            <hr className="border-cream-300/40" />
+
+                            {/* Missions */}
+                            <div>
+                                <div className="mb-4 flex items-center justify-between">
+                                    <h4 className="text-sm font-bold text-ink-900">Misi</h4>
+                                    <button type="button" onClick={addMission}
+                                        className="inline-flex items-center gap-1.5 rounded-xl bg-brand-700/8 px-3 py-2 text-xs font-semibold text-brand-700 hover:bg-brand-700/15 transition-colors">
+                                        <Plus className="size-3.5" /> Tambah Misi
+                                    </button>
+                                </div>
+                                <div className="space-y-3">
+                                    {data.student_association.missions.map((m, i) => (
+                                        <div key={i} className="rounded-xl border border-cream-300/40 bg-surface-50/20 p-4">
+                                            <div className="mb-3 flex items-center justify-between">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-brand-700">Misi {i + 1}</span>
+                                                <button type="button" onClick={() => removeMission(i)}
+                                                    className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 text-[10px] font-semibold text-red-600 hover:bg-red-100 transition-colors">
+                                                    <Trash2 className="size-2.5" /> Hapus
+                                                </button>
+                                            </div>
+                                            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                <textarea rows={2} value={m.id} className={`${inputCls} resize-none`}
+                                                    onChange={(e) => updateMission(i, 'id', e.target.value)} placeholder="Misi (ID)" />
+                                                <textarea rows={2} value={m.en} className={`${inputCls} resize-none`}
+                                                    onChange={(e) => updateMission(i, 'en', e.target.value)} placeholder="Mission (EN)" />
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {data.student_association.missions.length === 0 && (
+                                        <p className="rounded-xl border border-dashed border-cream-300 py-6 text-center text-xs text-navy-700/40">
+                                            Belum ada misi. Klik "Tambah Misi" untuk menambahkan.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <hr className="border-cream-300/40" />
+
+                            {/* Logo + meanings */}
+                            <div>
+                                <h4 className="mb-3 text-sm font-bold text-ink-900">Logo & Makna Logo</h4>
+                                <ImageUpload label="Logo DISCA / HIMA"
+                                    existingUrl={data.student_association.logo_image}
+                                    onChange={(f) => setData('disca_logo_image_file', f)}
+                                    onClearExisting={() => setData('student_association', { ...data.student_association, logo_image: null })}
+                                    error={errors.disca_logo_image_file}
+                                />
+                                <div className="mt-4 mb-3 flex items-center justify-between">
+                                    <h5 className="text-xs font-bold uppercase tracking-wider text-brand-700">Makna Elemen Logo</h5>
+                                    <button type="button" onClick={addLogoMeaning}
+                                        className="inline-flex items-center gap-1.5 rounded-xl bg-brand-700/8 px-3 py-2 text-xs font-semibold text-brand-700 hover:bg-brand-700/15 transition-colors">
+                                        <Plus className="size-3.5" /> Tambah Makna
+                                    </button>
+                                </div>
+                                <div className="space-y-3">
+                                    {data.student_association.logo_meanings.map((m, i) => (
+                                        <div key={i} className="rounded-xl border border-cream-300/40 bg-surface-50/20 p-4">
+                                            <div className="mb-3 flex items-center justify-between">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-brand-700">Elemen {i + 1}</span>
+                                                <button type="button" onClick={() => removeLogoMeaning(i)}
+                                                    className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 text-[10px] font-semibold text-red-600 hover:bg-red-100 transition-colors">
+                                                    <Trash2 className="size-2.5" /> Hapus
+                                                </button>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <input type="text" value={m.title.id} className={inputCls} placeholder="Judul (ID), misal: Warna Coklat"
+                                                        onChange={(e) => updateLogoMeaning(i, 'title', 'id', e.target.value)} />
+                                                    <input type="text" value={m.title.en} className={inputCls} placeholder="Title (EN)"
+                                                        onChange={(e) => updateLogoMeaning(i, 'title', 'en', e.target.value)} />
+                                                </div>
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <textarea rows={2} value={m.description.id} className={`${inputCls} resize-none`} placeholder="Makna (ID)"
+                                                        onChange={(e) => updateLogoMeaning(i, 'description', 'id', e.target.value)} />
+                                                    <textarea rows={2} value={m.description.en} className={`${inputCls} resize-none`} placeholder="Meaning (EN)"
+                                                        onChange={(e) => updateLogoMeaning(i, 'description', 'en', e.target.value)} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {data.student_association.logo_meanings.length === 0 && (
+                                        <p className="rounded-xl border border-dashed border-cream-300 py-6 text-center text-xs text-navy-700/40">
+                                            Belum ada makna logo. Klik "Tambah Makna" untuk menambahkan.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <hr className="border-cream-300/40" />
+
+                            {/* Leadership */}
+                            <div>
+                                <div className="mb-4 flex items-center justify-between">
+                                    <h4 className="text-sm font-bold text-ink-900">Struktur Kepengurusan Inti (BPH)</h4>
+                                    <button type="button" onClick={addLeader}
+                                        className="inline-flex items-center gap-1.5 rounded-xl bg-brand-700/8 px-3 py-2 text-xs font-semibold text-brand-700 hover:bg-brand-700/15 transition-colors">
+                                        <Plus className="size-3.5" /> Tambah Pengurus
+                                    </button>
+                                </div>
+                                <div className="space-y-3">
+                                    {data.student_association.leadership.map((m, i) => (
+                                        <div key={i} className="rounded-xl border border-cream-300/40 bg-surface-50/20 p-4">
+                                            <div className="mb-3 flex items-center justify-between">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-brand-700">Pengurus {i + 1}</span>
+                                                <button type="button" onClick={() => removeLeader(i)}
+                                                    className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 text-[10px] font-semibold text-red-600 hover:bg-red-100 transition-colors">
+                                                    <Trash2 className="size-2.5" /> Hapus
+                                                </button>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <ImageUpload label="Foto"
+                                                    existingUrl={m.photo}
+                                                    onChange={(f) => updateLeaderPhoto(i, f)}
+                                                    onClearExisting={() => clearLeaderExistingPhoto(i)}
+                                                    helpText="Format JPG, PNG, atau WebP. Maksimal 2MB."
+                                                />
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Nama</label>
+                                                        <input type="text" value={m.name} className={inputCls} placeholder="Nama lengkap"
+                                                            onChange={(e) => updateLeaderField(i, 'name', e.target.value)} />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Jabatan (ID)</label>
+                                                        <input type="text" value={m.role.id} className={inputCls} placeholder="Ketua Umum"
+                                                            onChange={(e) => updateLeaderBilingual(i, 'role', 'id', e.target.value)} />
+                                                    </div>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-xs font-semibold text-navy-700">Jabatan (EN)</label>
+                                                    <input type="text" value={m.role.en} className={inputCls} placeholder="General Chairperson"
+                                                        onChange={(e) => updateLeaderBilingual(i, 'role', 'en', e.target.value)} />
+                                                </div>
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Deskripsi (ID)</label>
+                                                        <textarea rows={2} value={m.description.id} className={`${inputCls} resize-none`}
+                                                            onChange={(e) => updateLeaderBilingual(i, 'description', 'id', e.target.value)} />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Deskripsi (EN)</label>
+                                                        <textarea rows={2} value={m.description.en} className={`${inputCls} resize-none`}
+                                                            onChange={(e) => updateLeaderBilingual(i, 'description', 'en', e.target.value)} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {data.student_association.leadership.length === 0 && (
+                                        <p className="rounded-xl border border-dashed border-cream-300 py-6 text-center text-xs text-navy-700/40">
+                                            Belum ada pengurus. Klik "Tambah Pengurus" untuk menambahkan.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <hr className="border-cream-300/40" />
+
+                            {/* Departments */}
+                            <div>
+                                <div className="mb-4 flex items-center justify-between">
+                                    <h4 className="text-sm font-bold text-ink-900">Departemen & Biro</h4>
+                                    <button type="button" onClick={addDepartment}
+                                        className="inline-flex items-center gap-1.5 rounded-xl bg-brand-700/8 px-3 py-2 text-xs font-semibold text-brand-700 hover:bg-brand-700/15 transition-colors">
+                                        <Plus className="size-3.5" /> Tambah Departemen
+                                    </button>
+                                </div>
+                                <div className="space-y-3">
+                                    {data.student_association.departments.map((dpt, i) => (
+                                        <div key={i} className="rounded-xl border border-cream-300/40 bg-surface-50/20 p-4">
+                                            <div className="mb-3 flex items-center justify-between">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-brand-700">Departemen {i + 1}</span>
+                                                <button type="button" onClick={() => removeDepartment(i)}
+                                                    className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 text-[10px] font-semibold text-red-600 hover:bg-red-100 transition-colors">
+                                                    <Trash2 className="size-2.5" /> Hapus
+                                                </button>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Singkatan</label>
+                                                        <input type="text" value={dpt.abbr} className={inputCls} placeholder="KADERISASI"
+                                                            onChange={(e) => updateDepartmentAbbr(i, e.target.value)} />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Nama (ID)</label>
+                                                        <input type="text" value={dpt.name.id} className={inputCls} placeholder="Departemen Kaderisasi"
+                                                            onChange={(e) => updateDepartmentBilingual(i, 'name', 'id', e.target.value)} />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Nama (EN)</label>
+                                                        <input type="text" value={dpt.name.en} className={inputCls} placeholder="Cadre Development Department"
+                                                            onChange={(e) => updateDepartmentBilingual(i, 'name', 'en', e.target.value)} />
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <textarea rows={2} value={dpt.description.id} className={`${inputCls} resize-none`} placeholder="Deskripsi (ID)"
+                                                        onChange={(e) => updateDepartmentBilingual(i, 'description', 'id', e.target.value)} />
+                                                    <textarea rows={2} value={dpt.description.en} className={`${inputCls} resize-none`} placeholder="Description (EN)"
+                                                        onChange={(e) => updateDepartmentBilingual(i, 'description', 'en', e.target.value)} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {data.student_association.departments.length === 0 && (
+                                        <p className="rounded-xl border border-dashed border-cream-300 py-6 text-center text-xs text-navy-700/40">
+                                            Belum ada departemen. Klik "Tambah Departemen" untuk menambahkan.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <hr className="border-cream-300/40" />
+
+                            {/* DPM */}
+                            <div>
+                                <h4 className="mb-3 text-sm font-bold text-ink-900">Dewan Perwakilan Mahasiswa (DPM)</h4>
+                                <BilingualInput label="Deskripsi DPM" type="textarea" rows={3}
+                                    idName="student_association.dpm.description.id" enName="student_association.dpm.description.en"
+                                    idValue={data.student_association.dpm.description.id} enValue={data.student_association.dpm.description.en}
+                                    onChangeId={(v) => updateDpmDescription('id', v)}
+                                    onChangeEn={(v) => updateDpmDescription('en', v)}
+                                />
+                                <div className="mt-4 mb-3 flex items-center justify-between">
+                                    <h5 className="text-xs font-bold uppercase tracking-wider text-brand-700">Komisi DPM</h5>
+                                    <button type="button" onClick={addCommission}
+                                        className="inline-flex items-center gap-1.5 rounded-xl bg-brand-700/8 px-3 py-2 text-xs font-semibold text-brand-700 hover:bg-brand-700/15 transition-colors">
+                                        <Plus className="size-3.5" /> Tambah Komisi
+                                    </button>
+                                </div>
+                                <div className="space-y-3">
+                                    {data.student_association.dpm.commissions.map((c, i) => (
+                                        <div key={i} className="rounded-xl border border-cream-300/40 bg-surface-50/20 p-4">
+                                            <div className="mb-3 flex items-center justify-between">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-brand-700">Komisi {i + 1}</span>
+                                                <button type="button" onClick={() => removeCommission(i)}
+                                                    className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 text-[10px] font-semibold text-red-600 hover:bg-red-100 transition-colors">
+                                                    <Trash2 className="size-2.5" /> Hapus
+                                                </button>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <input type="text" value={c.name.id} className={inputCls} placeholder="Nama Komisi (ID)"
+                                                        onChange={(e) => updateCommission(i, 'name', 'id', e.target.value)} />
+                                                    <input type="text" value={c.name.en} className={inputCls} placeholder="Commission Name (EN)"
+                                                        onChange={(e) => updateCommission(i, 'name', 'en', e.target.value)} />
+                                                </div>
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <textarea rows={2} value={c.description.id} className={`${inputCls} resize-none`} placeholder="Deskripsi (ID)"
+                                                        onChange={(e) => updateCommission(i, 'description', 'id', e.target.value)} />
+                                                    <textarea rows={2} value={c.description.en} className={`${inputCls} resize-none`} placeholder="Description (EN)"
+                                                        onChange={(e) => updateCommission(i, 'description', 'en', e.target.value)} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {data.student_association.dpm.commissions.length === 0 && (
+                                        <p className="rounded-xl border border-dashed border-cream-300 py-6 text-center text-xs text-navy-700/40">
+                                            Belum ada komisi. Klik "Tambah Komisi" untuk menambahkan.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <hr className="border-cream-300/40" />
+
+                            {/* Activities */}
+                            <div>
+                                <div className="mb-4 flex items-center justify-between">
+                                    <h4 className="text-sm font-bold text-ink-900">Dokumentasi Kegiatan</h4>
+                                    <button type="button" onClick={addActivity}
+                                        className="inline-flex items-center gap-1.5 rounded-xl bg-brand-700/8 px-3 py-2 text-xs font-semibold text-brand-700 hover:bg-brand-700/15 transition-colors">
+                                        <Plus className="size-3.5" /> Tambah Kegiatan
+                                    </button>
+                                </div>
+                                <div className="space-y-3">
+                                    {data.student_association.activities.map((act, i) => (
+                                        <div key={i} className="rounded-xl border border-cream-300/40 bg-surface-50/20 p-4">
+                                            <div className="mb-3 flex items-center justify-between">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-brand-700">Kegiatan {i + 1}</span>
+                                                <button type="button" onClick={() => removeActivity(i)}
+                                                    className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 text-[10px] font-semibold text-red-600 hover:bg-red-100 transition-colors">
+                                                    <Trash2 className="size-2.5" /> Hapus
+                                                </button>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <input type="text" value={act.label.id} className={inputCls} placeholder="Label kategori (ID), misal: Kolaborasi Organisasi"
+                                                        onChange={(e) => updateActivityBilingual(i, 'label', 'id', e.target.value)} />
+                                                    <input type="text" value={act.label.en} className={inputCls} placeholder="Category label (EN)"
+                                                        onChange={(e) => updateActivityBilingual(i, 'label', 'en', e.target.value)} />
+                                                </div>
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <input type="text" value={act.title.id} className={inputCls} placeholder="Judul Kegiatan (ID)"
+                                                        onChange={(e) => updateActivityBilingual(i, 'title', 'id', e.target.value)} />
+                                                    <input type="text" value={act.title.en} className={inputCls} placeholder="Activity Title (EN)"
+                                                        onChange={(e) => updateActivityBilingual(i, 'title', 'en', e.target.value)} />
+                                                </div>
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <textarea rows={3} value={act.description.id} className={`${inputCls} resize-none`} placeholder="Deskripsi (ID)"
+                                                        onChange={(e) => updateActivityBilingual(i, 'description', 'id', e.target.value)} />
+                                                    <textarea rows={3} value={act.description.en} className={`${inputCls} resize-none`} placeholder="Description (EN)"
+                                                        onChange={(e) => updateActivityBilingual(i, 'description', 'en', e.target.value)} />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="text-xs font-semibold text-navy-700">Foto Dokumentasi</label>
+                                                    <div className="flex flex-wrap gap-3">
+                                                        {act.photos.map((p, pIdx) => (
+                                                            <div key={pIdx} className="relative h-20 w-20 overflow-hidden rounded-xl border border-cream-300/60 bg-surface-50">
+                                                                {p ? <img src={p} alt="" className="h-full w-full object-cover" /> : (
+                                                                    <div className="flex h-full w-full items-center justify-center text-[10px] text-navy-700/50">Baru</div>
+                                                                )}
+                                                                <button type="button" onClick={() => removeActivityPhoto(i, pIdx)}
+                                                                    className="absolute top-1 right-1 rounded-full bg-red-600 p-1 text-white shadow hover:bg-red-700">
+                                                                    <Trash2 className="size-2.5" />
+                                                                </button>
+                                                            </div>
+                                                        ))}
+                                                        <label className="flex h-20 w-20 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-cream-300 text-navy-700 hover:border-brand-700 hover:text-brand-700">
+                                                            <Plus className="size-4" />
+                                                            <span className="mt-1 text-[10px] font-semibold">Foto</span>
+                                                            <input type="file" accept="image/*" className="hidden"
+                                                                onChange={(e) => {
+                                                                    const file = e.target.files?.[0];
+                                                                    if (file) addActivityPhotoSlot(i, file);
+                                                                    e.target.value = '';
+                                                                }} />
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {data.student_association.activities.length === 0 && (
+                                        <p className="rounded-xl border border-dashed border-cream-300 py-6 text-center text-xs text-navy-700/40">
+                                            Belum ada kegiatan. Klik "Tambah Kegiatan" untuk menambahkan.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <hr className="border-cream-300/40" />
+
+                            {/* Footer stats */}
+                            <div>
+                                <div className="mb-4 flex items-center justify-between">
+                                    <h4 className="text-sm font-bold text-ink-900">Statistik Ringkas (footer halaman)</h4>
+                                    <button type="button" onClick={addDiscaStat}
+                                        className="inline-flex items-center gap-1.5 rounded-xl bg-brand-700/8 px-3 py-2 text-xs font-semibold text-brand-700 hover:bg-brand-700/15 transition-colors">
+                                        <Plus className="size-3.5" /> Tambah Statistik
+                                    </button>
+                                </div>
+                                <div className="space-y-3">
+                                    {data.student_association.stats.map((s, i) => (
+                                        <div key={i} className="rounded-xl border border-cream-300/40 bg-surface-50/20 p-4">
+                                            <div className="mb-3 flex items-center justify-between">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-brand-700">Statistik {i + 1}</span>
+                                                <button type="button" onClick={() => removeDiscaStat(i)}
+                                                    className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 text-[10px] font-semibold text-red-600 hover:bg-red-100 transition-colors">
+                                                    <Trash2 className="size-2.5" /> Hapus
+                                                </button>
+                                            </div>
+                                            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                                                <input type="text" value={s.value} className={inputCls} placeholder="Nilai, misal: 200+"
+                                                    onChange={(e) => updateDiscaStat(i, 'value', e.target.value)} />
+                                                <input type="text" value={s.label.id} className={inputCls} placeholder="Label (ID)"
+                                                    onChange={(e) => updateDiscaStatLabel(i, 'id', e.target.value)} />
+                                                <input type="text" value={s.label.en} className={inputCls} placeholder="Label (EN)"
+                                                    onChange={(e) => updateDiscaStatLabel(i, 'en', e.target.value)} />
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {data.student_association.stats.length === 0 && (
+                                        <p className="rounded-xl border border-dashed border-cream-300 py-6 text-center text-xs text-navy-700/40">
+                                            Belum ada statistik. Klik "Tambah Statistik" untuk menambahkan.
                                         </p>
                                     )}
                                 </div>

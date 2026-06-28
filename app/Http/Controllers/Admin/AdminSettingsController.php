@@ -66,6 +66,9 @@ class AdminSettingsController extends Controller
             'curriculum_hero_image_file' => 'nullable|image|max:3072',
             'statistics_hero_image_file' => 'nullable|image|max:3072',
             'mbkm_hero_image_file'       => 'nullable|image|max:3072',
+            'disca_logo_image_file'      => 'nullable|image|max:2048',
+            'disca_leadership_photo_*'   => 'nullable|image|max:2048',
+            'disca_activity_photo_*'     => 'nullable|image|max:3072',
         ]);
 
         $settings = Setting::all()->pluck('value', 'key');
@@ -170,6 +173,50 @@ class AdminSettingsController extends Controller
             $prodiStatsData['unggul_badge'] = '/storage/' . $request->file('unggul_badge_file')->store('settings', 'public');
         }
         $data['prodi_stats'] = $prodiStatsData;
+
+        // ── DISCA / student association: logo + per-member + per-activity photos ──
+        $orgAssocData = $data['student_association'] ?? ($settings['student_association'] ?? []);
+
+        if ($request->hasFile('disca_logo_image_file')) {
+            if (!empty($orgAssocData['logo_image'])) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $orgAssocData['logo_image']));
+            }
+            $orgAssocData['logo_image'] = '/storage/' . $request->file('disca_logo_image_file')->store('settings', 'public');
+        }
+
+        if (!empty($orgAssocData['leadership']) && is_array($orgAssocData['leadership'])) {
+            foreach ($orgAssocData['leadership'] as $i => &$member) {
+                $fileKey = "disca_leadership_photo_{$i}";
+                if ($request->hasFile($fileKey)) {
+                    if (!empty($member['photo'])) {
+                        Storage::disk('public')->delete(str_replace('/storage/', '', $member['photo']));
+                    }
+                    $member['photo'] = '/storage/' . $request->file($fileKey)->store('settings/disca', 'public');
+                }
+            }
+            unset($member);
+        }
+
+        if (!empty($orgAssocData['activities']) && is_array($orgAssocData['activities'])) {
+            foreach ($orgAssocData['activities'] as $i => &$activity) {
+                $existingPhotos = is_array($activity['photos'] ?? null) ? $activity['photos'] : [];
+                $maxSlots = max(count($existingPhotos), 4);
+                $photos = $existingPhotos;
+                for ($j = 0; $j < $maxSlots; $j++) {
+                    $fileKey = "disca_activity_photo_{$i}_{$j}";
+                    if ($request->hasFile($fileKey)) {
+                        if (!empty($photos[$j])) {
+                            Storage::disk('public')->delete(str_replace('/storage/', '', $photos[$j]));
+                        }
+                        $photos[$j] = '/storage/' . $request->file($fileKey)->store('settings/disca', 'public');
+                    }
+                }
+                $activity['photos'] = array_values(array_filter($photos));
+            }
+            unset($activity);
+        }
+
+        $data['student_association'] = $orgAssocData;
 
         // ── Org structure chart image ──
         $orgData = $data['org_structure'] ?? ($settings['org_structure'] ?? []);

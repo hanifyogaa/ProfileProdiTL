@@ -11,41 +11,92 @@ import { useRef } from 'react';
 
 const HERO_BG = 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&q=85&w=1920';
 
+interface Bilingual {
+    id: string;
+    en: string;
+}
+
 interface Division {
     name: string;
-    description: { id: string; en: string };
+    description: Bilingual;
+}
+
+interface LogoMeaning {
+    title: Bilingual;
+    description: Bilingual;
+}
+
+interface LeadershipMember {
+    name: string;
+    role: Bilingual;
+    description: Bilingual;
+    photo?: string | null;
+}
+
+interface Department {
+    abbr: string;
+    name: Bilingual;
+    description: Bilingual;
+}
+
+interface DpmCommission {
+    name: Bilingual;
+    description: Bilingual;
+}
+
+interface Activity {
+    label: Bilingual;
+    title: Bilingual;
+    description: Bilingual;
+    photos: string[];
+}
+
+interface DiscaStat {
+    value: string;
+    label: Bilingual;
 }
 
 interface OrgContent {
     name?: string;
-    description?: { id: string; en: string };
-    vision?: { id: string; en: string };
+    description?: Bilingual;
+    vision?: Bilingual;
     instagram?: string;
     divisions?: Division[];
+    founded_date?: string;
+    faculty_label?: string;
+    history?: Bilingual;
+    missions?: Bilingual[];
+    logo_image?: string | null;
+    logo_meanings?: LogoMeaning[];
+    leadership?: LeadershipMember[];
+    departments?: Department[];
+    dpm?: { description?: Bilingual; commissions?: DpmCommission[] };
+    activities?: Activity[];
+    stats?: DiscaStat[];
 }
 
 interface StudentAssociationProps {
     orgContent?: OrgContent;
 }
 
-/* ─── Static DISCA data ─────────────────────────────────────────── */
+/* ─── Fallback DISCA data (used when admin hasn't filled the new fields yet) ─── */
 
-const DISCA_PROFILE = {
+const FALLBACK_PROFILE: Bilingual = {
     id: 'DISCA Universitas Telkom adalah Himpunan yang beranggotakan dan mewadahi seluruh mahasiswa Prodi S1 Digital Supply Chain, Fakultas Rekayasa Industri, Universitas Telkom. Lembaga ini berfungsi sebagai lembaga eksekutif yang bersifat independen dan non-structural institution.',
     en: 'DISCA of Telkom University is a student association encompassing and accommodating all students of the S1 Digital Supply Chain Program, Faculty of Industrial Engineering, Telkom University. The institution functions as an independent, non-structural executive body.',
 };
 
-const DISCA_HISTORY = {
+const FALLBACK_HISTORY: Bilingual = {
     id: 'Berawal dari kepanitiaan pembentukan himpunan dengan nama Keluarga Besar Mahasiswa Teknik Logistik (KBMTL) hingga akhirnya didirikan secara resmi oleh mahasiswa Digital Supply Chain angkatan II (2020) pada tanggal 6 April 2023 dengan nama Digital Supply Chain Student Association (DISCA) Universitas Telkom.',
     en: 'Starting from a committee establishing a student association under the name Keluarga Besar Mahasiswa Teknik Logistik (KBMTL), it was formally founded by the 2nd batch (2020) Digital Supply Chain students on April 6, 2023 under the name Digital Supply Chain Student Association (DISCA) of Telkom University.',
 };
 
-const DISCA_VISION = {
+const FALLBACK_VISION: Bilingual = {
     id: '"Terwujudnya DISCA sebagai wadah maupun sarana yang aktif dalam menciptakan lingkungan yang komunikatif, integritas, inisiatif, berkarakter, dan memberikan kebebasan dalam beraspirasi serta berekspresi berlandaskan asas kekeluargaan."',
     en: '"To realize DISCA as an active platform and means for creating a communicative, integrity-driven, initiative-based, character-building environment that provides freedom of aspiration and expression grounded in a sense of kinship."',
 };
 
-const DISCA_MISSIONS: { id: string; en: string }[] = [
+const FALLBACK_MISSIONS: Bilingual[] = [
     {
         id: 'Memaksimalkan DISCA sebagai wadah yang aktif dalam menampung aspirasi mahasiswa/i Digital Supply Chain.',
         en: 'Maximizing DISCA as an active platform for accommodating the aspirations of Digital Supply Chain students.',
@@ -60,141 +111,96 @@ const DISCA_MISSIONS: { id: string; en: string }[] = [
     },
 ];
 
-const LOGO_MEANINGS: { icon: React.ReactNode; color: string; title: { id: string; en: string }; desc: { id: string; en: string } }[] = [
+const FALLBACK_LOGO_MEANINGS: LogoMeaning[] = [
+    { title: { id: 'Warna Coklat', en: 'Brown Color' }, description: { id: 'Dimaknai sebagai kenyamanan dan ketenangan.', en: 'Symbolizes comfort and tranquility.' } },
+    { title: { id: 'Warna Hitam', en: 'Black Color' }, description: { id: 'Dimaknai sebagai netral dan kuat.', en: 'Symbolizes neutrality and strength.' } },
+    { title: { id: 'Warna Krem (Beige)', en: 'Cream (Beige) Color' }, description: { id: 'Dimaknai sebagai fleksibilitas dan dapat diandalkan.', en: 'Symbolizes flexibility and reliability.' } },
+    { title: { id: 'Warna Merah', en: 'Red Color' }, description: { id: 'Diwakilkan dengan berani dan energik.', en: 'Represents courage and energy.' } },
+    { title: { id: 'Bentuk Gear', en: 'Gear Shape' }, description: { id: 'Menggambarkan perubahan revolusi industri dan aktivitas DISCA yang terus berlangsung diiringi perkembangan teknologi.', en: 'Depicts the industrial revolution and DISCA\'s continuous activities alongside technological progress.' } },
+    { title: { id: 'Bentuk 3 Persegi', en: 'Three-Square Shape' }, description: { id: 'Menggambarkan profesionalisme, kekuatan, dan stabilitas, serta merepresentasikan Visi Program Studi Digital Supply Chain.', en: 'Depicts professionalism, strength, and stability, representing the DSC Program vision.' } },
+    { title: { id: 'Bentuk Point', en: 'Point Shape' }, description: { id: 'Diartikan sebagai DISCA Universitas Telkom yang memiliki arah serta tujuan yang jelas.', en: 'Signifies that DISCA has a clear direction and purpose.' } },
+];
+
+const FALLBACK_LEADERSHIP: LeadershipMember[] = [
+    { name: 'Christmas Ekaputra Maryono Pathibang', role: { id: 'Ketua Umum', en: 'General Chairperson' }, description: { id: 'Memimpin dan bertanggung jawab tertinggi atas seluruh aktivitas DISCA.', en: 'Leads and bears the highest responsibility for all DISCA activities.' } },
+    { name: 'Hanil Fazli', role: { id: 'Wakil Ketua Umum', en: 'Deputy General Chairperson' }, description: { id: 'Mendampingi ketua dalam menjalankan tugas dan tanggung jawab kepemimpinan.', en: 'Assists the chairperson in carrying out leadership duties and responsibilities.' } },
+    { name: 'Tartar Abimanyu', role: { id: 'Sekretaris Umum', en: 'General Secretary' }, description: { id: 'Bertanggung jawab pada semua arsip dokumen, surat, notulensi rapat, dan data.', en: 'Responsible for all document archives, letters, meeting minutes, and data.' } },
+    { name: 'Hardiyat Hawari Hutama', role: { id: 'Wakil Sekretaris', en: 'Deputy Secretary' }, description: { id: 'Membantu Sekretaris Umum dalam pengelolaan administrasi dan dokumentasi organisasi.', en: 'Assists the General Secretary in managing organizational administration and documentation.' } },
+    { name: 'Catherine Adella Yudhaningtyas', role: { id: 'Bendahara Umum', en: 'General Treasurer' }, description: { id: 'Bertanggung jawab dalam laporan keuangan, pengendalian, dan pengawasan aliran dana.', en: 'Responsible for financial reporting, control, and monitoring of fund flows.' } },
+    { name: 'Puja Amelia Arisma', role: { id: 'Wakil Bendahara', en: 'Deputy Treasurer' }, description: { id: 'Mendampingi Bendahara Umum dalam pengelolaan keuangan organisasi.', en: 'Assists the General Treasurer in managing the organization\'s finances.' } },
+];
+
+const FALLBACK_DEPARTMENTS: Department[] = [
+    { abbr: 'KADERISASI', name: { id: 'Departemen Kaderisasi', en: 'Cadre Development Department' }, description: { id: 'Bertanggung jawab terhadap seluruh proses kaderisasi dalam membentuk kader penerus, mengawasi seluruh rangkaian kaderisasi, dan menjaga kestabilan DISCA melalui alur kaderisasi.', en: 'Responsible for the entire cadre formation process, overseeing all cadre stages, and maintaining DISCA\'s stability through the cadre development pipeline.' } },
+    { abbr: 'KEMHAS', name: { id: 'Departemen Kemahasiswaan', en: 'Student Affairs Department' }, description: { id: 'Bertanggung jawab terhadap kegiatan internal DISCA — menjaga solidaritas, pengembangan minat bakat, dan advokasi kemahasiswaan dalam ruang lingkup Digital Supply Chain.', en: 'Responsible for DISCA internal activities — maintaining solidarity, developing student interests and talents, and student advocacy within the Digital Supply Chain scope.' } },
+    { abbr: 'AKSET', name: { id: 'Departemen Akademik & Riset', en: 'Academic & Research Department' }, description: { id: 'Bertanggung jawab menunjang akademik, memperluas wawasan, dan mendorong mahasiswa berprestasi dalam bidang penelitian, khususnya ilmu logistik.', en: 'Supports academics, broadens knowledge, and encourages students to excel in research, particularly in the field of logistics.' } },
+    { abbr: 'MENFO', name: { id: 'Departemen Media & Informasi', en: 'Media & Information Department' }, description: { id: 'Bertanggung jawab sebagai media penyebaran informasi seluruh kegiatan Prodi Digital Supply Chain, memastikan arus informasi tersebar merata di internal maupun eksternal DISCA.', en: 'Responsible for disseminating information about all DSC Program activities, ensuring information flows evenly both internally and externally within DISCA.' } },
+    { abbr: 'PR', name: { id: 'Biro Public Relation', en: 'Public Relations Bureau' }, description: { id: 'Bertanggung jawab terhadap pengelolaan informasi dan menjadi penghubung antara pihak eksternal maupun internal dalam menciptakan komunikasi yang baik di lingkup DISCA.', en: 'Responsible for managing information and acting as a bridge between external and internal parties to foster good communication within the DISCA scope.' } },
+];
+
+const FALLBACK_DPM_DESCRIPTION: Bilingual = {
+    id: 'Lembaga legislatif DISCA yang memiliki fungsi pengawasan terhadap kinerja lembaga eksekutif serta mewadahi aspirasi seluruh entitas Digital Supply Chain.',
+    en: 'The legislative body of DISCA with a supervisory function over the executive body\'s performance and a platform for all Digital Supply Chain entity aspirations.',
+};
+
+const FALLBACK_DPM_COMMISSIONS: DpmCommission[] = [
+    { name: { id: 'Inti DPM', en: 'DPM Core' }, description: { id: 'Mengatur urusan internal DPM DISCA serta membangun relasi dengan pihak eksternal.', en: 'Manages internal DPM affairs and builds relations with external parties.' } },
+    { name: { id: 'Komisi Aspirasi', en: 'Aspiration Commission' }, description: { id: 'Bertugas untuk mewadahi aspirasi seluruh entitas Digital Supply Chain.', en: 'Tasked with accommodating the aspirations of all Digital Supply Chain entities.' } },
+    { name: { id: 'Komisi Pengawasan', en: 'Oversight Commission' }, description: { id: 'Bertugas untuk mengawasi kinerja lembaga eksekutif Badan Pengurus Harian (BPH) DISCA.', en: 'Tasked with overseeing the performance of the DISCA Daily Management Board (BPH).' } },
+];
+
+const FALLBACK_ACTIVITIES: Activity[] = [
     {
-        icon: <div className="size-4 rounded-sm" style={{ background: '#8B5E3C' }} />,
-        color: '#8B5E3C',
-        title: { id: 'Warna Coklat', en: 'Brown Color' },
-        desc: { id: 'Dimaknai sebagai kenyamanan dan ketenangan.', en: 'Symbolizes comfort and tranquility.' },
+        label: { id: 'Kolaborasi Organisasi', en: 'Organizational Collaboration' },
+        title: { id: 'Studi Banding HIMA DSC × HMTM', en: 'Comparative Study HIMA DSC × HMTM' },
+        description: {
+            id: 'Kegiatan Studi Banding antara Himpunan Mahasiswa Digital Supply Chain (HIMA DSC) Universitas Telkom dan Himpunan Mahasiswa Teknik Manufaktur (HMTM) Universitas Telkom sebagai wadah kolaborasi untuk saling berbagi program kerja, struktur organisasi, serta pengalaman kepengurusan demi memajukan iklim organisasi yang inovatif dan kontributif.',
+            en: 'A comparative study session between the Digital Supply Chain Student Association (HIMA DSC) and the Manufacturing Engineering Student Association (HMTM) of Telkom University, fostering collaboration to share work programs, organizational structures, and leadership insights.',
+        },
+        photos: [
+            '/images/news/kemahasiswaan_studybandingdscxhmtm.png',
+            '/images/news/kemahasiswaan_studybandingdscxhmtm1.png',
+            '/images/news/kemahasiswaan_studybandingdscxhmtm2.png',
+        ],
     },
     {
-        icon: <div className="size-4 rounded-sm" style={{ background: '#1A1A1A' }} />,
-        color: '#505666',
-        title: { id: 'Warna Hitam', en: 'Black Color' },
-        desc: { id: 'Dimaknai sebagai netral dan kuat.', en: 'Symbolizes neutrality and strength.' },
-    },
-    {
-        icon: <div className="size-4 rounded-sm" style={{ background: '#F5ECD7' , border: '1px solid #ccc' }} />,
-        color: '#AC9587',
-        title: { id: 'Warna Krem (Beige)', en: 'Cream (Beige) Color' },
-        desc: { id: 'Dimaknai sebagai fleksibilitas dan dapat diandalkan.', en: 'Symbolizes flexibility and reliability.' },
-    },
-    {
-        icon: <div className="size-4 rounded-sm" style={{ background: '#C0392B' }} />,
-        color: '#C0392B',
-        title: { id: 'Warna Merah', en: 'Red Color' },
-        desc: { id: 'Diwakilkan dengan berani dan energik.', en: 'Represents courage and energy.' },
-    },
-    {
-        icon: <Settings className="size-4" style={{ color: '#D99F60' }} />,
-        color: '#D99F60',
-        title: { id: 'Bentuk Gear', en: 'Gear Shape' },
-        desc: { id: 'Menggambarkan perubahan revolusi industri dan aktivitas DISCA yang terus berlangsung diiringi perkembangan teknologi.', en: 'Depicts the industrial revolution and DISCA\'s continuous activities alongside technological progress.' },
-    },
-    {
-        icon: <Layers className="size-4" style={{ color: '#8C6441' }} />,
-        color: '#8C6441',
-        title: { id: 'Bentuk 3 Persegi', en: 'Three-Square Shape' },
-        desc: { id: 'Menggambarkan profesionalisme, kekuatan, dan stabilitas, serta merepresentasikan Visi Program Studi Digital Supply Chain.', en: 'Depicts professionalism, strength, and stability, representing the DSC Program vision.' },
-    },
-    {
-        icon: <Flag className="size-4" style={{ color: '#6E4E33' }} />,
-        color: '#6E4E33',
-        title: { id: 'Bentuk Point', en: 'Point Shape' },
-        desc: { id: 'Diartikan sebagai DISCA Universitas Telkom yang memiliki arah serta tujuan yang jelas.', en: 'Signifies that DISCA has a clear direction and purpose.' },
+        label: { id: 'Musyawarah & Konstitusi', en: 'Assembly & Constitution' },
+        title: { id: 'Sidang AD/ART & Pleno HIMA', en: 'AD/ART & Plenary Session' },
+        description: {
+            id: 'Sidang AD/ART dan Sidang Pleno Himpunan Mahasiswa merupakan agenda krusial organisasi untuk membahas dan mengesahkan Anggaran Dasar dan Anggaran Rumah Tangga (AD/ART), mengevaluasi capaian program kerja setengah periode kepengurusan, serta merumuskan rekomendasi taktis demi kelancaran roda organisasi.',
+            en: 'The AD/ART and Plenary Session is a crucial organizational agenda to discuss and ratify the Constitution and Bylaws (AD/ART), evaluate mid-term program achievements, and formulate tactical recommendations for smooth organizational operations.',
+        },
+        photos: [
+            '/images/news/kemahasiswaan_adarthimpunan.png',
+            '/images/news/kemahasiswaan_adarthimpunan1.png',
+        ],
     },
 ];
 
-const LEADERSHIP = [
-    {
-        role: { id: 'Ketua Umum', en: 'General Chairperson' },
-        name: 'Christmas Ekaputra Maryono Pathibang',
-        desc: { id: 'Memimpin dan bertanggung jawab tertinggi atas seluruh aktivitas DISCA.', en: 'Leads and bears the highest responsibility for all DISCA activities.' },
-        icon: <Shield className="size-5" />, accent: '#D99F60',
-    },
-    {
-        role: { id: 'Wakil Ketua Umum', en: 'Deputy General Chairperson' },
-        name: 'Hanil Fazli',
-        desc: { id: 'Mendampingi ketua dalam menjalankan tugas dan tanggung jawab kepemimpinan.', en: 'Assists the chairperson in carrying out leadership duties and responsibilities.' },
-        icon: <Users className="size-5" />, accent: '#8C6441',
-    },
-    {
-        role: { id: 'Sekretaris Umum', en: 'General Secretary' },
-        name: 'Tartar Abimanyu',
-        desc: { id: 'Bertanggung jawab pada semua arsip dokumen, surat, notulensi rapat, dan data.', en: 'Responsible for all document archives, letters, meeting minutes, and data.' },
-        icon: <BookOpen className="size-5" />, accent: '#6E4E33',
-    },
-    {
-        role: { id: 'Wakil Sekretaris', en: 'Deputy Secretary' },
-        name: 'Hardiyat Hawari Hutama',
-        desc: { id: 'Membantu Sekretaris Umum dalam pengelolaan administrasi dan dokumentasi organisasi.', en: 'Assists the General Secretary in managing organizational administration and documentation.' },
-        icon: <BookOpen className="size-5" />, accent: '#AC9587',
-    },
-    {
-        role: { id: 'Bendahara Umum', en: 'General Treasurer' },
-        name: 'Catherine Adella Yudhaningtyas',
-        desc: { id: 'Bertanggung jawab dalam laporan keuangan, pengendalian, dan pengawasan aliran dana.', en: 'Responsible for financial reporting, control, and monitoring of fund flows.' },
-        icon: <Award className="size-5" />, accent: '#C08A4C',
-    },
-    {
-        role: { id: 'Wakil Bendahara', en: 'Deputy Treasurer' },
-        name: 'Puja Amelia Arisma',
-        desc: { id: 'Mendampingi Bendahara Umum dalam pengelolaan keuangan organisasi.', en: 'Assists the General Treasurer in managing the organization\'s finances.' },
-        icon: <Award className="size-5" />, accent: '#505666',
-    },
+const FALLBACK_STATS: DiscaStat[] = [
+    { value: '5', label: { id: 'Departemen & Biro', en: 'Depts & Bureaus' } },
+    { value: '12+', label: { id: 'Program Kerja', en: 'Work Programs' } },
+    { value: '200+', label: { id: 'Anggota Aktif', en: 'Active Members' } },
+    { value: '2023', label: { id: 'Tahun Berdiri', en: 'Year Founded' } },
 ];
 
-const DEPARTMENTS: { icon: React.ReactNode; name: { id: string; en: string }; abbr: string; desc: { id: string; en: string }; accent: string }[] = [
-    {
-        icon: <GraduationCap className="size-5" />,
-        name: { id: 'Departemen Kaderisasi', en: 'Cadre Development Department' },
-        abbr: 'KADERISASI',
-        desc: {
-            id: 'Bertanggung jawab terhadap seluruh proses kaderisasi dalam membentuk kader penerus, mengawasi seluruh rangkaian kaderisasi, dan menjaga kestabilan DISCA melalui alur kaderisasi.',
-            en: 'Responsible for the entire cadre formation process, overseeing all cadre stages, and maintaining DISCA\'s stability through the cadre development pipeline.',
-        },
-        accent: '#D99F60',
-    },
-    {
-        icon: <Heart className="size-5" />,
-        name: { id: 'Departemen Kemahasiswaan', en: 'Student Affairs Department' },
-        abbr: 'KEMHAS',
-        desc: {
-            id: 'Bertanggung jawab terhadap kegiatan internal DISCA — menjaga solidaritas, pengembangan minat bakat, dan advokasi kemahasiswaan dalam ruang lingkup Digital Supply Chain.',
-            en: 'Responsible for DISCA internal activities — maintaining solidarity, developing student interests and talents, and student advocacy within the Digital Supply Chain scope.',
-        },
-        accent: '#8C6441',
-    },
-    {
-        icon: <Lightbulb className="size-5" />,
-        name: { id: 'Departemen Akademik & Riset', en: 'Academic & Research Department' },
-        abbr: 'AKSET',
-        desc: {
-            id: 'Bertanggung jawab menunjang akademik, memperluas wawasan, dan mendorong mahasiswa berprestasi dalam bidang penelitian, khususnya ilmu logistik.',
-            en: 'Supports academics, broadens knowledge, and encourages students to excel in research, particularly in the field of logistics.',
-        },
-        accent: '#6E4E33',
-    },
-    {
-        icon: <Megaphone className="size-5" />,
-        name: { id: 'Departemen Media & Informasi', en: 'Media & Information Department' },
-        abbr: 'MENFO',
-        desc: {
-            id: 'Bertanggung jawab sebagai media penyebaran informasi seluruh kegiatan Prodi Digital Supply Chain, memastikan arus informasi tersebar merata di internal maupun eksternal DISCA.',
-            en: 'Responsible for disseminating information about all DSC Program activities, ensuring information flows evenly both internally and externally within DISCA.',
-        },
-        accent: '#C08A4C',
-    },
-    {
-        icon: <Instagram className="size-5" />,
-        name: { id: 'Biro Public Relation', en: 'Public Relations Bureau' },
-        abbr: 'PR',
-        desc: {
-            id: 'Bertanggung jawab terhadap pengelolaan informasi dan menjadi penghubung antara pihak eksternal maupun internal dalam menciptakan komunikasi yang baik di lingkup DISCA.',
-            en: 'Responsible for managing information and acting as a bridge between external and internal parties to foster good communication within the DISCA scope.',
-        },
-        accent: '#AC9587',
-    },
+const ACCENTS = ['#D99F60', '#8C6441', '#6E4E33', '#AC9587', '#C08A4C', '#505666'];
+const LEADER_ICONS = [
+    <Shield className="size-5" key={0} />, <Users className="size-5" key={1} />, <BookOpen className="size-5" key={2} />,
+    <BookOpen className="size-5" key={3} />, <Award className="size-5" key={4} />, <Award className="size-5" key={5} />,
+];
+const DEPT_ICONS = [
+    <GraduationCap className="size-5" key={0} />, <Heart className="size-5" key={1} />, <Lightbulb className="size-5" key={2} />,
+    <Megaphone className="size-5" key={3} />, <Instagram className="size-5" key={4} />,
+];
+const LOGO_ICON_SWATCHES = [
+    <div className="size-4 rounded-sm" style={{ background: '#8B5E3C' }} key={0} />,
+    <div className="size-4 rounded-sm" style={{ background: '#1A1A1A' }} key={1} />,
+    <div className="size-4 rounded-sm" style={{ background: '#F5ECD7', border: '1px solid #ccc' }} key={2} />,
+    <div className="size-4 rounded-sm" style={{ background: '#C0392B' }} key={3} />,
+    <Settings className="size-4" style={{ color: '#D99F60' }} key={4} />,
+    <Layers className="size-4" style={{ color: '#8C6441' }} key={5} />,
+    <Flag className="size-4" style={{ color: '#6E4E33' }} key={6} />,
 ];
 
 export default function StudentAssociation({ orgContent }: StudentAssociationProps) {
@@ -207,9 +213,25 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
     const yBg   = useTransform(scrollYProgress, [0, 1], ['0%', '22%']);
     const yText = useTransform(scrollYProgress, [0, 1], ['0%', '10%']);
 
-    const orgName   = 'DISCA · Digital Supply Chain Student Association';
-    const title     = l === 'id' ? 'Kemahasiswaan & Himpunan' : 'Student Association';
-    const igHandle  = orgContent?.instagram ?? '@disca_telkomuniversity';
+    const title = l === 'id' ? 'Kemahasiswaan & Himpunan' : 'Student Association';
+    const igHandle = orgContent?.instagram ?? '@disca_telkomuniversity';
+
+    const profile     = (orgContent?.description?.id || orgContent?.description?.en) ? orgContent!.description! : FALLBACK_PROFILE;
+    const history      = (orgContent?.history?.id || orgContent?.history?.en) ? orgContent!.history! : FALLBACK_HISTORY;
+    const vision       = (orgContent?.vision?.id || orgContent?.vision?.en) ? orgContent!.vision! : FALLBACK_VISION;
+    const missions     = orgContent?.missions?.length ? orgContent.missions : FALLBACK_MISSIONS;
+    const logoMeanings = orgContent?.logo_meanings?.length ? orgContent.logo_meanings : FALLBACK_LOGO_MEANINGS;
+    const leadership   = orgContent?.leadership?.length ? orgContent.leadership : FALLBACK_LEADERSHIP;
+    const departments  = orgContent?.departments?.length ? orgContent.departments : FALLBACK_DEPARTMENTS;
+    const dpmDescription = (orgContent?.dpm?.description?.id || orgContent?.dpm?.description?.en) ? orgContent!.dpm!.description! : FALLBACK_DPM_DESCRIPTION;
+    const dpmCommissions = orgContent?.dpm?.commissions?.length ? orgContent.dpm!.commissions! : FALLBACK_DPM_COMMISSIONS;
+    const activities    = orgContent?.activities?.length ? orgContent.activities : FALLBACK_ACTIVITIES;
+    const stats         = orgContent?.stats?.length ? orgContent.stats : FALLBACK_STATS;
+    const foundedDate   = orgContent?.founded_date || (l === 'id' ? 'Berdiri 6 April 2023' : 'Founded April 6, 2023');
+    const facultyLabel  = orgContent?.faculty_label || 'FRI · Universitas Telkom';
+    const logoImage     = orgContent?.logo_image ?? '/images/logo-dsc-himpunan.png';
+
+    const MISSION_ICONS = [<Users key={0} className="size-5" />, <GraduationCap key={1} className="size-5" />, <Lightbulb key={2} className="size-5" />];
 
     return (
         <MainLayout fullHero>
@@ -232,8 +254,8 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                         {/* Left */}
                         <div className="md:col-span-8">
                             <Reveal>
-                                <span className="mb-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                                    style={{ background: 'rgba(217,159,96,0.18)', color: '#D99F60', border: '1px solid rgba(217,159,96,0.25)' }}>
+                                <span className="mb-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#D99F60' }}>
+                                    <span className="h-px w-5" style={{ background: '#D99F60' }} />
                                     {l === 'id' ? 'Himpunan Mahasiswa' : 'Student Association'} · Telkom University
                                 </span>
                                 <h1 className="font-display mt-3 text-4xl font-bold leading-tight text-white sm:text-5xl">
@@ -243,16 +265,16 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                                     </span>
                                 </h1>
                                 <p className="mt-5 max-w-xl text-sm leading-relaxed" style={{ color: 'rgba(172,149,135,0.85)' }}>
-                                    {DISCA_PROFILE[l]}
+                                    {profile[l]}
                                 </p>
                                 <div className="mt-5 flex flex-wrap gap-3">
                                     <span className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold"
                                         style={{ background: 'rgba(255,253,251,0.06)', color: 'rgba(255,253,251,0.70)', border: '1px solid rgba(172,149,135,0.20)' }}>
-                                        📅 {l === 'id' ? 'Berdiri 6 April 2023' : 'Founded April 6, 2023'}
+                                        {foundedDate}
                                     </span>
                                     <span className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold"
                                         style={{ background: 'rgba(255,253,251,0.06)', color: 'rgba(255,253,251,0.70)', border: '1px solid rgba(172,149,135,0.20)' }}>
-                                        🏛 FRI · Universitas Telkom
+                                        {facultyLabel}
                                     </span>
                                 </div>
                             </Reveal>
@@ -263,7 +285,7 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                                 <div className="rounded-3xl p-6" style={{ background: 'rgba(140,100,65,0.18)', backdropFilter: 'blur(12px)', border: '1px solid rgba(217,159,96,0.20)' }}>
                                     <Eye className="mb-3 size-5" style={{ color: '#D99F60' }} />
                                     <p className="font-display text-sm font-medium italic leading-relaxed" style={{ color: 'rgba(255,253,251,0.88)' }}>
-                                        {DISCA_VISION[l]}
+                                        {vision[l]}
                                     </p>
                                     <div className="mt-4 border-t pt-4" style={{ borderColor: 'rgba(255,255,255,0.10)' }}>
                                         <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'rgba(172,149,135,0.65)' }}>
@@ -285,15 +307,15 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                         <Reveal>
                             <div className="h-full rounded-3xl border p-8"
                                 style={{ borderColor: 'rgba(172,149,135,0.20)', background: 'linear-gradient(135deg, #FFFDFB 0%, #FBF7F2 100%)' }}>
-                                <span className="mb-4 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                                    style={{ background: 'rgba(217,159,96,0.12)', color: '#C08A4C' }}>
+                                <span className="mb-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#C08A4C' }}>
+                                    <span className="h-px w-5" style={{ background: '#C08A4C' }} />
                                     {l === 'id' ? 'Profil Organisasi' : 'Organization Profile'}
                                 </span>
                                 <h2 className="font-display mb-4 text-2xl font-bold" style={{ color: '#24141F' }}>
                                     {l === 'id' ? 'Tentang DISCA' : 'About DISCA'}
                                 </h2>
                                 <p className="text-sm leading-[1.85] text-justify" style={{ color: '#505666' }}>
-                                    {DISCA_PROFILE[l]}
+                                    {profile[l]}
                                 </p>
                             </div>
                         </Reveal>
@@ -301,15 +323,15 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                         <Reveal delay={0.1}>
                             <div className="h-full rounded-3xl border p-8"
                                 style={{ borderColor: 'rgba(172,149,135,0.20)', background: 'linear-gradient(135deg, #FFFDFB 0%, #FBF7F2 100%)' }}>
-                                <span className="mb-4 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                                    style={{ background: 'rgba(140,100,65,0.10)', color: '#8C6441' }}>
+                                <span className="mb-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#8C6441' }}>
+                                    <span className="h-px w-5" style={{ background: '#8C6441' }} />
                                     {l === 'id' ? 'Sejarah' : 'History'}
                                 </span>
                                 <h2 className="font-display mb-4 text-2xl font-bold" style={{ color: '#24141F' }}>
                                     {l === 'id' ? 'Asal Mula DISCA' : 'The Origins of DISCA'}
                                 </h2>
                                 <p className="text-sm leading-[1.85] text-justify" style={{ color: '#505666' }}>
-                                    {DISCA_HISTORY[l]}
+                                    {history[l]}
                                 </p>
                             </div>
                         </Reveal>
@@ -336,9 +358,10 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                     {/* Header */}
                     <Reveal>
                         <div className="mb-16 text-center">
-                            <span className="mb-4 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em]"
-                                style={{ background: 'rgba(217,159,96,0.12)', color: '#D99F60', border: '1px solid rgba(217,159,96,0.25)' }}>
-                                ✦ &nbsp;{l === 'id' ? 'Visi & Misi' : 'Vision & Mission'}&nbsp; ✦
+                            <span className="mb-4 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: '#D99F60' }}>
+                                <span className="h-px w-5" style={{ background: '#D99F60' }} />
+                                {l === 'id' ? 'Visi & Misi' : 'Vision & Mission'}
+                                <span className="h-px w-5" style={{ background: '#D99F60' }} />
                             </span>
                             <h2 className="font-display mt-4 text-4xl font-bold text-white sm:text-5xl">
                                 {l === 'id' ? 'Arah & Tujuan' : 'Direction & Purpose'}
@@ -360,14 +383,12 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                                 style={{ color: '#D99F60' }}>"</span>
 
                             <div className="relative flex flex-col items-start gap-6 md:flex-row md:items-center">
-                                {/* Label pill */}
                                 <div className="flex shrink-0 flex-col items-center gap-3">
                                     <div className="flex size-14 items-center justify-center rounded-2xl"
                                         style={{ background: 'rgba(217,159,96,0.18)', border: '1px solid rgba(217,159,96,0.30)' }}>
                                         <Eye className="size-6" style={{ color: '#D99F60' }} />
                                     </div>
-                                    <span className="rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-[0.15em]"
-                                        style={{ background: 'rgba(217,159,96,0.14)', color: '#D99F60' }}>
+                                    <span className="text-[9px] font-bold uppercase tracking-[0.15em]" style={{ color: '#D99F60' }}>
                                         {l === 'id' ? 'Visi' : 'Vision'}
                                     </span>
                                 </div>
@@ -376,7 +397,7 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                                 {/* Quote text */}
                                 <blockquote className="font-display text-lg font-medium italic leading-relaxed md:text-xl lg:text-2xl"
                                     style={{ color: 'rgba(255,253,251,0.92)' }}>
-                                    {DISCA_VISION[l]}
+                                    {vision[l]}
                                 </blockquote>
                             </div>
                         </div>
@@ -384,14 +405,8 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
 
                     {/* MISSION — 3-column horizontal cards */}
                     <div className="grid gap-4 sm:grid-cols-3">
-                        {DISCA_MISSIONS.map((m, i) => {
-                            const MISSION_ICONS = [
-                                <Users key={0} className="size-5" />,
-                                <GraduationCap key={1} className="size-5" />,
-                                <Lightbulb key={2} className="size-5" />,
-                            ];
-                            const MISSION_ACCENTS = ['#D99F60', '#AC9587', '#8C6441'];
-                            const accent = MISSION_ACCENTS[i];
+                        {missions.map((m, i) => {
+                            const accent = ACCENTS[i % ACCENTS.length];
                             return (
                                 <Reveal key={i} delay={0.12 + i * 0.08}>
                                     <div className="group relative h-full overflow-hidden rounded-3xl p-6 transition-all duration-300 hover:-translate-y-1"
@@ -403,7 +418,7 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                                         <div className="mb-5 flex items-center gap-3">
                                             <div className="flex size-11 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110"
                                                 style={{ background: `${accent}18`, color: accent }}>
-                                                {MISSION_ICONS[i]}
+                                                {MISSION_ICONS[i % MISSION_ICONS.length]}
                                             </div>
                                             <span className="font-display text-3xl font-black opacity-20 select-none"
                                                 style={{ color: accent }}>
@@ -428,21 +443,20 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
             <section className="py-20 border-t" style={{ background: '#FAF9F6', borderColor: 'rgba(172,149,135,0.12)' }}>
                 <div className="mx-auto max-w-[1100px] px-6">
                     <div className="grid gap-12 lg:grid-cols-12 items-start">
-                        {/* Logo Placeholder */}
+                        {/* Logo */}
                         <div className="lg:col-span-4">
                             <Reveal>
-                                <span className="mb-4 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                                    style={{ background: 'rgba(217,159,96,0.12)', color: '#C08A4C' }}>
+                                <span className="mb-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#C08A4C' }}>
+                                    <span className="h-px w-5" style={{ background: '#C08A4C' }} />
                                     {l === 'id' ? 'Identitas Visual' : 'Visual Identity'}
                                 </span>
                                 <h2 className="font-display mb-6 text-2xl font-bold" style={{ color: '#24141F' }}>
                                     {l === 'id' ? 'Makna Logo DISCA' : 'The Meaning of the DISCA Logo'}
                                 </h2>
-                                {/* Logo placeholder — will be replaced once logo-dsc-himpunan is available */}
                                 <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed py-16"
                                     style={{ borderColor: 'rgba(172,149,135,0.35)', background: 'rgba(217,159,96,0.04)' }}>
                                     <img
-                                        src="/images/logo-dsc-himpunan.png"
+                                        src={logoImage}
                                         alt="Logo DISCA"
                                         className="max-h-40 w-auto object-contain"
                                         onError={(e) => {
@@ -460,9 +474,6 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                                         <p className="text-xs font-semibold" style={{ color: 'rgba(80,86,102,0.50)' }}>
                                             {l === 'id' ? 'Logo DISCA akan ditampilkan di sini' : 'DISCA logo will appear here'}
                                         </p>
-                                        <p className="text-[10px]" style={{ color: 'rgba(80,86,102,0.35)' }}>
-                                            logo-dsc-himpunan.png
-                                        </p>
                                     </div>
                                 </div>
                             </Reveal>
@@ -471,23 +482,26 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                         <div className="lg:col-span-8">
                             <Reveal delay={0.08}>
                                 <div className="grid gap-3 sm:grid-cols-2">
-                                    {LOGO_MEANINGS.map((item, i) => (
-                                        <div key={i} className="flex gap-4 rounded-2xl border p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
-                                            style={{ borderColor: 'rgba(172,149,135,0.18)', background: '#FFFDFB' }}>
-                                            <div className="flex size-9 shrink-0 items-center justify-center rounded-xl"
-                                                style={{ background: `${item.color}15` }}>
-                                                {item.icon}
+                                    {logoMeanings.map((item, i) => {
+                                        const accent = ACCENTS[i % ACCENTS.length];
+                                        return (
+                                            <div key={i} className="flex gap-4 rounded-2xl border p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
+                                                style={{ borderColor: 'rgba(172,149,135,0.18)', background: '#FFFDFB' }}>
+                                                <div className="flex size-9 shrink-0 items-center justify-center rounded-xl"
+                                                    style={{ background: `${accent}15` }}>
+                                                    {LOGO_ICON_SWATCHES[i % LOGO_ICON_SWATCHES.length]}
+                                                </div>
+                                                <div>
+                                                    <p className="font-display text-sm font-semibold" style={{ color: '#24141F' }}>
+                                                        {item.title[l]}
+                                                    </p>
+                                                    <p className="mt-0.5 text-xs leading-relaxed" style={{ color: '#505666' }}>
+                                                        {item.description[l]}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <p className="font-display text-sm font-semibold" style={{ color: '#24141F' }}>
-                                                    {item.title[l]}
-                                                </p>
-                                                <p className="mt-0.5 text-xs leading-relaxed" style={{ color: '#505666' }}>
-                                                    {item.desc[l]}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             </Reveal>
                         </div>
@@ -500,41 +514,48 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                 <div className="mx-auto max-w-[1100px] px-6">
                     <Reveal>
                         <div className="mb-12">
-                            <span className="mb-3 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                                style={{ background: 'rgba(140,100,65,0.10)', color: '#8C6441' }}>
-                                {l === 'id' ? 'Kepengurusan 2025/2026' : 'Board 2025/2026'}
+                            <span className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#8C6441' }}>
+                                <span className="h-px w-5" style={{ background: '#8C6441' }} />
+                                {l === 'id' ? 'Kepengurusan' : 'Board'}
                             </span>
                             <h2 className="font-display mt-2 text-3xl font-bold" style={{ color: '#24141F' }}>
                                 {l === 'id' ? 'Struktur Kepengurusan Inti' : 'Core Leadership Structure'}
                             </h2>
                             <p className="mt-2 max-w-lg text-sm leading-relaxed" style={{ color: '#505666' }}>
                                 {l === 'id'
-                                    ? 'Badan Pengurus Harian (BPH) DISCA Universitas Telkom periode 2025/2026.'
-                                    : 'Daily Management Board (BPH) of DISCA Telkom University for the 2025/2026 term.'}
+                                    ? 'Badan Pengurus Harian (BPH) DISCA Universitas Telkom.'
+                                    : 'Daily Management Board (BPH) of DISCA Telkom University.'}
                             </p>
                         </div>
                     </Reveal>
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                        {LEADERSHIP.map((person, i) => (
-                            <Reveal key={i} delay={i * 0.07}>
-                                <div className="flex h-full flex-col rounded-3xl border p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
-                                    style={{ borderColor: 'rgba(172,149,135,0.18)', background: '#FFFDFB' }}>
-                                    <div className="mb-4 flex size-11 items-center justify-center rounded-xl"
-                                        style={{ background: `${person.accent}18`, color: person.accent }}>
-                                        {person.icon}
+                        {leadership.map((person, i) => {
+                            const accent = ACCENTS[i % ACCENTS.length];
+                            return (
+                                <Reveal key={i} delay={i * 0.07}>
+                                    <div className="flex h-full flex-col rounded-3xl border p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+                                        style={{ borderColor: 'rgba(172,149,135,0.18)', background: '#FFFDFB' }}>
+                                        {person.photo ? (
+                                            <img src={person.photo} alt={person.name} className="mb-4 size-14 rounded-xl object-cover" />
+                                        ) : (
+                                            <div className="mb-4 flex size-11 items-center justify-center rounded-xl"
+                                                style={{ background: `${accent}18`, color: accent }}>
+                                                {LEADER_ICONS[i % LEADER_ICONS.length]}
+                                            </div>
+                                        )}
+                                        <span className="mb-1 text-[10px] font-bold uppercase tracking-widest" style={{ color: accent }}>
+                                            {person.role[l]}
+                                        </span>
+                                        <h3 className="font-display mb-2 text-base font-semibold leading-snug" style={{ color: '#24141F' }}>
+                                            {person.name}
+                                        </h3>
+                                        <p className="flex-1 text-xs leading-relaxed" style={{ color: '#505666' }}>
+                                            {person.description[l]}
+                                        </p>
                                     </div>
-                                    <span className="mb-1 text-[10px] font-bold uppercase tracking-widest" style={{ color: person.accent }}>
-                                        {person.role[l]}
-                                    </span>
-                                    <h3 className="font-display mb-2 text-base font-semibold leading-snug" style={{ color: '#24141F' }}>
-                                        {person.name}
-                                    </h3>
-                                    <p className="flex-1 text-xs leading-relaxed" style={{ color: '#505666' }}>
-                                        {person.desc[l]}
-                                    </p>
-                                </div>
-                            </Reveal>
-                        ))}
+                                </Reveal>
+                            );
+                        })}
                     </div>
                 </div>
             </section>
@@ -544,8 +565,8 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                 <div className="mx-auto max-w-[1100px] px-6">
                     <Reveal>
                         <div className="mb-12">
-                            <span className="mb-3 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                                style={{ background: 'rgba(217,159,96,0.10)', color: '#C08A4C' }}>
+                            <span className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#C08A4C' }}>
+                                <span className="h-px w-5" style={{ background: '#C08A4C' }} />
                                 {l === 'id' ? 'Departemen & Biro' : 'Departments & Bureaus'}
                             </span>
                             <h2 className="font-display mt-2 text-3xl font-bold" style={{ color: '#24141F' }}>
@@ -559,26 +580,29 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                         </div>
                     </Reveal>
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                        {DEPARTMENTS.map((dept, i) => (
-                            <Reveal key={i} delay={i * 0.07}>
-                                <div className="flex h-full flex-col rounded-3xl border p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
-                                    style={{ borderColor: 'rgba(172,149,135,0.18)', background: '#FFFDFB' }}>
-                                    <div className="mb-4 flex size-11 items-center justify-center rounded-xl"
-                                        style={{ background: `${dept.accent}18`, color: dept.accent }}>
-                                        {dept.icon}
+                        {departments.map((dept, i) => {
+                            const accent = ACCENTS[i % ACCENTS.length];
+                            return (
+                                <Reveal key={i} delay={i * 0.07}>
+                                    <div className="flex h-full flex-col rounded-3xl border p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+                                        style={{ borderColor: 'rgba(172,149,135,0.18)', background: '#FFFDFB' }}>
+                                        <div className="mb-4 flex size-11 items-center justify-center rounded-xl"
+                                            style={{ background: `${accent}18`, color: accent }}>
+                                            {DEPT_ICONS[i % DEPT_ICONS.length]}
+                                        </div>
+                                        <span className="mb-1 text-[10px] font-bold uppercase tracking-widest" style={{ color: accent }}>
+                                            {dept.abbr}
+                                        </span>
+                                        <h3 className="font-display mb-2 text-base font-semibold leading-snug" style={{ color: '#24141F' }}>
+                                            {dept.name[l]}
+                                        </h3>
+                                        <p className="flex-1 text-xs leading-relaxed text-justify" style={{ color: '#505666' }}>
+                                            {dept.description[l]}
+                                        </p>
                                     </div>
-                                    <span className="mb-1 text-[10px] font-bold uppercase tracking-widest" style={{ color: dept.accent }}>
-                                        {dept.abbr}
-                                    </span>
-                                    <h3 className="font-display mb-2 text-base font-semibold leading-snug" style={{ color: '#24141F' }}>
-                                        {dept.name[l]}
-                                    </h3>
-                                    <p className="flex-1 text-xs leading-relaxed text-justify" style={{ color: '#505666' }}>
-                                        {dept.desc[l]}
-                                    </p>
-                                </div>
-                            </Reveal>
-                        ))}
+                                </Reveal>
+                            );
+                        })}
                     </div>
                 </div>
             </section>
@@ -588,63 +612,48 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                 <div className="mx-auto max-w-[1100px] px-6">
                     <Reveal>
                         <div className="mb-10">
-                            <span className="mb-3 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                                style={{ background: 'rgba(217,159,96,0.15)', color: '#D99F60' }}>
+                            <span className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#D99F60' }}>
+                                <span className="h-px w-5" style={{ background: '#D99F60' }} />
                                 {l === 'id' ? 'Legislatif' : 'Legislative'}
                             </span>
                             <h2 className="font-display mt-2 text-3xl font-bold text-white">
                                 {l === 'id' ? 'Dewan Perwakilan Mahasiswa (DPM DISCA)' : 'Student Representative Council (DPM DISCA)'}
                             </h2>
                             <p className="mt-2 max-w-xl text-sm leading-relaxed" style={{ color: 'rgba(172,149,135,0.80)' }}>
-                                {l === 'id'
-                                    ? 'Lembaga legislatif DISCA yang memiliki fungsi pengawasan terhadap kinerja lembaga eksekutif serta mewadahi aspirasi seluruh entitas Digital Supply Chain.'
-                                    : 'The legislative body of DISCA with a supervisory function over the executive body\'s performance and a platform for all Digital Supply Chain entity aspirations.'}
+                                {dpmDescription[l]}
                             </p>
                         </div>
                     </Reveal>
                     <div className="grid gap-5 sm:grid-cols-3">
-                        {[
-                            {
-                                icon: <Scale className="size-5" />,
-                                title: { id: 'Inti DPM', en: 'DPM Core' },
-                                desc: { id: 'Mengatur urusan internal DPM DISCA serta membangun relasi dengan pihak eksternal.', en: 'Manages internal DPM affairs and builds relations with external parties.' },
-                            },
-                            {
-                                icon: <Users className="size-5" />,
-                                title: { id: 'Komisi Aspirasi', en: 'Aspiration Commission' },
-                                desc: { id: 'Bertugas untuk mewadahi aspirasi seluruh entitas Digital Supply Chain.', en: 'Tasked with accommodating the aspirations of all Digital Supply Chain entities.' },
-                            },
-                            {
-                                icon: <Shield className="size-5" />,
-                                title: { id: 'Komisi Pengawasan', en: 'Oversight Commission' },
-                                desc: { id: 'Bertugas untuk mengawasi kinerja lembaga eksekutif Badan Pengurus Harian (BPH) DISCA.', en: 'Tasked with overseeing the performance of the DISCA Daily Management Board (BPH).' },
-                            },
-                        ].map((item, i) => (
-                            <Reveal key={i} delay={i * 0.09}>
-                                <div className="flex h-full flex-col rounded-3xl p-6 transition-all duration-300 hover:-translate-y-1"
-                                    style={{ background: 'rgba(255,253,251,0.05)', border: '1px solid rgba(172,149,135,0.15)' }}>
-                                    <div className="mb-4 flex size-11 items-center justify-center rounded-xl"
-                                        style={{ background: 'rgba(217,159,96,0.12)', color: '#D99F60' }}>
-                                        {item.icon}
+                        {dpmCommissions.map((item, i) => {
+                            const icons = [<Scale className="size-5" key={0} />, <Users className="size-5" key={1} />, <Shield className="size-5" key={2} />];
+                            return (
+                                <Reveal key={i} delay={i * 0.09}>
+                                    <div className="flex h-full flex-col rounded-3xl p-6 transition-all duration-300 hover:-translate-y-1"
+                                        style={{ background: 'rgba(255,253,251,0.05)', border: '1px solid rgba(172,149,135,0.15)' }}>
+                                        <div className="mb-4 flex size-11 items-center justify-center rounded-xl"
+                                            style={{ background: 'rgba(217,159,96,0.12)', color: '#D99F60' }}>
+                                            {icons[i % icons.length]}
+                                        </div>
+                                        <h3 className="font-display mb-2 text-base font-semibold text-white">{item.name[l]}</h3>
+                                        <p className="flex-1 text-xs leading-relaxed" style={{ color: 'rgba(172,149,135,0.80)' }}>
+                                            {item.description[l]}
+                                        </p>
                                     </div>
-                                    <h3 className="font-display mb-2 text-base font-semibold text-white">{item.title[l]}</h3>
-                                    <p className="flex-1 text-xs leading-relaxed" style={{ color: 'rgba(172,149,135,0.80)' }}>
-                                        {item.desc[l]}
-                                    </p>
-                                </div>
-                            </Reveal>
-                        ))}
+                                </Reveal>
+                            );
+                        })}
                     </div>
                 </div>
             </section>
 
-            {/* ── KEGIATAN HIMPUNAN (STUDY BANDING & AD/ART) ── */}
+            {/* ── KEGIATAN HIMPUNAN ── */}
             <section className="py-20 border-t" style={{ background: '#FAF9F6', borderColor: 'rgba(172,149,135,0.12)' }}>
                 <div className="mx-auto max-w-[1100px] px-6 space-y-28">
                     <Reveal>
                         <div className="mb-2">
-                            <span className="mb-3 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                                style={{ background: 'rgba(217,159,96,0.10)', color: '#C08A4C' }}>
+                            <span className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#C08A4C' }}>
+                                <span className="h-px w-5" style={{ background: '#C08A4C' }} />
                                 {l === 'id' ? 'Dokumentasi Kegiatan' : 'Activity Documentation'}
                             </span>
                             <h2 className="font-display mt-2 text-3xl font-bold" style={{ color: '#24141F' }}>
@@ -653,81 +662,49 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                         </div>
                     </Reveal>
 
-                    {/* Row 1: Studi Banding */}
-                    <Reveal>
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                            <div className="lg:col-span-5 space-y-5">
-                                <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest"
-                                    style={{ background: 'rgba(217,159,96,0.12)', color: '#C08A4C' }}>
-                                    {l === 'id' ? 'Kolaborasi Organisasi' : 'Organizational Collaboration'}
-                                </span>
-                                <h3 className="font-display text-2xl font-bold leading-tight" style={{ color: '#24141F' }}>
-                                    {l === 'id' ? 'Studi Banding HIMA DSC × HMTM' : 'Comparative Study HIMA DSC × HMTM'}
-                                </h3>
-                                <p className="text-sm leading-relaxed text-justify" style={{ color: '#505666' }}>
-                                    {l === 'id'
-                                        ? 'Kegiatan Studi Banding antara Himpunan Mahasiswa Digital Supply Chain (HIMA DSC) Universitas Telkom dan Himpunan Mahasiswa Teknik Manufaktur (HMTM) Universitas Telkom sebagai wadah kolaborasi untuk saling berbagi program kerja, struktur organisasi, serta pengalaman kepengurusan demi memajukan iklim organisasi yang inovatif dan kontributif.'
-                                        : 'A comparative study session between the Digital Supply Chain Student Association (HIMA DSC) and the Manufacturing Engineering Student Association (HMTM) of Telkom University, fostering collaboration to share work programs, organizational structures, and leadership insights.'}
-                                </p>
-                            </div>
-                            <div className="lg:col-span-7 grid grid-cols-12 gap-4 items-stretch h-[320px] md:h-[400px]">
-                                <div className="col-span-8 rounded-[2rem] overflow-hidden relative shadow-sm hover:shadow-md transition-shadow duration-300 group">
-                                    <img src="/images/news/kemahasiswaan_studybandingdscxhmtm.png"
-                                        alt="Studi Banding HIMA DSC x HMTM"
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-[#24141F]/30 to-transparent pointer-events-none" />
-                                </div>
-                                <div className="col-span-4 flex flex-col gap-4 h-full">
-                                    <div className="flex-1 rounded-[1.5rem] overflow-hidden relative shadow-sm hover:shadow-md transition-shadow duration-300 group">
-                                        <img src="/images/news/kemahasiswaan_studybandingdscxhmtm1.png"
-                                            alt="Studi Banding Detail 1"
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-[#24141F]/30 to-transparent pointer-events-none" />
+                    {activities.map((act, i) => {
+                        const accent = i % 2 === 0 ? '#C08A4C' : '#8C6441';
+                        const photos = act.photos.filter(Boolean);
+                        const reversed = i % 2 === 1;
+                        return (
+                            <Reveal key={i}>
+                                <div className={`grid grid-cols-1 lg:grid-cols-12 gap-10 items-center ${reversed ? 'lg:[&>*:first-child]:order-2' : ''}`}>
+                                    <div className="lg:col-span-5 space-y-5">
+                                        <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest" style={{ color: accent }}>
+                                            <span className="h-px w-5" style={{ background: accent }} />
+                                            {act.label[l]}
+                                        </span>
+                                        <h3 className="font-display text-2xl font-bold leading-tight" style={{ color: '#24141F' }}>
+                                            {act.title[l]}
+                                        </h3>
+                                        <p className="text-sm leading-relaxed text-justify" style={{ color: '#505666' }}>
+                                            {act.description[l]}
+                                        </p>
                                     </div>
-                                    <div className="flex-1 rounded-[1.5rem] overflow-hidden relative shadow-sm hover:shadow-md transition-shadow duration-300 group">
-                                        <img src="/images/news/kemahasiswaan_studybandingdscxhmtm2.png"
-                                            alt="Studi Banding Detail 2"
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-[#24141F]/30 to-transparent pointer-events-none" />
-                                    </div>
+                                    {photos.length > 0 && (
+                                        <div className="lg:col-span-7 grid grid-cols-12 gap-4 items-stretch h-[320px] md:h-[400px]">
+                                            <div className={`${photos.length > 1 ? 'col-span-8' : 'col-span-12'} rounded-[2rem] overflow-hidden relative shadow-sm hover:shadow-md transition-shadow duration-300 group`}>
+                                                <img src={photos[0]} alt={act.title[l]}
+                                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-[#24141F]/30 to-transparent pointer-events-none" />
+                                            </div>
+                                            {photos.length > 1 && (
+                                                <div className="col-span-4 flex flex-col gap-4 h-full">
+                                                    {photos.slice(1, 3).map((p, pIdx) => (
+                                                        <div key={pIdx} className="flex-1 rounded-[1.5rem] overflow-hidden relative shadow-sm hover:shadow-md transition-shadow duration-300 group">
+                                                            <img src={p} alt={`${act.title[l]} ${pIdx + 1}`}
+                                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                                            <div className="absolute inset-0 bg-gradient-to-t from-[#24141F]/30 to-transparent pointer-events-none" />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
-                            </div>
-                        </div>
-                    </Reveal>
-
-                    {/* Row 2: Sidang AD/ART */}
-                    <Reveal>
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                            <div className="lg:col-span-7 grid grid-cols-2 gap-4 h-[320px] md:h-[400px]">
-                                <div className="rounded-[2rem] overflow-hidden relative shadow-sm hover:shadow-md transition-shadow duration-300 group">
-                                    <img src="/images/news/kemahasiswaan_adarthimpunan.png"
-                                        alt="Sidang AD/ART HIMA"
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-[#24141F]/30 to-transparent pointer-events-none" />
-                                </div>
-                                <div className="rounded-[2rem] overflow-hidden relative shadow-sm hover:shadow-md transition-shadow duration-300 group">
-                                    <img src="/images/news/kemahasiswaan_adarthimpunan1.png"
-                                        alt="Sidang Pleno HIMA"
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-[#24141F]/30 to-transparent pointer-events-none" />
-                                </div>
-                            </div>
-                            <div className="lg:col-span-5 space-y-5">
-                                <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest"
-                                    style={{ background: 'rgba(140,100,65,0.12)', color: '#8C6441' }}>
-                                    {l === 'id' ? 'Musyawarah & Konstitusi' : 'Assembly & Constitution'}
-                                </span>
-                                <h3 className="font-display text-2xl font-bold leading-tight" style={{ color: '#24141F' }}>
-                                    {l === 'id' ? 'Sidang AD/ART & Pleno HIMA' : 'AD/ART & Plenary Session'}
-                                </h3>
-                                <p className="text-sm leading-relaxed text-justify" style={{ color: '#505666' }}>
-                                    {l === 'id'
-                                        ? 'Sidang AD/ART dan Sidang Pleno Himpunan Mahasiswa merupakan agenda krusial organisasi untuk membahas dan mengesahkan Anggaran Dasar dan Anggaran Rumah Tangga (AD/ART), mengevaluasi capaian program kerja setengah periode kepengurusan, serta merumuskan rekomendasi taktis demi kelancaran roda organisasi.'
-                                        : 'The AD/ART and Plenary Session is a crucial organizational agenda to discuss and ratify the Constitution and Bylaws (AD/ART), evaluate mid-term program achievements, and formulate tactical recommendations for smooth organizational operations.'}
-                                </p>
-                            </div>
-                        </div>
-                    </Reveal>
+                            </Reveal>
+                        );
+                    })}
                 </div>
             </section>
 
@@ -736,17 +713,12 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                 <Reveal>
                     <div className="mx-auto max-w-[900px] px-6">
                         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                            {[
-                                { val: '5',   label: l === 'id' ? 'Departemen & Biro' : 'Depts & Bureaus' },
-                                { val: '12+', label: l === 'id' ? 'Program Kerja' : 'Work Programs' },
-                                { val: '200+',label: l === 'id' ? 'Anggota Aktif' : 'Active Members' },
-                                { val: '2023',label: l === 'id' ? 'Tahun Berdiri' : 'Year Founded' },
-                            ].map((s, i) => (
+                            {stats.map((s, i) => (
                                 <Reveal key={i} delay={i * 0.08}>
                                     <div className="rounded-2xl p-5 text-center"
                                         style={{ background: 'rgba(255,253,251,0.04)', border: '1px solid rgba(172,149,135,0.12)' }}>
-                                        <p className="font-display text-3xl font-bold" style={{ color: '#D99F60' }}>{s.val}</p>
-                                        <p className="mt-1 text-xs" style={{ color: 'rgba(172,149,135,0.70)' }}>{s.label}</p>
+                                        <p className="font-display text-3xl font-bold" style={{ color: '#D99F60' }}>{s.value}</p>
+                                        <p className="mt-1 text-xs" style={{ color: 'rgba(172,149,135,0.70)' }}>{s.label[l]}</p>
                                     </div>
                                 </Reveal>
                             ))}
