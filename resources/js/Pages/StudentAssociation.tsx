@@ -314,9 +314,15 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                                 <h2 className="font-display mb-4 text-2xl font-bold" style={{ color: '#24141F' }}>
                                     {l === 'id' ? 'Tentang DISCA' : 'About DISCA'}
                                 </h2>
-                                <p className="text-sm leading-[1.85] text-justify" style={{ color: '#505666' }}>
-                                    {profile[l]}
-                                </p>
+                                <div className="space-y-4 text-sm leading-[1.85] text-justify" style={{ color: '#505666' }}>
+                                    {profile[l]?.split('\n').map((para, i) =>
+                                        para.trim() === '' ? null : (
+                                            <p key={i}>
+                                                {para}
+                                            </p>
+                                        )
+                                    )}
+                                </div>
                             </div>
                         </Reveal>
                         {/* Sejarah */}
@@ -330,9 +336,15 @@ export default function StudentAssociation({ orgContent }: StudentAssociationPro
                                 <h2 className="font-display mb-4 text-2xl font-bold" style={{ color: '#24141F' }}>
                                     {l === 'id' ? 'Asal Mula DISCA' : 'The Origins of DISCA'}
                                 </h2>
-                                <p className="text-sm leading-[1.85] text-justify" style={{ color: '#505666' }}>
-                                    {history[l]}
-                                </p>
+                                <div className="space-y-4 text-sm leading-[1.85] text-justify" style={{ color: '#505666' }}>
+                                    {history[l]?.split('\n').map((para, i) =>
+                                        para.trim() === '' ? null : (
+                                            <p key={i}>
+                                                {para}
+                                            </p>
+                                        )
+                                    )}
+                                </div>
                             </div>
                         </Reveal>
                     </div>
