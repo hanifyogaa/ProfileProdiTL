@@ -296,8 +296,9 @@ export default function Curriculum({ courses, curriculumMeta }: CurriculumProps)
                         {/* PEO */}
                         <section id="peo" className="scroll-mt-24 p-8">
                             <Reveal>
-                                <span className="mb-3 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                                    style={{ background: 'rgba(217,159,96,0.15)', color: '#D99F60' }}>PEO</span>
+                                <span className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#D99F60' }}>
+                                    <span className="h-px w-5" style={{ background: '#D99F60' }} />PEO
+                                </span>
                                 <h2 className="font-display mb-4 mt-2 text-lg font-semibold text-white">
                                     Program Educational Objectives
                                 </h2>
@@ -320,8 +321,9 @@ export default function Curriculum({ courses, curriculumMeta }: CurriculumProps)
                         {/* PLO */}
                         <section id="plo" className="scroll-mt-24 p-8">
                             <Reveal delay={0.08}>
-                                <span className="mb-3 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                                    style={{ background: 'rgba(140,100,65,0.20)', color: '#AC9587' }}>PLO</span>
+                                <span className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#AC9587' }}>
+                                    <span className="h-px w-5" style={{ background: '#AC9587' }} />PLO
+                                </span>
                                 <h2 className="font-display mb-4 mt-2 text-lg font-semibold text-white">
                                     Program Learning Outcomes
                                 </h2>
@@ -372,8 +374,8 @@ export default function Curriculum({ courses, curriculumMeta }: CurriculumProps)
                 {/* ── Mata Kuliah Pilihan ── */}
                 <section id="mata-kuliah-pilihan" className="scroll-mt-24 mb-16">
                     <Reveal>
-                        <span className="mb-3 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                            style={{ background: 'rgba(217,159,96,0.12)', color: '#C08A4C' }}>
+                        <span className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#C08A4C' }}>
+                            <span className="h-px w-5" style={{ background: '#C08A4C' }} />
                             {l === 'id' ? 'Pilihan' : 'Elective'}
                         </span>
                         <h2 className="font-display text-ink-900 mb-6 mt-2 text-2xl font-semibold">
@@ -414,8 +416,8 @@ export default function Curriculum({ courses, curriculumMeta }: CurriculumProps)
                 {/* ── Struktur Kurikulum ── */}
                 <section id="struktur-kurikulum" className="scroll-mt-24 mb-20">
                     <Reveal>
-                        <span className="mb-3 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                            style={{ background: 'rgba(140,100,65,0.12)', color: '#8C6441' }}>
+                        <span className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#8C6441' }}>
+                            <span className="h-px w-5" style={{ background: '#D99F60' }} />
                             {l === 'id' ? 'Struktur' : 'Structure'}
                         </span>
                         <h2 className="font-display text-ink-900 mb-6 mt-2 text-2xl font-semibold">

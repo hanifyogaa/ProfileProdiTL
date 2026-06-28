@@ -62,8 +62,7 @@ export default function LearningOutcomes({ plos }: { plos?: PloItem[] }) {
 
                 <motion.div className="relative z-10 mx-auto w-full max-w-[820px] px-6 pb-14 pt-40 text-center" style={shouldReduceMotion ? {} : { y: yText }}>
                     <Reveal>
-                        <span className="mb-4 inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
-                            style={{ background: 'rgba(217,159,96,0.15)', color: '#D99F60', border: '1px solid rgba(217,159,96,0.25)' }}>
+                        <span className="mb-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest" style={{ color: '#D99F60' }}>
                             <Target className="size-3.5" />
                             PLO &amp; CLO
                         </span>

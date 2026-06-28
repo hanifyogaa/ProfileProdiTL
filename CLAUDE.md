@@ -3,7 +3,7 @@
 Project rules for the Teknik Logistik · Digital Supply Chain website redesign (FRI, Telkom University). Read before writing any code. Full specs live in `.docs/PRD.md`, `.docs/Home_Page_Plan.md`, `.docs/UI_UX_Plan.md` — this file is the condensed, binding summary.
 
 ## Status
-Planning stage. No application code exists yet — `.docs/` contains the only artifacts. Stack below is decided; scaffolding has not started.
+Live in production. Deploys are manual/triggered by the team, not auto-deploy-on-push — safe to commit directly to `main`, but verify changes before asking for a deploy.
 
 ## Stack (decided, do not deviate without asking)
 - Laravel 13 (PHP 8.3+) + Inertia.js + React + Tailwind CSS, single codebase, no separate API.
@@ -18,7 +18,9 @@ This is the most-repeated constraint across all three docs — treat it as a har
 
 **Never:** purple/blue gradients, 3 identical glassmorphism cards in a row, centered-everything symmetric stacks, generic stock-hero + big centered headline + two pill buttons, emoji-as-decoration, full 3D scenes, autoplay-faster-than-5s carousels, orphan/template pages, motion that ignores `prefers-reduced-motion`.
 
-**Always:** warm amber/brown palette (see tokens below), asymmetric layouts (e.g. hero text 7 cols / image 5 cols), varied card sizes (bento, not uniform grids), real photos over stock, pill-shaped section-label accents, Embla for carousels, every animated element wrapped in a reduced-motion-aware `<Reveal>`.
+**Always:** warm amber/brown palette (see tokens below), asymmetric layouts (e.g. hero text 7 cols / image 5 cols), varied card sizes (bento, not uniform grids), real photos over stock, Embla for carousels, every animated element wrapped in a reduced-motion-aware `<Reveal>`.
+
+**Section labels:** no pill/badge-shaped eyebrow labels above headings (reads as generic AI-template filler when repeated across every section). Use a plain heading with a small accent rule instead — e.g. a short amber vertical/horizontal line beside or under the H2, no background, no border, no uppercase pill. Reserve labeling for sections that actually need disambiguation; don't force one above every H2 just for rhythm.
 
 ### Color tokens (Tailwind `theme.extend`)
 ```js

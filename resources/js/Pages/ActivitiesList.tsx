@@ -185,10 +185,8 @@ export default function ActivitiesList({ activities }: ActivitiesListProps) {
                                     <CalendarCheck className="size-5" style={{ color: '#D99F60' }} />
                                 </div>
                                 <div>
-                                    <span
-                                        className="mb-2 inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest"
-                                        style={{ background: 'rgba(217,159,96,0.15)', color: '#D99F60' }}
-                                    >
+                                    <span className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest" style={{ color: '#D99F60' }}>
+                                        <span className="h-px w-5" style={{ background: '#D99F60' }} />
                                         {l === 'id' ? 'Telah Berlangsung' : 'Completed'}
                                     </span>
                                     <h2

@@ -6,10 +6,8 @@ import React, { useRef } from 'react';
 
 export function PillLabel({ children }: { children: React.ReactNode }) {
     return (
-        <span
-            className="mb-3 inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest"
-            style={{ background: 'rgba(140,100,65,0.12)', color: '#8C6441' }}
-        >
+        <span className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest" style={{ color: '#8C6441' }}>
+            <span className="h-px w-5" style={{ background: '#D99F60' }} />
             {children}
         </span>
     );

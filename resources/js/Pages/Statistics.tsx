@@ -253,8 +253,8 @@ export default function Statistics({ tracerStats, stats }: StatisticsProps) {
                 <div className="mx-auto max-w-[1100px] px-6">
                     <Reveal>
                         <div className="mb-12 text-center">
-                            <span className="mb-3 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em]"
-                                style={{ background: 'rgba(217,159,96,0.10)', color: '#C08A4C', border: '1px solid rgba(217,159,96,0.20)' }}>
+                            <span className="mb-3 flex flex-col items-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: '#C08A4C' }}>
+                                <span className="h-px w-8" style={{ background: '#C08A4C' }} />
                                 {l === 'id' ? 'Civitas Akademika' : 'Academic Community'}
                             </span>
                             <h2 className="font-display mt-3 text-4xl font-bold" style={{ color: '#24141F' }}>
@@ -360,8 +360,8 @@ export default function Statistics({ tracerStats, stats }: StatisticsProps) {
                 <div className="relative mx-auto max-w-[1100px] px-6">
                     <Reveal>
                         <div className="mb-14 flex flex-col items-center text-center">
-                            <span className="mb-4 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em]"
-                                style={{ background: 'rgba(140,100,65,0.10)', color: '#8C6441', border: '1px solid rgba(140,100,65,0.20)' }}>
+                            <span className="mb-4 flex flex-col items-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: '#8C6441' }}>
+                                <span className="h-px w-8" style={{ background: '#8C6441' }} />
                                 {l === 'id' ? 'Indikator Kinerja Utama' : 'Key Performance Indicators'}
                             </span>
                             <h2 className="font-display text-4xl font-bold" style={{ color: '#24141F' }}>
@@ -416,8 +416,8 @@ export default function Statistics({ tracerStats, stats }: StatisticsProps) {
                     <div className="grid gap-12 lg:grid-cols-2 items-center">
                         {/* Left: title */}
                         <Reveal>
-                            <span className="mb-4 inline-block rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest"
-                                style={{ background: 'rgba(217,159,96,0.10)', color: '#C08A4C' }}>
+                            <span className="mb-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest" style={{ color: '#C08A4C' }}>
+                                <span className="h-px w-5" style={{ background: '#C08A4C' }} />
                                 {l === 'id' ? 'Performa Program Studi' : 'Program Performance'}
                             </span>
                             <h2 className="font-display text-3xl font-bold leading-snug" style={{ color: '#24141F' }}>

@@ -112,10 +112,8 @@ export default function Partnerships({ partners }: PartnershipsProps) {
                     <div className="mx-auto max-w-[1100px] px-6">
                         <Reveal>
                             <div className="mb-12">
-                                <span
-                                    className="mb-3 inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest"
-                                    style={{ background: 'rgba(217,159,96,0.15)', color: '#D99F60' }}
-                                >
+                                <span className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest" style={{ color: '#D99F60' }}>
+                                    <span className="h-px w-5" style={{ background: '#D99F60' }} />
                                     {l === 'id' ? 'Industri' : 'Industry'}
                                 </span>
                                 <h2
