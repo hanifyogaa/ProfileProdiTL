@@ -126,10 +126,12 @@ export function Footer({ settings }: { settings: FooterSettings }) {
                             <div className="flex items-center gap-2.5">
                                 <Phone className="text-brand-700 size-4" />
                                 <a
-                                    href={`tel:${phone}`}
+                                    href={phone.startsWith('http') ? phone : `tel:${phone.replace(/\s/g, '')}`}
+                                    target={phone.startsWith('http') ? '_blank' : undefined}
+                                    rel={phone.startsWith('http') ? 'noopener noreferrer' : undefined}
                                     className="text-navy-700 hover:text-brand-700 transition-colors"
                                 >
-                                    {phone}
+                                    {phone.includes('wa.me') ? '+62 851-3502-2891' : phone}
                                 </a>
                             </div>
                         </div>

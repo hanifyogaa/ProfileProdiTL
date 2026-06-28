@@ -1,4 +1,4 @@
-﻿import { MainLayout } from '@/Layouts/MainLayout';
+import { MainLayout } from '@/Layouts/MainLayout';
 import { Card } from '@/components/Card';
 import { Reveal } from '@/components/Reveal';
 import { useLocale } from '@/contexts/LocaleContext';
@@ -164,9 +164,9 @@ export default function Contact({
                                     },
                                     {
                                         icon: <Phone className="size-5" />,
-                                        label: l === 'id' ? 'Telepon' : 'Telephone',
-                                        value: phone,
-                                        href: `tel:${phone.replace(/\s/g, '')}`,
+                                        label: l === 'id' ? 'WhatsApp / Telepon' : 'WhatsApp / Telephone',
+                                        value: phone.includes('wa.me') ? '+62 851-3502-2891' : phone,
+                                        href: phone.startsWith('http') ? phone : `tel:${phone.replace(/\s/g, '')}`,
                                     },
                                     {
                                         icon: <MapPin className="size-5" />,
@@ -177,8 +177,8 @@ export default function Contact({
                                     ...(instagram ? [{
                                         icon: <Instagram className="size-5" />,
                                         label: 'Instagram',
-                                        value: instagram,
-                                        href: `https://instagram.com/${instagram.replace('@', '')}`,
+                                        value: instagram.replace('https://instagram.com/', '@').replace(/\/$/, ''),
+                                        href: instagram.startsWith('http') ? instagram : `https://instagram.com/${instagram.replace('@', '')}`,
                                     }] : []),
                                 ].map((item, i) => (
                                     <div key={i} className="flex items-start gap-4 rounded-2xl border p-5"

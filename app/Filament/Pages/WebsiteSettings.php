@@ -54,6 +54,8 @@ class WebsiteSettings extends Page
     public string $greeting_attribution_id   = '';
     public string $greeting_attribution_en   = '';
     public string $greeting_link_href        = '';
+    public string $greeting_full_message_id  = '';
+    public string $greeting_full_message_en  = '';
 
     // Tracer Study
     public string $tracer_caption_id = '';
@@ -142,6 +144,8 @@ class WebsiteSettings extends Page
         $this->greeting_attribution_id = $greeting['attribution']['id'] ?? '';
         $this->greeting_attribution_en = $greeting['attribution']['en'] ?? '';
         $this->greeting_link_href      = $greeting['link_href']         ?? '';
+        $this->greeting_full_message_id = $greeting['full_message']['id'] ?? '';
+        $this->greeting_full_message_en = $greeting['full_message']['en'] ?? '';
 
         $this->tracer_caption_id = $tracer['caption']['id'] ?? '';
         $this->tracer_caption_en = $tracer['caption']['en'] ?? '';
@@ -337,6 +341,7 @@ class WebsiteSettings extends Page
             'quote'       => ['id' => $this->greeting_quote_id,       'en' => $this->greeting_quote_en],
             'attribution' => ['id' => $this->greeting_attribution_id, 'en' => $this->greeting_attribution_en],
             'link_href'   => $this->greeting_link_href ?: null,
+            'full_message'=> ['id' => $this->greeting_full_message_id, 'en' => $this->greeting_full_message_en],
         ]]);
 
         // Tracer Stats

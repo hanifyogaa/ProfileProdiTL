@@ -1,6 +1,6 @@
 import { MainLayout } from '@/Layouts/MainLayout';
 import { Reveal } from '@/components/Reveal';
-import { KaprodiGreeting } from '@/Sections/KaprodiGreeting';
+import { KaprodiWelcomeSection } from '@/Sections/KaprodiWelcomeSection';
 import { StatsStrip } from '@/Sections/StatsStrip';
 import { useLocale } from '@/contexts/LocaleContext';
 import { Head } from '@inertiajs/react';
@@ -24,6 +24,7 @@ interface GreetingData {
     quote?: BilingualStr;
     attribution?: BilingualStr;
     photo?: string | null;
+    full_message?: BilingualStr;
 }
 
 interface SiteMeta {
@@ -223,13 +224,13 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
 
             {/* ── SAMBUTAN KAPRODI ── */}
             <div className="mt-0">
-                <KaprodiGreeting inlineModal greeting={{
-
-                    name:        greeting?.name        ?? null,
-                    photo:       greeting?.photo       ?? null,
-                    quote:       greeting?.quote       ?? { id: '', en: '' },
-                    attribution: greeting?.attribution ?? { id: '', en: '' },
-                    link_href:   greeting?.link_href   ?? '/profil',
+                <KaprodiWelcomeSection greeting={{
+                    name:         greeting?.name         ?? null,
+                    photo:        greeting?.photo        ?? null,
+                    quote:        greeting?.quote        ?? { id: '', en: '' },
+                    attribution:  greeting?.attribution  ?? { id: '', en: '' },
+                    link_href:    greeting?.link_href    ?? '/profil',
+                    full_message: greeting?.full_message ?? { id: '', en: '' },
                 }} />
             </div>
 
@@ -437,8 +438,8 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
             {/* ── SEJARAH — dark band with photo bg ── */}
             <section id="sejarah" className="relative scroll-mt-24 overflow-hidden py-24">
                 <div className="absolute inset-0">
-                    <img src={HISTORY_BG} alt="" className="size-full object-cover" style={{ opacity: 0.22 }} loading="lazy" />
-                    <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(36,20,31,0.93) 0%, rgba(110,78,51,0.70) 60%, rgba(36,20,31,0.90) 100%)' }} />
+                    <img src={HISTORY_BG} alt="" className="size-full object-cover" style={{ opacity: 0.20 }} loading="lazy" />
+                    <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(36,20,31,0.93) 0%, rgba(110,78,51,0.82) 60%, rgba(36,20,31,0.90) 100%)' }} />
                 </div>
                 <div className="relative mx-auto max-w-[1000px] px-6">
                     <Reveal>
@@ -449,7 +450,7 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
                         <h2 className="font-display mb-8 mt-2 text-2xl font-semibold text-white sm:text-3xl">
                             {l === 'id' ? 'Sejarah & Legalitas' : 'History & Legal Framework'}
                         </h2>
-                        <p className="max-w-3xl text-sm leading-[1.9]" style={{ color: 'rgba(172,149,135,0.90)' }}>
+                        <p className="max-w-3xl text-base leading-[1.9] text-justify text-white/95">
                             {history}
                         </p>
                     </Reveal>

@@ -21,7 +21,23 @@ class HomeController extends Controller
         $curriculumSummary = Setting::getValue('curriculum_summary', []);
         $curriculumSummary['signature_courses'] = $signatureCourses;
 
-        $featured = Activity::featured()->orderByDesc('date')->limit(6)->get();
+        $featured = News::published()
+            ->orderByDesc('is_featured')
+            ->orderByDesc('published_at')
+            ->limit(6)
+            ->get()
+            ->map(function ($news) {
+                return [
+                    'id' => $news->id,
+                    'title_id' => $news->title_id,
+                    'title_en' => $news->title_en,
+                    'slug' => $news->slug,
+                    'type' => $news->category ?: 'berita',
+                    'date' => $news->published_at ? $news->published_at->format('Y-m-d') : $news->created_at->format('Y-m-d'),
+                    'location' => null,
+                    'cover' => $news->featured_image,
+                ];
+            });
 
         return Inertia::render('Home', [
             'hero' => Setting::getValue('hero'),

@@ -34,6 +34,8 @@ const TYPE_LABELS: Record<string, { id: string; en: string }> = {
     visit: { id: 'Kunjungan Industri', en: 'Industry Visit' },
     workshop: { id: 'Workshop', en: 'Workshop' },
     lecture: { id: 'Kuliah Tamu', en: 'Guest Lecture' },
+    berita: { id: 'Berita', en: 'News' },
+    pengumuman: { id: 'Pengumuman', en: 'Announcement' },
 };
 
 export function FeaturedCarousel({ featured }: { featured: ActivityItem[] }) {
@@ -221,7 +223,7 @@ export function FeaturedCarousel({ featured }: { featured: ActivityItem[] }) {
                                                 {isActive && (
                                                     <div className="shrink-0">
                                                         <Button
-                                                            href={`/agenda/${item.slug}`}
+                                                            href={`/berita/${item.slug}`}
                                                             variant="primary"
                                                         >
                                                             {t({

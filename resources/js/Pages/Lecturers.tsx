@@ -136,7 +136,7 @@ const FALLBACK_LECTURERS: LecturerItem[] = [
 
 function photoSrc(dosen: LecturerItem) {
     if (!dosen.photo) return `https://ui-avatars.com/api/?name=${encodeURIComponent(dosen.name)}&background=8C6441&color=fff&size=400`;
-    if (dosen.photo.startsWith('http') || dosen.photo.startsWith('/storage/')) return dosen.photo;
+    if (dosen.photo.startsWith('http') || dosen.photo.startsWith('/storage/') || dosen.photo.startsWith('/images/')) return dosen.photo;
     return `/storage/${dosen.photo}`;
 }
 
@@ -400,9 +400,11 @@ export default function Lecturers({ kaprodi, labHeads, lecturers }: LecturersPro
     const yBg   = useTransform(scrollYProgress, [0, 1], ['0%', '22%']);
     const yText = useTransform(scrollYProgress, [0, 1], ['0%', '10%']);
 
-    const kaprodiData  = kaprodi  ?? FALLBACK_KAPRODI;
-    const labHeadsData = labHeads && labHeads.length > 0 ? labHeads : FALLBACK_LAB_HEADS;
-    const staffData    = lecturers && lecturers.length > 0 ? lecturers : FALLBACK_LECTURERS;
+    const hasDbData = !!kaprodi || (labHeads && labHeads.length > 0) || (lecturers && lecturers.length > 0);
+
+    const kaprodiData  = kaprodi  ?? (hasDbData ? null : FALLBACK_KAPRODI);
+    const labHeadsData = labHeads && labHeads.length > 0 ? labHeads : (hasDbData ? [] : FALLBACK_LAB_HEADS);
+    const staffData    = lecturers && lecturers.length > 0 ? lecturers : (hasDbData ? [] : FALLBACK_LECTURERS);
 
     useEffect(() => {
         const hash = window.location.hash;
@@ -472,82 +474,87 @@ export default function Lecturers({ kaprodi, labHeads, lecturers }: LecturersPro
             <div className="mx-auto max-w-[1100px] px-6 pb-24 pt-16">
 
                 {/* ── 1. Kaprodi ── */}
-                <div id="org" className="scroll-mt-24">
-                <Reveal>
-                    <h2 className="font-display text-ink-900 mb-6 text-xl font-semibold">
-                        {l === 'id' ? 'Ketua Program Studi' : 'Head of Study Program'}
-                    </h2>
-                </Reveal>
-                <Reveal delay={0.08}>
-                    <button type="button" onClick={() => setSelected(kaprodiData)} className="group mb-16 w-full text-left" aria-label={`Lihat profil ${kaprodiData.name}`}>
-                        <div className="overflow-hidden rounded-3xl border transition-all duration-500 hover:shadow-[0_24px_48px_-16px_rgba(36,20,31,0.22)]"
-                            style={{ background: 'rgba(255,253,251,0.80)', backdropFilter: 'blur(16px)', borderColor: 'rgba(172,149,135,0.25)', boxShadow: '0 6px 24px -8px rgba(36,20,31,0.12)' }}>
-                            <div className="grid md:grid-cols-12">
-                                {/* Photo */}
-                                <div className="relative overflow-hidden rounded-t-3xl md:col-span-4 md:rounded-l-3xl md:rounded-tr-none" style={{ minHeight: 300 }}>
-                                    <img src={photoSrc(kaprodiData)} alt={kaprodiData.name}
-                                        className="absolute inset-0 size-full object-cover object-top transition-transform duration-700 group-hover:scale-105" />
-                                    <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(36,20,31,0.6) 0%, transparent 55%)' }} />
-                                    {kaprodiData.functional_position && (
-                                        <span className="absolute top-4 left-4 rounded-full px-3 py-1 text-[10px] font-bold tracking-wider uppercase"
-                                            style={{ background: 'rgba(110,78,51,0.80)', backdropFilter: 'blur(8px)', color: '#D99F60' }}>
-                                            {kaprodiData.functional_position}
-                                        </span>
-                                    )}
-                                </div>
-                                {/* Content */}
-                                <div className="flex flex-col justify-center gap-5 p-8 md:col-span-8 md:p-12">
-                                    <div>
-                                        <p className="text-brand-700 mb-2 text-xs font-bold uppercase tracking-widest">
-                                            {l === 'id' ? kaprodiData.position_id : kaprodiData.position_en}
-                                        </p>
-                                        <h3 className="font-display text-ink-900 text-2xl font-bold leading-snug sm:text-3xl">{kaprodiData.name}</h3>
-                                        {kaprodiData.nidn && (
-                                            <p className="mt-1 font-mono text-xs font-semibold" style={{ color: '#AC9587' }}>NIDN: {kaprodiData.nidn}</p>
-                                        )}
-                                    </div>
-                                    {kaprodiData.expertise && kaprodiData.expertise.length > 0 && (
-                                        <div className="flex flex-wrap gap-2">
-                                            {kaprodiData.expertise.map((exp, i) => (
-                                                <span key={i} className="rounded-full px-3 py-1 text-xs font-semibold" style={{ background: 'rgba(140,100,65,0.10)', color: '#8C6441' }}>{exp}</span>
-                                            ))}
+                {kaprodiData && (
+                    <div id="org" className="scroll-mt-24">
+                        <Reveal>
+                            <h2 className="font-display text-ink-900 mb-6 text-xl font-semibold">
+                                {l === 'id' ? 'Ketua Program Studi' : 'Head of Study Program'}
+                            </h2>
+                        </Reveal>
+                        <Reveal delay={0.08}>
+                            <button type="button" onClick={() => setSelected(kaprodiData)} className="group mb-16 w-full text-left" aria-label={`Lihat profil ${kaprodiData.name}`}>
+                                <div className="overflow-hidden rounded-3xl border transition-all duration-500 hover:shadow-[0_24px_48px_-16px_rgba(36,20,31,0.22)]"
+                                    style={{ background: 'rgba(255,253,251,0.80)', backdropFilter: 'blur(16px)', borderColor: 'rgba(172,149,135,0.25)', boxShadow: '0 6px 24px -8px rgba(36,20,31,0.12)' }}>
+                                    <div className="grid md:grid-cols-12">
+                                        {/* Photo */}
+                                        <div className="relative overflow-hidden rounded-t-3xl md:col-span-4 md:rounded-l-3xl md:rounded-tr-none" style={{ minHeight: 300 }}>
+                                            <img src={photoSrc(kaprodiData)} alt={kaprodiData.name}
+                                                className="absolute inset-0 size-full object-cover object-top transition-transform duration-700 group-hover:scale-105" />
+                                            <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(36,20,31,0.6) 0%, transparent 55%)' }} />
+                                            {kaprodiData.functional_position && (
+                                                <span className="absolute top-4 left-4 rounded-full px-3 py-1 text-[10px] font-bold tracking-wider uppercase"
+                                                    style={{ background: 'rgba(110,78,51,0.80)', backdropFilter: 'blur(8px)', color: '#D99F60' }}>
+                                                    {kaprodiData.functional_position}
+                                                </span>
+                                            )}
                                         </div>
-                                    )}
-                                    {(kaprodiData.bio_id || kaprodiData.bio_en) && (
-                                        <p className="text-navy-700 text-sm leading-relaxed line-clamp-3">
-                                            {l === 'id' ? kaprodiData.bio_id : kaprodiData.bio_en}
-                                        </p>
-                                    )}
-                                    <div className="flex flex-wrap items-center gap-4">
-                                        {kaprodiData.email && (
-                                            <span className="inline-flex items-center gap-1.5 text-xs font-semibold" style={{ color: '#8C6441' }}>
-                                                <Mail className="size-3.5" />{kaprodiData.email}
-                                            </span>
-                                        )}
-                                        <span className="inline-flex items-center gap-1.5 rounded-xl border px-4 py-2 text-xs font-bold transition-all group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700"
-                                            style={{ borderColor: 'rgba(140,100,65,0.35)', color: '#8C6441' }}>
-                                            {l === 'id' ? 'Lihat Profil Lengkap →' : 'View Full Profile →'}
-                                        </span>
+                                        {/* Content */}
+                                        <div className="flex flex-col justify-center gap-5 p-8 md:col-span-8 md:p-12">
+                                            <div>
+                                                <p className="text-brand-700 mb-2 text-xs font-bold uppercase tracking-widest">
+                                                    {l === 'id' ? kaprodiData.position_id : kaprodiData.position_en}
+                                                </p>
+                                                <h3 className="font-display text-ink-900 text-2xl font-bold leading-snug sm:text-3xl">{kaprodiData.name}</h3>
+                                                {kaprodiData.nidn && (
+                                                    <p className="mt-1 font-mono text-xs font-semibold" style={{ color: '#AC9587' }}>NIDN: {kaprodiData.nidn}</p>
+                                                )}
+                                            </div>
+                                            {kaprodiData.expertise && kaprodiData.expertise.length > 0 && (
+                                                <div className="flex flex-wrap gap-2">
+                                                    {kaprodiData.expertise.map((exp, i) => (
+                                                        <span key={i} className="rounded-full px-3 py-1 text-xs font-semibold" style={{ background: 'rgba(140,100,65,0.10)', color: '#8C6441' }}>{exp}</span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                            {(kaprodiData.bio_id || kaprodiData.bio_en) && (
+                                                <p className="text-navy-700 text-sm leading-relaxed line-clamp-3">
+                                                    {l === 'id' ? kaprodiData.bio_id : kaprodiData.bio_en}
+                                                </p>
+                                            )}
+                                            <div className="flex flex-wrap items-center gap-4">
+                                                {kaprodiData.email && (
+                                                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold" style={{ color: '#8C6441' }}>
+                                                        <Mail className="size-3.5" />{kaprodiData.email}
+                                                    </span>
+                                                )}
+                                                <span className="inline-flex items-center gap-1.5 rounded-xl border px-4 py-2 text-xs font-bold transition-all group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700"
+                                                    style={{ borderColor: 'rgba(140,100,65,0.35)', color: '#8C6441' }}>
+                                                    {l === 'id' ? 'Lihat Profil Lengkap →' : 'View Full Profile →'}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </button>
-                </Reveal>
+                            </button>
+                        </Reveal>
+                    </div>
+                )}
 
                 {/* ── 2. Pembina Lab ── */}
-                <Reveal>
-                    <h2 className="font-display text-ink-900 mb-6 text-xl font-semibold">
-                        {l === 'id' ? 'Pembina Laboratorium' : 'Laboratory Supervisors'}
-                    </h2>
-                </Reveal>
-                <div className="mb-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {labHeadsData.map((dosen, i) => (
-                        <LecturerCard key={dosen.id} dosen={dosen} onClick={() => setSelected(dosen)} index={i} />
-                    ))}
-                </div>
-
-                </div>{/* end #org */}
+                {labHeadsData.length > 0 && (
+                    <div id="labs" className="scroll-mt-24">
+                        <Reveal>
+                            <h2 className="font-display text-ink-900 mb-6 text-xl font-semibold">
+                                {l === 'id' ? 'Pembina Laboratorium' : 'Laboratory Supervisors'}
+                            </h2>
+                        </Reveal>
+                        <div className="mb-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                            {labHeadsData.map((dosen, i) => (
+                                <LecturerCard key={dosen.id} dosen={dosen} onClick={() => setSelected(dosen)} index={i} />
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {/* ── Divider ── */}
                 <div id="staff" className="scroll-mt-24">

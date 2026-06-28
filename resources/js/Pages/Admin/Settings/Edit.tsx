@@ -75,6 +75,7 @@ export default function Edit({ settings }: SettingsProps) {
             quote:       { id: settings.greeting?.quote?.id ?? '', en: settings.greeting?.quote?.en ?? '' },
             attribution: { id: settings.greeting?.attribution?.id ?? '', en: settings.greeting?.attribution?.en ?? '' },
             photo:       settings.greeting?.photo ?? null,
+            full_message: { id: settings.greeting?.full_message?.id ?? '', en: settings.greeting?.full_message?.en ?? '' },
         },
         greeting_photo_file: null as File | null,
 
@@ -434,6 +435,12 @@ export default function Edit({ settings }: SettingsProps) {
                                 idValue={data.greeting.quote.id} enValue={data.greeting.quote.en}
                                 onChangeId={(v) => setData('greeting', { ...data.greeting, quote: { ...data.greeting.quote, id: v } })}
                                 onChangeEn={(v) => setData('greeting', { ...data.greeting, quote: { ...data.greeting.quote, en: v } })}
+                            />
+                            <BilingualInput label="Sambutan Lengkap (Full Message)" type="textarea" rows={12}
+                                idName="greeting.full_message.id" enName="greeting.full_message.en"
+                                idValue={data.greeting.full_message.id} enValue={data.greeting.full_message.en}
+                                onChangeId={(v) => setData('greeting', { ...data.greeting, full_message: { ...data.greeting.full_message, id: v } })}
+                                onChangeEn={(v) => setData('greeting', { ...data.greeting, full_message: { ...data.greeting.full_message, en: v } })}
                             />
                             <BilingualInput label="Atribusi Penulis (Jabatan / Posisi)"
                                 idName="greeting.attribution.id" enName="greeting.attribution.en"

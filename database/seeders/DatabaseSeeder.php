@@ -54,6 +54,7 @@ class DatabaseSeeder extends Seeder
             HomeContentSeeder::class,
             GallerySeeder::class,
             FaqSeeder::class,
+            NewsSeeder::class,
         ]);
     }
 }

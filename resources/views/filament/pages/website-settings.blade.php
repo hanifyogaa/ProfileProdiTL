@@ -103,6 +103,13 @@
                         <div><label class="fi-fo-field-wrp-label">Attribution (EN)</label><input wire:model="greeting_attribution_en" type="text" placeholder="Head of Logistics Engineering" class="fi-input block w-full mt-1 rounded-lg border px-3 py-2 text-sm" /></div>
                     </div>
                 </x-filament::section>
+
+                <x-filament::section heading="Sambutan Lengkap" class="mt-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="fi-fo-field-wrp-label">Sambutan Lengkap (ID)</label><textarea wire:model="greeting_full_message_id" rows="12" class="fi-input block w-full mt-1 rounded-lg border px-3 py-2 text-sm"></textarea></div>
+                        <div><label class="fi-fo-field-wrp-label">Full Message (EN)</label><textarea wire:model="greeting_full_message_en" rows="12" class="fi-input block w-full mt-1 rounded-lg border px-3 py-2 text-sm"></textarea></div>
+                    </div>
+                </x-filament::section>
             </div>
 
             {{-- ── Tab: Tracer Study ── --}}
