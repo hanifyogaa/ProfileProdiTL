@@ -139,6 +139,7 @@ export default function AdminLayout({ children, title }: PropsWithChildren<{ tit
             icon: HelpCircle,
             items: [
                 { name: 'FAQ', href: '/admin/faqs', icon: HelpCircle },
+                { name: 'Pengguna Admin', href: '/admin/users', icon: Users },
             ],
         },
     ];

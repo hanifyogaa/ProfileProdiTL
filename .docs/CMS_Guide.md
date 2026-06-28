@@ -61,20 +61,19 @@ Semua bagian di bawah ini diatur lewat **satu halaman**: `/admin/settings`. Hala
 ## Belum bisa diubah lewat admin (perlu hubungi developer)
 
 - **Dokumen akademik** (kalender akademik, pedoman akademik, kode etik) — halaman ini menampilkan link dari tab "Link Portal" di atas, tapi kalau ingin ganti jadi file PDF yang di-upload langsung (bukan link luar), itu perlu bantuan developer.
-- **Menambah admin baru** — pembuatan akun admin baru perlu dilakukan oleh developer (lihat bagian "Menambah Admin Baru" di bawah).
 
 ## Menambah Admin Baru
 
-Saat ini belum ada tombol "Tambah Admin" di halaman admin — menambah admin baru masih perlu dilakukan developer lewat command line di server, dengan langkah:
+Tidak ada halaman registrasi publik (sengaja, untuk keamanan) — tapi sekarang ada menu **"Pengguna Admin"** (grup "Lainnya" di sidebar, alamat `/admin/users`) untuk mengelola ini sendiri tanpa perlu developer:
 
-1. Developer membuatkan akun baru untuk orang tersebut (tidak ada halaman registrasi publik — akun hanya bisa dibuat lewat database/command oleh developer, ini sengaja untuk keamanan).
-2. Developer menjalankan command untuk menjadikan akun tersebut admin:
-   ```
-   php artisan tinker --execute="App\Models\User::where('email','EMAIL_ORANGNYA')->update(['is_admin' => true]);"
-   ```
-3. Setelah itu, akun tersebut bisa login dan akan otomatis punya akses penuh ke `/admin` — sama seperti akun admin yang sudah ada.
+1. Buka `/admin/users` → klik **"Tambah Pengguna"**.
+2. Isi nama, email, dan password awal untuk orang tersebut.
+3. Centang **"Jadikan admin"** kalau orang tersebut perlu akses penuh ke `/admin`. Kalau tidak dicentang, akun dibuat tapi belum bisa masuk ke admin sampai status-nya diubah nanti.
+4. Klik **"Buat Pengguna"** — akun langsung aktif, sampaikan email & password ke orangnya lewat jalur aman (bukan chat publik). Mereka bisa mengganti password sendiri setelah login.
 
-Kalau ke depannya ingin proses ini lebih mudah (tanpa command line), bisa minta developer membuatkan halaman "Kelola Pengguna" di admin.
+Untuk mencabut atau memberi akses admin ke akun yang sudah ada, di halaman `/admin/users` klik **"Jadikan Admin"** / **"Cabut Akses Admin"** di baris akun yang dimaksud. Anda tidak bisa mengubah status admin akun Anda sendiri (untuk mencegah Anda tidak sengaja terkunci dari admin) — kalau perlu, minta admin lain melakukannya.
+
+> Saat ini belum ada cara menghapus akun langsung dari admin — kalau perlu, sampaikan ke developer.
 
 ## Tips Pengisian Konten
 
