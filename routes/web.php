@@ -13,6 +13,7 @@ Route::get('/profil', [PageController::class, 'about'])->name('about');
 Route::get('/profil/akreditasi', [PageController::class, 'accreditation'])->name('accreditation');
 Route::get('/profil/struktur-organisasi', fn() => redirect('/dosen#org', 301))->name('org-structure');
 Route::get('/kurikulum', [PageController::class, 'curriculum'])->name('curriculum');
+Route::get('/kurikulum/capaian-pembelajaran', [PageController::class, 'learningOutcomes'])->name('learning-outcomes');
 Route::get('/dosen', [PageController::class, 'lecturers'])->name('lecturers');
 Route::get('/berita', [PageController::class, 'news'])->name('news');
 Route::get('/berita/{slug}', [PageController::class, 'newsDetail'])->name('news.detail');
@@ -55,7 +56,8 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::resource('faqs', \App\Http\Controllers\Admin\AdminFaqController::class);
     Route::resource('researches', \App\Http\Controllers\Admin\AdminResearchController::class);
     Route::resource('community-services', \App\Http\Controllers\Admin\AdminCommunityServiceController::class);
-    
+    Route::resource('plos', \App\Http\Controllers\Admin\AdminProgramLearningOutcomeController::class);
+
     Route::get('settings', [\App\Http\Controllers\Admin\AdminSettingsController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [\App\Http\Controllers\Admin\AdminSettingsController::class, 'update'])->name('settings.update');
 

@@ -101,6 +101,7 @@ export default function AdminLayout({ children, title }: PropsWithChildren<{ tit
             icon: GraduationCap,
             items: [
                 { name: 'Kurikulum & Mata Kuliah', href: '/admin/courses', icon: BookOpen },
+                { name: 'Kelola PLO', href: '/admin/plos', icon: GraduationCap },
                 { name: 'Statistik & Figures', href: '/admin/stats', icon: BarChart3 },
             ],
         },

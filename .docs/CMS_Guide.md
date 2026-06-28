@@ -32,11 +32,23 @@ Setelah login, dashboard admin ada di `https://dsctelu.id/admin`.
 | **FAQ** | `/admin/faqs` | Pertanyaan, jawaban, kategori (umum/akademik/karir/MBKM) |
 | **Riset/Penelitian** | `/admin/researches` | Judul, kategori, tahun, deskripsi, foto, tim peneliti |
 | **Pengabdian Masyarakat** | `/admin/community-services` | Judul, kategori, tahun, lokasi, partner, deskripsi, tim |
+| **PLO (Program Learning Outcomes)** | `/admin/plos` | Kode PLO, deskripsi (ID/EN), urutan tampil. Ditampilkan di halaman `/kurikulum/capaian-pembelajaran` |
 
 Setiap menu di atas bisa:
 - **Tambah data baru** (tombol "Tambah" / "Create")
 - **Edit data yang sudah ada**
 - **Hapus data**
+
+## CLO (Course Learning Outcomes) per Mata Kuliah
+
+CLO tidak punya menu sendiri — CLO diisi langsung di dalam halaman edit mata kuliah (`/admin/courses/{id}/edit`), karena CLO selalu menjadi bagian dari satu mata kuliah tertentu.
+
+1. Buka **Mata Kuliah** (`/admin/courses`) → klik **edit** pada mata kuliah yang dimaksud.
+2. Scroll ke bagian **"Course Learning Outcomes (CLO)"** di bawah form.
+3. Klik **"Tambah CLO"** → isi kode CLO (misal `CLO-1`), deskripsi ID & EN, lalu centang PLO mana yang didukung oleh CLO ini (bisa lebih dari satu).
+4. Klik **"Perbarui Matkul"** untuk menyimpan.
+
+> Buat PLO-nya dulu lewat menu **PLO** di atas sebelum memetakan CLO — kalau belum ada PLO sama sekali, pilihan PLO tidak akan muncul di form CLO.
 
 ## Menu yang hanya bisa Edit (tidak bisa tambah/hapus)
 
@@ -48,7 +60,7 @@ Semua bagian di bawah ini diatur lewat **satu halaman**: `/admin/settings`. Hala
 | **Keunggulan** | Beranda (`/`) | Judul & deskripsi keunggulan prodi, poin-poin keunggulan |
 | **Sambutan Kaprodi** | Beranda (`/`), Profil (`/profil`) | Nama Kaprodi, kutipan sambutan, foto |
 | **Profil Prodi** | Profil (`/profil`) | Gambar hero, visi, misi, sejarah, statistik (jumlah mahasiswa/dosen/alumni), badge & deskripsi akreditasi IABEE dan BAN-PT |
-| **Kurikulum** | Kurikulum (`/kurikulum`) | Gambar hero, total SKS, jumlah semester, deskripsi profil lulusan, file PDF buku kurikulum, gambar prasyarat MK, link PEO/PLO, testimoni alumni |
+| **Kurikulum** | Kurikulum (`/kurikulum`) | Gambar hero, total SKS, jumlah semester, deskripsi profil lulusan, file PDF buku kurikulum, gambar prasyarat MK, link dokumen PEO, testimoni alumni |
 | **Link Portal** | Dropdown navigasi Akademik | Link kalender akademik, pedoman akademik, kode etik, ijazah/transkrip, tugas akhir, registrasi MK, tur kampus 360° |
 | **Info & Kontak** | Kontak (`/kontak`), seluruh website (footer) | Gambar hero halaman kontak, nama situs, alamat kampus, email & telepon kontak, link Instagram/LINE/TikTok, lencana akreditasi BAN-PT |
 | **Kemahasiswaan** | Kemahasiswaan (`/kemahasiswaan`) | Nama organisasi (HIMA), deskripsi, visi, Instagram, daftar divisi & bidang kerja |

@@ -1,9 +1,9 @@
 import { MainLayout } from '@/Layouts/MainLayout';
 import { Reveal } from '@/components/Reveal';
 import { useLocale } from '@/contexts/LocaleContext';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
-import { BookOpen, ChevronDown, Cpu, Download, ExternalLink, FileText, Lightbulb, Quote } from 'lucide-react';
+import { BookOpen, ChevronDown, Cpu, Download, ExternalLink, FileText, Lightbulb, ListChecks, Quote } from 'lucide-react';
 import { Fragment, useRef, useState } from 'react';
 
 interface CourseItem {
@@ -331,14 +331,12 @@ export default function Curriculum({ courses, curriculumMeta }: CurriculumProps)
                                         : 'PLO defines the competencies students must possess upon graduation. Detailed in the Curriculum Book.'
                                     )}
                                 </p>
-                                {(curriculumMeta?.plo_url || curriculumMeta?.pdf_url) && (
-                                    <a href={curriculumMeta.plo_url ?? curriculumMeta.pdf_url} target="_blank" rel="noopener noreferrer"
-                                        className="mt-5 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition-opacity hover:opacity-80"
-                                        style={{ background: 'rgba(140,100,65,0.15)', color: '#AC9587', border: '1px solid rgba(172,149,135,0.25)' }}>
-                                        <ExternalLink className="size-3.5" />
-                                        {l === 'id' ? 'Lihat Dokumen PLO' : 'View PLO Document'}
-                                    </a>
-                                )}
+                                <Link href="/kurikulum/capaian-pembelajaran"
+                                    className="mt-5 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition-opacity hover:opacity-80"
+                                    style={{ background: 'rgba(140,100,65,0.15)', color: '#AC9587', border: '1px solid rgba(172,149,135,0.25)' }}>
+                                    <ListChecks className="size-3.5" />
+                                    {l === 'id' ? 'Lihat Breakdown PLO & CLO' : 'View PLO & CLO Breakdown'}
+                                </Link>
                             </Reveal>
                         </section>
                     </div>
@@ -362,9 +360,7 @@ export default function Curriculum({ courses, curriculumMeta }: CurriculumProps)
                                 style={{ borderColor: 'rgba(172,149,135,0.20)', background: '#ECEBE9' }}>
                                 <FileText className="size-8 shrink-0" style={{ color: 'rgba(80,86,102,0.30)' }} />
                                 <p className="text-sm" style={{ color: 'rgba(80,86,102,0.60)' }}>
-                                    {l === 'id'
-                                        ? 'Diagram prasyarat tersedia di Buku Kurikulum. Unggah melalui panel admin.'
-                                        : 'The prerequisite diagram is available in the Curriculum Book. Upload via admin panel.'}
+                                    -
                                 </p>
                             </div>
                         )}
@@ -405,7 +401,7 @@ export default function Curriculum({ courses, curriculumMeta }: CurriculumProps)
                                     )) : (
                                         <tr>
                                             <td colSpan={4} className="px-4 py-10 text-center text-sm italic" style={{ color: 'rgba(80,86,102,0.40)' }}>
-                                                {l === 'id' ? 'Data mata kuliah pilihan belum tersedia.' : 'Elective course data not yet available.'}
+                                                -
                                             </td>
                                         </tr>
                                     )}
@@ -490,7 +486,7 @@ export default function Curriculum({ courses, curriculumMeta }: CurriculumProps)
                                     })() : (
                                         <tr>
                                             <td colSpan={6} className="px-4 py-12 text-center text-sm italic" style={{ color: 'rgba(80,86,102,0.40)' }}>
-                                                {l === 'id' ? 'Data kurikulum belum tersedia.' : 'Curriculum data not yet available.'}
+                                                -
                                             </td>
                                         </tr>
                                     )}

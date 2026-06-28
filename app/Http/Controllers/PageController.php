@@ -12,6 +12,7 @@ use App\Models\Lab;
 use App\Models\Lecturer;
 use App\Models\News;
 use App\Models\Partner;
+use App\Models\ProgramLearningOutcome;
 use App\Models\Research;
 use App\Models\Setting;
 use App\Models\Stat;
@@ -56,6 +57,13 @@ class PageController extends Controller
         return Inertia::render('Curriculum', [
             'courses'        => Course::orderBy('semester')->orderBy('code')->get(),
             'curriculumMeta' => Setting::getValue('curriculum_summary'),
+        ]);
+    }
+
+    public function learningOutcomes(): Response
+    {
+        return Inertia::render('LearningOutcomes', [
+            'plos' => ProgramLearningOutcome::with('clos.course')->orderBy('order')->get(),
         ]);
     }
 

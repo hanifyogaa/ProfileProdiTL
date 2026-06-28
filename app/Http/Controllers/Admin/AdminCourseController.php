@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Models\CourseLearningOutcome;
+use App\Models\ProgramLearningOutcome;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class AdminCourseController extends Controller
@@ -65,7 +68,9 @@ class AdminCourseController extends Controller
     public function edit(Course $course)
     {
         return Inertia::render('Admin/Courses/Edit', [
-            'course' => $course
+            'course' => $course,
+            'clos' => $course->clos()->with('plos:id')->orderBy('order')->get(),
+            'allPlos' => ProgramLearningOutcome::orderBy('order')->get(['id', 'code']),
         ]);
     }
 
@@ -82,9 +87,34 @@ class AdminCourseController extends Controller
             'description_id' => 'nullable|string',
             'description_en' => 'nullable|string',
             'is_signature' => 'boolean',
+            'clos' => 'nullable|array',
+            'clos.*.code' => 'required|string|max:50',
+            'clos.*.description_id' => 'required|string',
+            'clos.*.description_en' => 'required|string',
+            'clos.*.plo_ids' => 'nullable|array',
+            'clos.*.plo_ids.*' => 'integer|exists:program_learning_outcomes,id',
         ]);
 
-        $course->update($validated);
+        $closInput = $validated['clos'] ?? [];
+        unset($validated['clos']);
+
+        DB::transaction(function () use ($course, $validated, $closInput) {
+            $course->update($validated);
+
+            $course->clos()->delete();
+
+            foreach ($closInput as $index => $row) {
+                $clo = CourseLearningOutcome::create([
+                    'course_id' => $course->id,
+                    'code' => $row['code'],
+                    'description_id' => $row['description_id'],
+                    'description_en' => $row['description_en'],
+                    'order' => $index,
+                ]);
+
+                $clo->plos()->sync($row['plo_ids'] ?? []);
+            }
+        });
 
         return redirect()->route('admin.courses.index')->with('success', 'Course updated successfully.');
     }

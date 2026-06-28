@@ -43,7 +43,7 @@ const NAV_LINKS: (NavLeaf | NavGroup)[] = [
             { href: '/kurikulum#organigram',           label: { id: 'Organigram',            en: 'Organigram' } },
             { href: '/kurikulum#mata-kuliah-pilihan',  label: { id: 'Mata Kuliah Pilihan',   en: 'Elective Courses' } },
             { href: '/kurikulum#peo',                  label: { id: 'PEO',                   en: 'Program Educational Objectives' } },
-            { href: '/kurikulum#plo',                  label: { id: 'PLO',                   en: 'Program Learning Outcomes' } },
+            { href: '/kurikulum/capaian-pembelajaran', label: { id: 'PLO',                   en: 'Program Learning Outcomes' } },
             { href: '/profil/akreditasi',              label: { id: 'Akreditasi',             en: 'Accreditation' },                sectionLabel: { id: 'Program', en: 'Program' } },
             { href: '/mbkm',                           label: { id: 'MBKM',                  en: 'MBKM' } },
             { href: '/statistik',                      label: { id: 'Statistik',             en: 'Statistics' } },

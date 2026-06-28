@@ -1,8 +1,8 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import BilingualInput from '@/components/admin/BilingualInput';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Save, ArrowLeft } from 'lucide-react';
-import React from 'react';
+import { Save, ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
 
 interface CourseItem {
     id: number;
@@ -18,12 +18,45 @@ interface CourseItem {
     description_en: string | null;
 }
 
-interface EditProps {
-    course: CourseItem;
+interface CloRow {
+    code: string;
+    description_id: string;
+    description_en: string;
+    plo_ids: number[];
 }
 
-export default function Edit({ course }: EditProps) {
-    const { data, setData, put, processing, errors } = useForm({
+interface CloItem {
+    id: number;
+    code: string;
+    description_id: string;
+    description_en: string;
+    plos: { id: number }[];
+}
+
+interface PloOption {
+    id: number;
+    code: string;
+}
+
+interface EditProps {
+    course: CourseItem;
+    clos: CloItem[];
+    allPlos: PloOption[];
+}
+
+export default function Edit({ course, clos, allPlos }: EditProps) {
+    const initialClos: CloRow[] = clos.length > 0
+        ? clos.map((c) => ({
+            code: c.code,
+            description_id: c.description_id,
+            description_en: c.description_en,
+            plo_ids: c.plos.map((p) => p.id),
+        }))
+        : [];
+
+    const [cloRows, setCloRows] = useState<CloRow[]>(initialClos);
+
+    const { data, setData, put, transform, processing, errors } = useForm({
         code: course.code || '',
         name_id: course.name_id || '',
         name_en: course.name_en || '',
@@ -36,8 +69,40 @@ export default function Edit({ course }: EditProps) {
         is_signature: course.is_signature || false,
     });
 
+    const addCloRow = () => {
+        setCloRows([...cloRows, { code: '', description_id: '', description_en: '', plo_ids: [] }]);
+    };
+
+    const removeCloRow = (index: number) => {
+        setCloRows(cloRows.filter((_, i) => i !== index));
+    };
+
+    const updateCloRow = (index: number, field: 'code' | 'description_id' | 'description_en', value: string) => {
+        const updated = [...cloRows];
+        updated[index] = { ...updated[index], [field]: value };
+        setCloRows(updated);
+    };
+
+    const togglePlo = (index: number, ploId: number) => {
+        const updated = [...cloRows];
+        const current = updated[index].plo_ids;
+        updated[index] = {
+            ...updated[index],
+            plo_ids: current.includes(ploId) ? current.filter((id) => id !== ploId) : [...current, ploId],
+        };
+        setCloRows(updated);
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        const cleanClos = cloRows.filter((row) => row.code && row.description_id && row.description_en);
+
+        transform((formData) => ({
+            ...formData,
+            clos: cleanClos,
+        }));
+
         put(route('admin.courses.update', course.id));
     };
 
@@ -170,6 +235,104 @@ export default function Edit({ course }: EditProps) {
                     onChangeId={(val) => setData('description_id', val)}
                     onChangeEn={(val) => setData('description_en', val)}
                 />
+
+                <hr className="border-cream-300/40" />
+
+                <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <label className="text-sm font-semibold text-ink-900">Course Learning Outcomes (CLO)</label>
+                            <p className="text-[11px] text-navy-700/60">Capaian pembelajaran mata kuliah ini, dan PLO mana yang didukung oleh tiap CLO. Ditampilkan di halaman /kurikulum/capaian-pembelajaran.</p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={addCloRow}
+                            className="inline-flex items-center space-x-1 px-3 py-1 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-lg text-xs font-bold transition-all border border-brand-200 shrink-0"
+                        >
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>Tambah CLO</span>
+                        </button>
+                    </div>
+
+                    {allPlos.length === 0 && (
+                        <p className="rounded-xl border border-dashed border-cream-300 py-4 text-center text-xs text-navy-700/50">
+                            Belum ada PLO yang dibuat. Tambahkan PLO dulu di menu "Kelola PLO" sebelum memetakan CLO.
+                        </p>
+                    )}
+
+                    <div className="space-y-3">
+                        {cloRows.map((row, index) => (
+                            <div key={index} className="bg-surface-50/30 border border-cream-300/20 p-4 rounded-xl space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold uppercase tracking-wider text-brand-700">CLO {index + 1}</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeCloRow(index)}
+                                        className="p-1.5 hover:bg-red-50 text-navy-700 hover:text-red-600 rounded-lg transition-all"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                </div>
+
+                                <input
+                                    type="text"
+                                    placeholder="Kode CLO (Contoh: CLO-1)"
+                                    value={row.code}
+                                    onChange={(e) => updateCloRow(index, 'code', e.target.value)}
+                                    className="w-full px-3 py-1.5 rounded-lg border border-cream-300 text-xs bg-surface-0 focus:ring-1 focus:ring-brand-700 outline-none"
+                                />
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <textarea
+                                        placeholder="Deskripsi CLO (Indonesia)"
+                                        value={row.description_id}
+                                        onChange={(e) => updateCloRow(index, 'description_id', e.target.value)}
+                                        rows={2}
+                                        className="w-full px-3 py-1.5 rounded-lg border border-cream-300 text-xs bg-surface-0 focus:ring-1 focus:ring-brand-700 outline-none resize-none"
+                                    />
+                                    <textarea
+                                        placeholder="Deskripsi CLO (English)"
+                                        value={row.description_en}
+                                        onChange={(e) => updateCloRow(index, 'description_en', e.target.value)}
+                                        rows={2}
+                                        className="w-full px-3 py-1.5 rounded-lg border border-cream-300 text-xs bg-surface-0 focus:ring-1 focus:ring-brand-700 outline-none resize-none"
+                                    />
+                                </div>
+
+                                {allPlos.length > 0 && (
+                                    <div className="space-y-1">
+                                        <span className="text-[11px] font-semibold text-navy-700">Mendukung PLO:</span>
+                                        <div className="flex flex-wrap gap-2">
+                                            {allPlos.map((plo) => (
+                                                <label
+                                                    key={plo.id}
+                                                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold cursor-pointer border transition-all ${
+                                                        row.plo_ids.includes(plo.id)
+                                                            ? 'bg-brand-700 text-surface-0 border-brand-700'
+                                                            : 'bg-surface-0 text-navy-700 border-cream-300 hover:bg-surface-50'
+                                                    }`}
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={row.plo_ids.includes(plo.id)}
+                                                        onChange={() => togglePlo(index, plo.id)}
+                                                        className="hidden"
+                                                    />
+                                                    {plo.code}
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                        {cloRows.length === 0 && (
+                            <p className="rounded-xl border border-dashed border-cream-300 py-6 text-center text-xs text-navy-700/40">
+                                Belum ada CLO. Klik "Tambah CLO" untuk menambahkan.
+                            </p>
+                        )}
+                    </div>
+                </div>
 
                 <div className="pt-4 border-t border-cream-300/40 flex justify-end space-x-3">
                     <Link
