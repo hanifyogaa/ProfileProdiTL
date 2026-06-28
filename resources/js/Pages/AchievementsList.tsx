@@ -192,7 +192,7 @@ export default function AchievementsList({ achievements }: AchievementsListProps
                             <div className="rounded-2xl border py-16 text-center" style={{ borderColor: 'rgba(172,149,135,0.20)' }}>
                                 <Trophy className="mx-auto mb-3 size-10 opacity-20" style={{ color: '#505666' }} />
                                 <p className="text-sm" style={{ color: '#505666' }}>
-                                    {l === 'id' ? 'Belum ada data prestasi.' : 'No achievement data yet.'}
+                                    -
                                 </p>
                             </div>
                         )}

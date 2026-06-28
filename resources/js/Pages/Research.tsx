@@ -154,7 +154,7 @@ export default function Research({ researches }: ResearchProps) {
                             <div className="col-span-full rounded-2xl border py-16 text-center" style={{ borderColor: 'rgba(172,149,135,0.20)' }}>
                                 <FlaskConical className="mx-auto mb-3 size-10 opacity-20" style={{ color: '#505666' }} />
                                 <p className="text-sm" style={{ color: '#505666' }}>
-                                    {l === 'id' ? 'Belum ada data penelitian.' : 'No research data yet.'}
+                                    -
                                 </p>
                             </div>
                         )}

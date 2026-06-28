@@ -184,7 +184,7 @@ export default function Partnerships({ partners }: PartnershipsProps) {
                 <div className="mx-auto max-w-[1000px] px-6 py-20 text-center">
                     <Building2 className="mx-auto mb-4 size-12 opacity-20" style={{ color: '#505666' }} />
                     <p className="text-sm" style={{ color: '#505666' }}>
-                        {l === 'id' ? 'Belum ada data kemitraan.' : 'No partnership data yet.'}
+                        -
                     </p>
                 </div>
             )}

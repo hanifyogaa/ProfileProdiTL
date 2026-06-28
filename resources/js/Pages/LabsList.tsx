@@ -97,7 +97,7 @@ export default function LabsList({ labs }: LabsListProps) {
                             style={{ borderColor: 'rgba(172,149,135,0.20)' }}>
                             <FlaskConical className="mx-auto mb-3 size-10 opacity-20" style={{ color: '#505666' }} />
                             <p className="text-sm" style={{ color: '#505666' }}>
-                                {l === 'id' ? 'Belum ada data laboratorium.' : 'No laboratory data yet.'}
+                                -
                             </p>
                         </div>
                     ) : (
