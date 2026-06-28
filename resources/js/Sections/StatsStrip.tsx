@@ -59,27 +59,30 @@ function StatCounter({ value }: { value: string }) {
 export function StatsStrip({ stats: _stats }: { stats: StatItem[] }) {
     const { locale } = useLocale();
 
+    // Lookup helpers — use DB values when available, fall back to hardcoded
+    const find = (metric: string) => _stats?.find(s => s.metric === metric);
+
     const displayStats = [
         {
             id: 1,
             metric: 'lecturer_count',
-            value: '14',
-            label_id: 'Dosen',
-            label_en: 'Lecturers',
+            value:    find('lecturer_count')?.value    ?? '14',
+            label_id: find('lecturer_count')?.label_id ?? 'Dosen',
+            label_en: find('lecturer_count')?.label_en ?? 'Lecturers',
         },
         {
             id: 2,
             metric: 'active_students',
-            value: '457',
-            label_id: 'Mahasiswa',
-            label_en: 'Students',
+            value:    find('active_students')?.value    ?? '457',
+            label_id: find('active_students')?.label_id ?? 'Mahasiswa',
+            label_en: find('active_students')?.label_en ?? 'Students',
         },
         {
             id: 3,
             metric: 'alumni',
-            value: '200+',
-            label_id: 'Lulusan',
-            label_en: 'Graduates',
+            value:    find('alumni')?.value    ?? '200+',
+            label_id: find('alumni')?.label_id ?? 'Lulusan',
+            label_en: find('alumni')?.label_en ?? 'Graduates',
         },
     ];
 

@@ -53,7 +53,23 @@ class HomeController extends Controller
             'latestNews' => News::published()->orderByDesc('published_at')->limit(4)->get(),
             'curriculumSummary' => $curriculumSummary,
             'prospects' => Setting::getValue('prospects'),
-            'achievements' => Achievement::orderBy('order')->limit(6)->get(),
+            'achievements' => News::published()
+                ->where('category', 'prestasi')
+                ->orderByDesc('published_at')
+                ->limit(6)
+                ->get()
+                ->map(function ($news) {
+                    return [
+                        'id' => $news->id,
+                        'title_id' => $news->title_id,
+                        'title_en' => $news->title_en,
+                        'level' => 'national',
+                        'date' => $news->published_at ? $news->published_at->format('Y-m-d') : $news->created_at->format('Y-m-d'),
+                        'holder' => 'Himpunan Mahasiswa FRI',
+                        'cover' => $news->featured_image,
+                        'order' => 0,
+                    ];
+                }),
             'tracerStats' => Setting::getValue('tracer_stats'),
             'labs' => Lab::orderBy('order')->limit(6)->get(),
             'partners' => Partner::orderBy('order')->get(),

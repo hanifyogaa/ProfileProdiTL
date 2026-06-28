@@ -97,8 +97,27 @@ class PageController extends Controller
 
     public function achievements(): Response
     {
+        $achievements = News::published()
+            ->where('category', 'prestasi')
+            ->orderByDesc('published_at')
+            ->get()
+            ->map(function ($news) {
+                return [
+                    'id' => $news->id,
+                    'title_id' => $news->title_id,
+                    'title_en' => $news->title_en,
+                    'level' => 'national',
+                    'date' => $news->published_at ? $news->published_at->format('Y-m-d') : $news->created_at->format('Y-m-d'),
+                    'holder' => 'Himpunan Mahasiswa FRI',
+                    'cover' => $news->featured_image,
+                    'category' => 'PPKO',
+                    'description_id' => $news->excerpt_id,
+                    'description_en' => $news->excerpt_en,
+                ];
+            });
+
         return Inertia::render('AchievementsList', [
-            'achievements' => Achievement::orderBy('order')->get(),
+            'achievements' => $achievements,
         ]);
     }
 

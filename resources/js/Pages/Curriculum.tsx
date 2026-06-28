@@ -3,7 +3,7 @@ import { Reveal } from '@/components/Reveal';
 import { useLocale } from '@/contexts/LocaleContext';
 import { Head } from '@inertiajs/react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
-import { BookOpen, ChevronDown, Download, ExternalLink, FileText, Quote } from 'lucide-react';
+import { BookOpen, ChevronDown, Cpu, Download, ExternalLink, FileText, Lightbulb, Quote } from 'lucide-react';
 import { Fragment, useRef, useState } from 'react';
 
 interface CourseItem {
@@ -76,6 +76,35 @@ function SectionDivider({ label }: { label: string }) {
             <div className="flex-1 border-t" style={{ borderColor: 'rgba(172,149,135,0.25)' }} />
         </div>
     );
+}
+
+// Helper to parse graduate profiles string into structured profiles
+function parseGraduateProfiles(text: string) {
+    const parts = text.split(/\((\d+)\)/);
+    if (parts.length >= 7) {
+        const intro = parts[0].trim();
+        const profiles = [];
+        for (let i = 1; i < parts.length; i += 2) {
+            const num = parts[i];
+            const content = parts[i + 1] || '';
+            const colonIdx = content.indexOf(':');
+            if (colonIdx !== -1) {
+                profiles.push({
+                    num,
+                    title: content.substring(0, colonIdx).trim(),
+                    description: content.substring(colonIdx + 1).trim()
+                });
+            } else {
+                profiles.push({
+                    num,
+                    title: `Profile ${num}`,
+                    description: content.trim()
+                });
+            }
+        }
+        return { intro, profiles };
+    }
+    return null;
 }
 
 export default function Curriculum({ courses, curriculumMeta }: CurriculumProps) {
@@ -164,15 +193,71 @@ export default function Curriculum({ courses, curriculumMeta }: CurriculumProps)
                         <h2 className="font-display text-ink-900 mb-5 mt-2 text-2xl font-semibold sm:text-3xl">
                             {l === 'id' ? 'Profil Lulusan' : 'Graduate Profile'}
                         </h2>
-                        <div className="rounded-3xl border p-8 text-sm leading-relaxed"
-                            style={{ borderColor: 'rgba(172,149,135,0.20)', background: '#FFFDFB' }}>
-                            <p className="text-navy-700">
-                                {curriculumMeta?.profil_lulusan?.[l] ?? (l === 'id'
-                                    ? 'Lulusan Teknik Logistik Telkom University adalah sarjana yang kompeten dalam merancang, menganalisis, dan mengoptimalkan sistem logistik dan rantai pasok berbasis teknologi informasi. Mereka siap berkarir di industri logistik, e-commerce, manufaktur, konsultansi, maupun berwirausaha di bidang logistik digital.'
-                                    : 'Graduates of Logistics Engineering at Telkom University are competent engineers in designing, analyzing, and optimizing IT-based logistics and supply chain systems. They are ready for careers in logistics, e-commerce, manufacturing, consulting, or entrepreneurship.'
-                                )}
-                            </p>
-                        </div>
+                        
+                        {(() => {
+                            const rawText = curriculumMeta?.profil_lulusan?.[l] ?? (l === 'id'
+                                ? 'Lulusan Teknik Logistik Telkom University adalah sarjana yang kompeten dalam merancang, menganalisis, dan mengoptimalkan sistem logistik dan rantai pasok berbasis teknologi informasi. Mereka siap berkarir di industri logistik, e-commerce, manufaktur, konsultansi, maupun berwirausaha di bidang logistik digital.'
+                                : 'Graduates of Logistics Engineering at Telkom University are competent engineers in designing, analyzing, and optimizing IT-based logistics and supply chain systems. They are ready for careers in logistics, e-commerce, manufacturing, consulting, or entrepreneurship.'
+                            );
+                            
+                            const parsed = parseGraduateProfiles(rawText);
+                            
+                            if (parsed) {
+                                return (
+                                    <div className="space-y-6">
+                                        {parsed.intro && (
+                                            <p className="text-navy-700 text-sm leading-relaxed">
+                                                {parsed.intro}
+                                            </p>
+                                        )}
+                                        <div className="grid gap-6 md:grid-cols-3 items-stretch">
+                                            {parsed.profiles.map((profile, i) => {
+                                                const getIcon = () => {
+                                                    if (i === 0) return <Cpu className="size-6" style={{ color: '#D99F60' }} />;
+                                                    if (i === 1) return <BookOpen className="size-6" style={{ color: '#D99F60' }} />;
+                                                    return <Lightbulb className="size-6" style={{ color: '#D99F60' }} />;
+                                                };
+                                                
+                                                return (
+                                                    <div key={i} className="relative flex flex-col h-full rounded-3xl border p-6 transition-all duration-300 hover:shadow-md hover:-translate-y-1"
+                                                        style={{ 
+                                                            borderColor: 'rgba(172,149,135,0.20)', 
+                                                            background: '#FFFDFB' 
+                                                        }}>
+                                                        {/* Badge number */}
+                                                        <span className="absolute top-6 right-6 text-2xl font-black font-display opacity-10" style={{ color: '#8C6441' }}>
+                                                            {String(i + 1).padStart(2, '0')}
+                                                        </span>
+                                                        
+                                                        <div className="flex size-12 items-center justify-center rounded-2xl mb-5 shrink-0"
+                                                            style={{ background: 'rgba(217,159,96,0.11)' }}>
+                                                            {getIcon()}
+                                                        </div>
+                                                        
+                                                        <h3 className="font-display text-base font-bold mb-3 pr-8" style={{ color: '#24141F' }}>
+                                                            {profile.title}
+                                                        </h3>
+                                                        <p className="text-xs text-navy-700 leading-[1.75] flex-1 text-justify">
+                                                            {profile.description}
+                                                        </p>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                );
+                            }
+                            
+                            // Fallback if formatting is standard paragraph
+                            return (
+                                <div className="rounded-3xl border p-8 text-sm leading-relaxed"
+                                    style={{ borderColor: 'rgba(172,149,135,0.20)', background: '#FFFDFB' }}>
+                                    <p className="text-navy-700">
+                                        {rawText}
+                                    </p>
+                                </div>
+                            );
+                        })()}
                     </Reveal>
                 </section>
 
