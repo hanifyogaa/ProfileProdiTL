@@ -189,10 +189,16 @@ export default function Faq({ faqs }: { faqs?: FaqItem[] }) {
                                                         style={{ overflow: 'hidden' }}
                                                     >
                                                         <div
-                                                            className="px-6 pb-5 pt-1 text-sm leading-relaxed"
+                                                            className="space-y-3 px-6 pb-5 pt-1 text-sm leading-relaxed"
                                                             style={{ borderTop: '1px solid rgba(172,149,135,0.15)', color: '#505666' }}
                                                         >
-                                                            {answer}
+                                                            {answer?.split('\n').map((para, i) =>
+                                                                para.trim() === '' ? null : (
+                                                                    <p key={i}>
+                                                                        {para}
+                                                                    </p>
+                                                                )
+                                                            )}
                                                         </div>
                                                     </motion.div>
                                                 )}

@@ -250,7 +250,15 @@ function LecturerModal({ dosen, onClose }: { dosen: LecturerItem; onClose: () =>
                             {bio && (
                                 <section>
                                     <SectionLabel icon={<Users className="size-3" />}>{locale === 'id' ? 'Profil' : 'Profile'}</SectionLabel>
-                                    <p className="mt-2.5 text-[13px] leading-relaxed" style={{ color: '#505666' }}>{bio}</p>
+                                    <div className="mt-2.5 space-y-3 text-[13px] leading-relaxed" style={{ color: '#505666' }}>
+                                        {bio?.split('\n').map((para, i) =>
+                                            para.trim() === '' ? null : (
+                                                <p key={i}>
+                                                    {para}
+                                                </p>
+                                            )
+                                        )}
+                                    </div>
                                 </section>
                             )}
                             {dosen.expertise && dosen.expertise.length > 0 && (
