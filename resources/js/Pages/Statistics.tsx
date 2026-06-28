@@ -54,7 +54,7 @@ export default function Statistics({ tracerStats, stats }: StatisticsProps) {
                 pillLabel={l === 'id' ? 'Program Studi' : 'Program'}
                 title={title}
                 subtitle={subtitle}
-                photoUrl={HERO_PHOTO}
+                photoUrl={tracerStats?.hero_image || HERO_PHOTO}
                 photoAlt="Data analytics dashboard"
                 stats={heroStats.length > 0 ? heroStats : undefined}
             />

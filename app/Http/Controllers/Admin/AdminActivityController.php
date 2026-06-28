@@ -58,7 +58,7 @@ class AdminActivityController extends Controller
         ]);
 
         $validated['slug'] = Str::slug($validated['title_id']);
-        
+
         $slugCount = Activity::where('slug', 'like', $validated['slug'] . '%')->count();
         if ($slugCount > 0) {
             $validated['slug'] .= '-' . ($slugCount + 1);

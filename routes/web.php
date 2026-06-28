@@ -40,7 +40,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Admin Panel Routes
-Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [\App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('dashboard');
     
     Route::resource('news', \App\Http\Controllers\Admin\AdminNewsController::class);
@@ -58,6 +58,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     
     Route::get('settings', [\App\Http\Controllers\Admin\AdminSettingsController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [\App\Http\Controllers\Admin\AdminSettingsController::class, 'update'])->name('settings.update');
+
+    Route::get('users', [\App\Http\Controllers\Admin\AdminUserController::class, 'index'])->name('users.index');
+    Route::get('users/create', [\App\Http\Controllers\Admin\AdminUserController::class, 'create'])->name('users.create');
+    Route::post('users', [\App\Http\Controllers\Admin\AdminUserController::class, 'store'])->name('users.store');
+    Route::patch('users/{user}/toggle-admin', [\App\Http\Controllers\Admin\AdminUserController::class, 'toggleAdmin'])->name('users.toggle-admin');
 });
 
 Route::middleware('auth')->group(function () {

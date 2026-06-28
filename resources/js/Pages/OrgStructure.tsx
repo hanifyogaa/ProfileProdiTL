@@ -48,10 +48,6 @@ export default function OrgStructure({ orgContent }: OrgStructureProps) {
                 {/* Header */}
                 <Reveal>
                     <div className="mb-12 text-center">
-                        <span className="bg-amber-500/12 text-brand-700 mb-4 inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold">
-                            <Building2 className="size-3.5" />
-                            {l === 'id' ? 'Tentang Kami' : 'About Us'}
-                        </span>
                         <h1 className="font-display text-ink-900 mt-4 text-4xl leading-tight font-semibold sm:text-5xl">
                             {title}
                         </h1>

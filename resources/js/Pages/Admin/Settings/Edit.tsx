@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import React, { useState } from 'react';
 
-type Tab = 'hero' | 'greeting' | 'distinctiveness' | 'profil' | 'curriculum' | 'embed' | 'meta';
+type Tab = 'hero' | 'greeting' | 'distinctiveness' | 'profil' | 'curriculum' | 'embed' | 'meta' | 'student_org' | 'prospects' | 'accreditation' | 'org_structure' | 'tracer' | 'mbkm';
 
 interface Testimonial {
     name: string;
@@ -28,6 +28,45 @@ interface Testimonial {
     year: string;
     quote_id: string;
     quote_en: string;
+}
+
+interface DivisionForm {
+    name: string;
+    description: { id: string; en: string };
+}
+
+interface ProspectTrackForm {
+    title_id: string;
+    title_en: string;
+    description_id: string;
+    description_en: string;
+}
+
+interface AccreditationDecreeForm {
+    title: { id: string; en: string };
+    number: string;
+    date: string;
+    grade: string;
+    description: { id: string; en: string };
+}
+
+interface OrgMemberForm {
+    name: string;
+    role: { id: string; en: string };
+    email: string;
+}
+
+interface TracerSeriesForm {
+    year: number;
+    employment_rate: number;
+}
+
+interface MbkmSchemeForm {
+    title_id: string;
+    title_en: string;
+    desc_id: string;
+    desc_en: string;
+    sks: string;
 }
 
 interface SettingsProps {
@@ -89,16 +128,20 @@ export default function Edit({ settings }: SettingsProps) {
             plo_url:            cs.plo_url ?? '',
             testimonials:       initTestimonials,
             description:        { id: cs.description?.id ?? '', en: cs.description?.en ?? '' },
+            hero_image:         cs.hero_image ?? null,
         },
         curriculum_pdf_file:         null as File | null,
         prerequisite_image_file:     null as File | null,
+        curriculum_hero_image_file: null as File | null,
 
         // Profil Prodi
         about_content: {
             visi:    { id: settings.about_content?.visi?.id    ?? '', en: settings.about_content?.visi?.en    ?? '' },
             history: { id: settings.about_content?.history?.id ?? '', en: settings.about_content?.history?.en ?? '' },
             misi: (settings.about_content?.misi ?? [{ id: '', en: '' }]) as { id: string; en: string }[],
+            hero_image: settings.about_content?.hero_image ?? null,
         },
+        about_hero_image_file: null as File | null,
         prodi_stats: {
             mahasiswa:   settings.prodi_stats?.mahasiswa   ?? 0,
             dosen:       settings.prodi_stats?.dosen       ?? 0,
@@ -130,8 +173,10 @@ export default function Edit({ settings }: SettingsProps) {
             name:                settings.site_meta?.name ?? '',
             address:             settings.site_meta?.address ?? '',
             accreditation_badge: settings.site_meta?.accreditation_badge ?? null,
+            hero_image:          settings.site_meta?.hero_image ?? null,
         },
         accreditation_badge_file: null as File | null,
+        contact_hero_image_file: null as File | null,
 
         socials: {
             instagram: settings.socials?.instagram ?? '',
@@ -143,6 +188,58 @@ export default function Edit({ settings }: SettingsProps) {
             email: settings.contact?.email ?? '',
             phone: settings.contact?.phone ?? '',
         },
+
+        // Kemahasiswaan / HIMA
+        student_association: {
+            name:        settings.student_association?.name ?? '',
+            description: { id: settings.student_association?.description?.id ?? '', en: settings.student_association?.description?.en ?? '' },
+            vision:      { id: settings.student_association?.vision?.id ?? '', en: settings.student_association?.vision?.en ?? '' },
+            instagram:   settings.student_association?.instagram ?? '',
+            divisions:  (settings.student_association?.divisions ?? []) as DivisionForm[],
+        },
+
+        // Prospek Karier (homepage)
+        prospects: {
+            heading: { id: settings.prospects?.heading?.id ?? '', en: settings.prospects?.heading?.en ?? '' },
+            tracks: (settings.prospects?.tracks ?? []) as ProspectTrackForm[],
+        },
+
+        // Akreditasi
+        accreditation: {
+            body_name:   settings.accreditation?.body_name ?? '',
+            status:      { id: settings.accreditation?.status?.id ?? '', en: settings.accreditation?.status?.en ?? '' },
+            description: { id: settings.accreditation?.description?.id ?? '', en: settings.accreditation?.description?.en ?? '' },
+            decrees:    (settings.accreditation?.decrees ?? []) as AccreditationDecreeForm[],
+        },
+
+        // Struktur Organisasi
+        org_structure: {
+            description: { id: settings.org_structure?.description?.id ?? '', en: settings.org_structure?.description?.en ?? '' },
+            chart_image: settings.org_structure?.chart_image ?? null,
+            members:    (settings.org_structure?.members ?? []) as OrgMemberForm[],
+        },
+        org_chart_image_file: null as File | null,
+
+        // Statistik & Tracer Study
+        tracer_stats: {
+            caption:    { id: settings.tracer_stats?.caption?.id ?? '', en: settings.tracer_stats?.caption?.en ?? '' },
+            series:    (settings.tracer_stats?.series ?? []) as TracerSeriesForm[],
+            hero_image: settings.tracer_stats?.hero_image ?? null,
+        },
+        statistics_hero_image_file: null as File | null,
+
+        // MBKM
+        mbkm_content: {
+            hero_image: settings.mbkm_content?.hero_image ?? null,
+            schemes: ((settings.mbkm_content?.schemes ?? []) as any[]).map((s) => ({
+                title_id: s.title_id ?? s.title?.id ?? '',
+                title_en: s.title_en ?? s.title?.en ?? '',
+                desc_id:  s.desc_id  ?? s.desc?.id  ?? '',
+                desc_en:  s.desc_en  ?? s.desc?.en  ?? '',
+                sks: s.sks ?? '',
+            })) as MbkmSchemeForm[],
+        },
+        mbkm_hero_image_file: null as File | null,
     });
 
     // --- Testimonial helpers ---
@@ -204,6 +301,119 @@ export default function Edit({ settings }: SettingsProps) {
         setData('distinctiveness', { ...data.distinctiveness, points: next });
     };
 
+    // --- Division (HIMA) helpers ---
+    const addDivision = () => {
+        setData('student_association', {
+            ...data.student_association,
+            divisions: [...data.student_association.divisions, { name: '', description: { id: '', en: '' } }],
+        });
+    };
+    const removeDivision = (i: number) => {
+        setData('student_association', {
+            ...data.student_association,
+            divisions: data.student_association.divisions.filter((_, idx) => idx !== i),
+        });
+    };
+    const updateDivisionName = (i: number, val: string) => {
+        const next = data.student_association.divisions.map((d, idx) =>
+            idx === i ? { ...d, name: val } : d
+        );
+        setData('student_association', { ...data.student_association, divisions: next });
+    };
+    const updateDivisionDescription = (i: number, lang: 'id' | 'en', val: string) => {
+        const next = data.student_association.divisions.map((d, idx) =>
+            idx === i ? { ...d, description: { ...d.description, [lang]: val } } : d
+        );
+        setData('student_association', { ...data.student_association, divisions: next });
+    };
+
+    // --- Career prospect track helpers ---
+    const addTrack = () => {
+        setData('prospects', {
+            ...data.prospects,
+            tracks: [...data.prospects.tracks, { title_id: '', title_en: '', description_id: '', description_en: '' }],
+        });
+    };
+    const removeTrack = (i: number) => {
+        setData('prospects', { ...data.prospects, tracks: data.prospects.tracks.filter((_, idx) => idx !== i) });
+    };
+    const updateTrack = (i: number, field: keyof ProspectTrackForm, val: string) => {
+        const next = data.prospects.tracks.map((t, idx) => idx === i ? { ...t, [field]: val } : t);
+        setData('prospects', { ...data.prospects, tracks: next });
+    };
+
+    // --- Accreditation decree helpers ---
+    const addDecree = () => {
+        setData('accreditation', {
+            ...data.accreditation,
+            decrees: [...data.accreditation.decrees, { title: { id: '', en: '' }, number: '', date: '', grade: '', description: { id: '', en: '' } }],
+        });
+    };
+    const removeDecree = (i: number) => {
+        setData('accreditation', { ...data.accreditation, decrees: data.accreditation.decrees.filter((_, idx) => idx !== i) });
+    };
+    const updateDecreeField = (i: number, field: 'number' | 'date' | 'grade', val: string) => {
+        const next = data.accreditation.decrees.map((d, idx) => idx === i ? { ...d, [field]: val } : d);
+        setData('accreditation', { ...data.accreditation, decrees: next });
+    };
+    const updateDecreeBilingual = (i: number, field: 'title' | 'description', lang: 'id' | 'en', val: string) => {
+        const next = data.accreditation.decrees.map((d, idx) =>
+            idx === i ? { ...d, [field]: { ...d[field], [lang]: val } } : d
+        );
+        setData('accreditation', { ...data.accreditation, decrees: next });
+    };
+
+    // --- Org structure member helpers ---
+    const addMember = () => {
+        setData('org_structure', {
+            ...data.org_structure,
+            members: [...data.org_structure.members, { name: '', role: { id: '', en: '' }, email: '' }],
+        });
+    };
+    const removeMember = (i: number) => {
+        setData('org_structure', { ...data.org_structure, members: data.org_structure.members.filter((_, idx) => idx !== i) });
+    };
+    const updateMemberField = (i: number, field: 'name' | 'email', val: string) => {
+        const next = data.org_structure.members.map((m, idx) => idx === i ? { ...m, [field]: val } : m);
+        setData('org_structure', { ...data.org_structure, members: next });
+    };
+    const updateMemberRole = (i: number, lang: 'id' | 'en', val: string) => {
+        const next = data.org_structure.members.map((m, idx) =>
+            idx === i ? { ...m, role: { ...m.role, [lang]: val } } : m
+        );
+        setData('org_structure', { ...data.org_structure, members: next });
+    };
+
+    // --- Tracer study series helpers ---
+    const addSeriesPoint = () => {
+        setData('tracer_stats', {
+            ...data.tracer_stats,
+            series: [...data.tracer_stats.series, { year: new Date().getFullYear(), employment_rate: 0 }],
+        });
+    };
+    const removeSeriesPoint = (i: number) => {
+        setData('tracer_stats', { ...data.tracer_stats, series: data.tracer_stats.series.filter((_, idx) => idx !== i) });
+    };
+    const updateSeriesPoint = (i: number, field: keyof TracerSeriesForm, val: number) => {
+        const next = data.tracer_stats.series.map((s, idx) => idx === i ? { ...s, [field]: val } : s);
+        setData('tracer_stats', { ...data.tracer_stats, series: next });
+    };
+
+    // --- MBKM scheme helpers ---
+    const addScheme = () => {
+        setData('mbkm_content', {
+            ...data.mbkm_content,
+            schemes: [...data.mbkm_content.schemes, { title_id: '', title_en: '', desc_id: '', desc_en: '', sks: '' }],
+        });
+    };
+    const removeScheme = (i: number) => {
+        setData('mbkm_content', { ...data.mbkm_content, schemes: data.mbkm_content.schemes.filter((_, idx) => idx !== i) });
+    };
+    const updateScheme = (i: number, field: keyof MbkmSchemeForm, val: string) => {
+        const next = data.mbkm_content.schemes.map((s, idx) => idx === i ? { ...s, [field]: val } : s);
+        setData('mbkm_content', { ...data.mbkm_content, schemes: next });
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         post(route('admin.settings.update'), { forceFormData: true });
@@ -217,6 +427,12 @@ export default function Edit({ settings }: SettingsProps) {
         { key: 'curriculum',      label: 'Kurikulum',        icon: BookOpen },
         { key: 'embed',           label: 'Link Portal',      icon: Monitor },
         { key: 'meta',            label: 'Info & Kontak',    icon: Info },
+        { key: 'student_org',     label: 'Kemahasiswaan',    icon: Users },
+        { key: 'prospects',       label: 'Prospek Karier',   icon: Award },
+        { key: 'accreditation',   label: 'Akreditasi',       icon: ShieldCheck },
+        { key: 'org_structure',   label: 'Struktur Organisasi', icon: Users },
+        { key: 'tracer',          label: 'Statistik & Tracer Study', icon: BookOpen },
+        { key: 'mbkm',            label: 'MBKM', icon: Globe },
     ];
 
     const inputCls = 'w-full rounded-xl border border-cream-300 bg-surface-0 px-4 py-2.5 text-sm outline-none focus:border-brand-700 focus:ring-1 focus:ring-brand-700/20';
@@ -466,6 +682,13 @@ export default function Edit({ settings }: SettingsProps) {
                             </div>
                             <hr className="border-cream-300/40" />
 
+                            <ImageUpload label="Gambar Hero Halaman Profil"
+                                existingUrl={data.about_content.hero_image}
+                                onChange={(f) => setData('about_hero_image_file', f)}
+                                onClearExisting={() => setData('about_content', { ...data.about_content, hero_image: null })}
+                                error={errors.about_hero_image_file}
+                            />
+
                             {/* ── Visi ── */}
                             <div>
                                 <h4 className="mb-4 flex items-center gap-2 text-sm font-bold text-ink-900">
@@ -655,6 +878,13 @@ export default function Edit({ settings }: SettingsProps) {
                                 <p className="mt-0.5 text-xs text-navy-700">Konfigurasi halaman kurikulum: ringkasan, prasyarat MK, PEO/PLO, dan testimoni alumni.</p>
                             </div>
                             <hr className="border-cream-300/40" />
+
+                            <ImageUpload label="Gambar Hero Halaman Kurikulum"
+                                existingUrl={data.curriculum_summary.hero_image}
+                                onChange={(f) => setData('curriculum_hero_image_file', f)}
+                                onClearExisting={() => setData('curriculum_summary', { ...data.curriculum_summary, hero_image: null })}
+                                error={errors.curriculum_hero_image_file}
+                            />
 
                             {/* Summary numbers */}
                             <div className="grid grid-cols-2 gap-4">
@@ -850,6 +1080,13 @@ export default function Edit({ settings }: SettingsProps) {
                             </div>
                             <hr className="border-cream-300/40" />
 
+                            <ImageUpload label="Gambar Hero Halaman Kontak"
+                                existingUrl={data.site_meta.hero_image}
+                                onChange={(f) => setData('contact_hero_image_file', f)}
+                                onClearExisting={() => setData('site_meta', { ...data.site_meta, hero_image: null })}
+                                error={errors.contact_hero_image_file}
+                            />
+
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                 <div className="space-y-1">
                                     <label className="text-sm font-semibold text-ink-900">Nama Situs / Prodi</label>
@@ -893,6 +1130,491 @@ export default function Edit({ settings }: SettingsProps) {
                                 onClearExisting={() => setData('site_meta', { ...data.site_meta, accreditation_badge: null })}
                                 error={errors.accreditation_badge_file}
                             />
+                        </div>
+                    )}
+
+                    {/* ── Tab: Kemahasiswaan ── */}
+                    {activeTab === 'student_org' && (
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-lg font-bold text-ink-900">Kemahasiswaan & HIMA</h3>
+                                <p className="mt-0.5 text-xs text-navy-700">Konten halaman /kemahasiswaan: profil organisasi, visi, dan daftar divisi.</p>
+                            </div>
+                            <hr className="border-cream-300/40" />
+
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                <div className="space-y-1">
+                                    <label className="text-xs font-semibold text-navy-700">Nama Organisasi</label>
+                                    <input type="text" value={data.student_association.name} className={inputCls}
+                                        placeholder="HIMA Teknik Logistik"
+                                        onChange={(e) => setData('student_association', { ...data.student_association, name: e.target.value })} />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs font-semibold text-navy-700">Instagram (tanpa @ atau lengkap)</label>
+                                    <input type="text" value={data.student_association.instagram} className={inputCls}
+                                        placeholder="hima.teklog"
+                                        onChange={(e) => setData('student_association', { ...data.student_association, instagram: e.target.value })} />
+                                </div>
+                            </div>
+
+                            <BilingualInput label="Deskripsi Organisasi" type="textarea" rows={4}
+                                idName="student_association.description.id" enName="student_association.description.en"
+                                idValue={data.student_association.description.id} enValue={data.student_association.description.en}
+                                onChangeId={(v) => setData('student_association', { ...data.student_association, description: { ...data.student_association.description, id: v } })}
+                                onChangeEn={(v) => setData('student_association', { ...data.student_association, description: { ...data.student_association.description, en: v } })}
+                            />
+
+                            <BilingualInput label="Visi Organisasi" type="textarea" rows={3}
+                                idName="student_association.vision.id" enName="student_association.vision.en"
+                                idValue={data.student_association.vision.id} enValue={data.student_association.vision.en}
+                                onChangeId={(v) => setData('student_association', { ...data.student_association, vision: { ...data.student_association.vision, id: v } })}
+                                onChangeEn={(v) => setData('student_association', { ...data.student_association, vision: { ...data.student_association.vision, en: v } })}
+                            />
+
+                            <hr className="border-cream-300/40" />
+
+                            <div>
+                                <div className="mb-4 flex items-center justify-between">
+                                    <h4 className="text-sm font-bold text-ink-900">Divisi & Bidang Kerja</h4>
+                                    <button type="button" onClick={addDivision}
+                                        className="inline-flex items-center gap-1.5 rounded-xl bg-brand-700/8 px-3 py-2 text-xs font-semibold text-brand-700 hover:bg-brand-700/15 transition-colors">
+                                        <Plus className="size-3.5" /> Tambah Divisi
+                                    </button>
+                                </div>
+                                <div className="space-y-3">
+                                    {data.student_association.divisions.map((d, i) => (
+                                        <div key={i} className="rounded-xl border border-cream-300/40 bg-surface-50/20 p-4">
+                                            <div className="mb-3 flex items-center justify-between">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-brand-700">Divisi {i + 1}</span>
+                                                <button type="button" onClick={() => removeDivision(i)}
+                                                    className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 text-[10px] font-semibold text-red-600 hover:bg-red-100 transition-colors">
+                                                    <Trash2 className="size-2.5" /> Hapus
+                                                </button>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <div className="space-y-1">
+                                                    <label className="text-xs font-semibold text-navy-700">Nama Divisi</label>
+                                                    <input type="text" value={d.name} className={inputCls} placeholder="Divisi Akademik"
+                                                        onChange={(e) => updateDivisionName(i, e.target.value)} />
+                                                </div>
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Deskripsi (ID)</label>
+                                                        <textarea rows={2} value={d.description.id} className={`${inputCls} resize-none`}
+                                                            onChange={(e) => updateDivisionDescription(i, 'id', e.target.value)}
+                                                            placeholder="Tugas dan fokus divisi..." />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Deskripsi (EN)</label>
+                                                        <textarea rows={2} value={d.description.en} className={`${inputCls} resize-none`}
+                                                            onChange={(e) => updateDivisionDescription(i, 'en', e.target.value)}
+                                                            placeholder="Division focus and duties..." />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {data.student_association.divisions.length === 0 && (
+                                        <p className="rounded-xl border border-dashed border-cream-300 py-6 text-center text-xs text-navy-700/40">
+                                            Belum ada divisi. Klik "Tambah Divisi" untuk menambahkan.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ── Tab: Prospek Karier ── */}
+                    {activeTab === 'prospects' && (
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-lg font-bold text-ink-900">Prospek Karier</h3>
+                                <p className="mt-0.5 text-xs text-navy-700">Daftar jalur karir lulusan yang ditampilkan di bagian "Profil Kelulusan & Karir" pada homepage.</p>
+                            </div>
+                            <hr className="border-cream-300/40" />
+
+                            <div className="mb-4 flex items-center justify-between">
+                                <h4 className="text-sm font-bold text-ink-900">Jalur Karier</h4>
+                                <button type="button" onClick={addTrack}
+                                    className="inline-flex items-center gap-1.5 rounded-xl bg-brand-700/8 px-3 py-2 text-xs font-semibold text-brand-700 hover:bg-brand-700/15 transition-colors">
+                                    <Plus className="size-3.5" /> Tambah Jalur Karier
+                                </button>
+                            </div>
+                            <div className="space-y-3">
+                                {data.prospects.tracks.map((t, i) => (
+                                    <div key={i} className="rounded-xl border border-cream-300/40 bg-surface-50/20 p-4">
+                                        <div className="mb-3 flex items-center justify-between">
+                                            <span className="text-xs font-bold uppercase tracking-wider text-brand-700">Jalur {i + 1}</span>
+                                            <button type="button" onClick={() => removeTrack(i)}
+                                                className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 text-[10px] font-semibold text-red-600 hover:bg-red-100 transition-colors">
+                                                <Trash2 className="size-2.5" /> Hapus
+                                            </button>
+                                        </div>
+                                        <div className="space-y-3">
+                                            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                <div className="space-y-1">
+                                                    <label className="text-xs font-semibold text-navy-700">Judul (ID)</label>
+                                                    <input type="text" value={t.title_id} className={inputCls} placeholder="Logistics Analyst"
+                                                        onChange={(e) => updateTrack(i, 'title_id', e.target.value)} />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-xs font-semibold text-navy-700">Judul (EN)</label>
+                                                    <input type="text" value={t.title_en} className={inputCls} placeholder="Logistics Analyst"
+                                                        onChange={(e) => updateTrack(i, 'title_en', e.target.value)} />
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                <div className="space-y-1">
+                                                    <label className="text-xs font-semibold text-navy-700">Deskripsi (ID)</label>
+                                                    <textarea rows={2} value={t.description_id} className={`${inputCls} resize-none`}
+                                                        onChange={(e) => updateTrack(i, 'description_id', e.target.value)}
+                                                        placeholder="Deskripsi singkat jalur karier..." />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-xs font-semibold text-navy-700">Deskripsi (EN)</label>
+                                                    <textarea rows={2} value={t.description_en} className={`${inputCls} resize-none`}
+                                                        onChange={(e) => updateTrack(i, 'description_en', e.target.value)}
+                                                        placeholder="Short career path description..." />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                                {data.prospects.tracks.length === 0 && (
+                                    <p className="rounded-xl border border-dashed border-cream-300 py-6 text-center text-xs text-navy-700/40">
+                                        Belum ada jalur karier. Klik "Tambah Jalur Karier" untuk menambahkan.
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ── Tab: Akreditasi ── */}
+                    {activeTab === 'accreditation' && (
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-lg font-bold text-ink-900">Akreditasi</h3>
+                                <p className="mt-0.5 text-xs text-navy-700">Informasi lembaga akreditasi dan daftar SK/keputusan yang ditampilkan di halaman /profil/akreditasi. Badge BAN-PT &amp; IABEE diatur di tab "Profil Prodi".</p>
+                            </div>
+                            <hr className="border-cream-300/40" />
+
+                            <div className="space-y-1">
+                                <label className="text-xs font-semibold text-navy-700">Nama Lembaga Akreditasi</label>
+                                <input type="text" value={data.accreditation.body_name} className={inputCls}
+                                    placeholder="BAN-PT / LAM Teknik"
+                                    onChange={(e) => setData('accreditation', { ...data.accreditation, body_name: e.target.value })} />
+                            </div>
+
+                            <BilingualInput label="Status Akreditasi"
+                                idName="accreditation.status.id" enName="accreditation.status.en"
+                                idValue={data.accreditation.status.id} enValue={data.accreditation.status.en}
+                                onChangeId={(v) => setData('accreditation', { ...data.accreditation, status: { ...data.accreditation.status, id: v } })}
+                                onChangeEn={(v) => setData('accreditation', { ...data.accreditation, status: { ...data.accreditation.status, en: v } })}
+                            />
+
+                            <BilingualInput label="Deskripsi Akreditasi" type="textarea" rows={4}
+                                idName="accreditation.description.id" enName="accreditation.description.en"
+                                idValue={data.accreditation.description.id} enValue={data.accreditation.description.en}
+                                onChangeId={(v) => setData('accreditation', { ...data.accreditation, description: { ...data.accreditation.description, id: v } })}
+                                onChangeEn={(v) => setData('accreditation', { ...data.accreditation, description: { ...data.accreditation.description, en: v } })}
+                            />
+
+                            <hr className="border-cream-300/40" />
+
+                            <div>
+                                <div className="mb-4 flex items-center justify-between">
+                                    <h4 className="text-sm font-bold text-ink-900">Daftar SK / Keputusan</h4>
+                                    <button type="button" onClick={addDecree}
+                                        className="inline-flex items-center gap-1.5 rounded-xl bg-brand-700/8 px-3 py-2 text-xs font-semibold text-brand-700 hover:bg-brand-700/15 transition-colors">
+                                        <Plus className="size-3.5" /> Tambah SK
+                                    </button>
+                                </div>
+                                <div className="space-y-3">
+                                    {data.accreditation.decrees.map((d, i) => (
+                                        <div key={i} className="rounded-xl border border-cream-300/40 bg-surface-50/20 p-4">
+                                            <div className="mb-3 flex items-center justify-between">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-brand-700">SK {i + 1}</span>
+                                                <button type="button" onClick={() => removeDecree(i)}
+                                                    className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 text-[10px] font-semibold text-red-600 hover:bg-red-100 transition-colors">
+                                                    <Trash2 className="size-2.5" /> Hapus
+                                                </button>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Judul SK (ID)</label>
+                                                        <input type="text" value={d.title.id} className={inputCls}
+                                                            onChange={(e) => updateDecreeBilingual(i, 'title', 'id', e.target.value)} />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Judul SK (EN)</label>
+                                                        <input type="text" value={d.title.en} className={inputCls}
+                                                            onChange={(e) => updateDecreeBilingual(i, 'title', 'en', e.target.value)} />
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Nomor SK</label>
+                                                        <input type="text" value={d.number} className={inputCls} placeholder="1195/KPT/I/2018"
+                                                            onChange={(e) => updateDecreeField(i, 'number', e.target.value)} />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Tanggal</label>
+                                                        <input type="text" value={d.date} className={inputCls} placeholder="28/12/2018"
+                                                            onChange={(e) => updateDecreeField(i, 'date', e.target.value)} />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Peringkat</label>
+                                                        <input type="text" value={d.grade} className={inputCls} placeholder="B / –"
+                                                            onChange={(e) => updateDecreeField(i, 'grade', e.target.value)} />
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Deskripsi (ID)</label>
+                                                        <textarea rows={2} value={d.description.id} className={`${inputCls} resize-none`}
+                                                            onChange={(e) => updateDecreeBilingual(i, 'description', 'id', e.target.value)} />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Deskripsi (EN)</label>
+                                                        <textarea rows={2} value={d.description.en} className={`${inputCls} resize-none`}
+                                                            onChange={(e) => updateDecreeBilingual(i, 'description', 'en', e.target.value)} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {data.accreditation.decrees.length === 0 && (
+                                        <p className="rounded-xl border border-dashed border-cream-300 py-6 text-center text-xs text-navy-700/40">
+                                            Belum ada SK. Klik "Tambah SK" untuk menambahkan.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ── Tab: Struktur Organisasi ── */}
+                    {activeTab === 'org_structure' && (
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-lg font-bold text-ink-900">Struktur Organisasi</h3>
+                                <p className="mt-0.5 text-xs text-navy-700">Deskripsi, bagan, dan daftar pengurus yang ditampilkan di halaman /profil/struktur-organisasi.</p>
+                            </div>
+                            <hr className="border-cream-300/40" />
+
+                            <BilingualInput label="Deskripsi" type="textarea" rows={4}
+                                idName="org_structure.description.id" enName="org_structure.description.en"
+                                idValue={data.org_structure.description.id} enValue={data.org_structure.description.en}
+                                onChangeId={(v) => setData('org_structure', { ...data.org_structure, description: { ...data.org_structure.description, id: v } })}
+                                onChangeEn={(v) => setData('org_structure', { ...data.org_structure, description: { ...data.org_structure.description, en: v } })}
+                            />
+
+                            <ImageUpload label="Bagan Struktur Organisasi (opsional)"
+                                existingUrl={data.org_structure.chart_image}
+                                onChange={(f) => setData('org_chart_image_file', f)}
+                                onClearExisting={() => setData('org_structure', { ...data.org_structure, chart_image: null })}
+                                error={errors.org_chart_image_file}
+                            />
+
+                            <hr className="border-cream-300/40" />
+
+                            <div>
+                                <div className="mb-4 flex items-center justify-between">
+                                    <h4 className="text-sm font-bold text-ink-900">Daftar Pengurus</h4>
+                                    <button type="button" onClick={addMember}
+                                        className="inline-flex items-center gap-1.5 rounded-xl bg-brand-700/8 px-3 py-2 text-xs font-semibold text-brand-700 hover:bg-brand-700/15 transition-colors">
+                                        <Plus className="size-3.5" /> Tambah Pengurus
+                                    </button>
+                                </div>
+                                <div className="space-y-3">
+                                    {data.org_structure.members.map((m, i) => (
+                                        <div key={i} className="rounded-xl border border-cream-300/40 bg-surface-50/20 p-4">
+                                            <div className="mb-3 flex items-center justify-between">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-brand-700">Pengurus {i + 1}</span>
+                                                <button type="button" onClick={() => removeMember(i)}
+                                                    className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 text-[10px] font-semibold text-red-600 hover:bg-red-100 transition-colors">
+                                                    <Trash2 className="size-2.5" /> Hapus
+                                                </button>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Nama</label>
+                                                        <input type="text" value={m.name} className={inputCls} placeholder="Dr. Femi Yulianti"
+                                                            onChange={(e) => updateMemberField(i, 'name', e.target.value)} />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Email (opsional)</label>
+                                                        <input type="email" value={m.email} className={inputCls} placeholder="nama@telkomuniversity.ac.id"
+                                                            onChange={(e) => updateMemberField(i, 'email', e.target.value)} />
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Jabatan (ID)</label>
+                                                        <input type="text" value={m.role.id} className={inputCls} placeholder="Kaprodi Teknik Logistik"
+                                                            onChange={(e) => updateMemberRole(i, 'id', e.target.value)} />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Jabatan (EN)</label>
+                                                        <input type="text" value={m.role.en} className={inputCls} placeholder="Head of Logistics Engineering Program"
+                                                            onChange={(e) => updateMemberRole(i, 'en', e.target.value)} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {data.org_structure.members.length === 0 && (
+                                        <p className="rounded-xl border border-dashed border-cream-300 py-6 text-center text-xs text-navy-700/40">
+                                            Belum ada pengurus. Klik "Tambah Pengurus" untuk menambahkan.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ── Tab: Statistik & Tracer Study ── */}
+                    {activeTab === 'tracer' && (
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-lg font-bold text-ink-900">Statistik & Tracer Study</h3>
+                                <p className="mt-0.5 text-xs text-navy-700">Gambar hero dan data grafik tingkat keterserapan kerja (tracer study) di halaman /statistik.</p>
+                            </div>
+                            <hr className="border-cream-300/40" />
+
+                            <ImageUpload label="Gambar Hero Halaman Statistik"
+                                existingUrl={data.tracer_stats.hero_image}
+                                onChange={(f) => setData('statistics_hero_image_file', f)}
+                                onClearExisting={() => setData('tracer_stats', { ...data.tracer_stats, hero_image: null })}
+                                error={errors.statistics_hero_image_file}
+                            />
+
+                            <BilingualInput label="Keterangan Grafik (Caption)" type="textarea" rows={2}
+                                idName="tracer_stats.caption.id" enName="tracer_stats.caption.en"
+                                idValue={data.tracer_stats.caption.id} enValue={data.tracer_stats.caption.en}
+                                onChangeId={(v) => setData('tracer_stats', { ...data.tracer_stats, caption: { ...data.tracer_stats.caption, id: v } })}
+                                onChangeEn={(v) => setData('tracer_stats', { ...data.tracer_stats, caption: { ...data.tracer_stats.caption, en: v } })}
+                            />
+
+                            <hr className="border-cream-300/40" />
+
+                            <div>
+                                <div className="mb-4 flex items-center justify-between">
+                                    <h4 className="text-sm font-bold text-ink-900">Data Tingkat Keterserapan per Tahun</h4>
+                                    <button type="button" onClick={addSeriesPoint}
+                                        className="inline-flex items-center gap-1.5 rounded-xl bg-brand-700/8 px-3 py-2 text-xs font-semibold text-brand-700 hover:bg-brand-700/15 transition-colors">
+                                        <Plus className="size-3.5" /> Tambah Data Tahun
+                                    </button>
+                                </div>
+                                <div className="space-y-3">
+                                    {data.tracer_stats.series.map((s, i) => (
+                                        <div key={i} className="flex items-center gap-3 rounded-xl border border-cream-300/40 bg-surface-50/20 p-4">
+                                            <div className="flex-1 space-y-1">
+                                                <label className="text-xs font-semibold text-navy-700">Tahun</label>
+                                                <input type="number" value={s.year} className={inputCls}
+                                                    onChange={(e) => updateSeriesPoint(i, 'year', parseInt(e.target.value) || 0)} />
+                                            </div>
+                                            <div className="flex-1 space-y-1">
+                                                <label className="text-xs font-semibold text-navy-700">Tingkat Keterserapan (%)</label>
+                                                <input type="number" value={s.employment_rate} className={inputCls} min={0} max={100}
+                                                    onChange={(e) => updateSeriesPoint(i, 'employment_rate', parseFloat(e.target.value) || 0)} />
+                                            </div>
+                                            <button type="button" onClick={() => removeSeriesPoint(i)}
+                                                className="mt-5 inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1.5 text-[10px] font-semibold text-red-600 hover:bg-red-100 transition-colors">
+                                                <Trash2 className="size-2.5" /> Hapus
+                                            </button>
+                                        </div>
+                                    ))}
+                                    {data.tracer_stats.series.length === 0 && (
+                                        <p className="rounded-xl border border-dashed border-cream-300 py-6 text-center text-xs text-navy-700/40">
+                                            Belum ada data. Klik "Tambah Data Tahun" untuk menambahkan.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ── Tab: MBKM ── */}
+                    {activeTab === 'mbkm' && (
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-lg font-bold text-ink-900">MBKM (Merdeka Belajar Kampus Merdeka)</h3>
+                                <p className="mt-0.5 text-xs text-navy-700">Gambar hero dan daftar skema program MBKM yang ditampilkan di halaman /mbkm.</p>
+                            </div>
+                            <hr className="border-cream-300/40" />
+
+                            <ImageUpload label="Gambar Hero Halaman MBKM"
+                                existingUrl={data.mbkm_content.hero_image}
+                                onChange={(f) => setData('mbkm_hero_image_file', f)}
+                                onClearExisting={() => setData('mbkm_content', { ...data.mbkm_content, hero_image: null })}
+                                error={errors.mbkm_hero_image_file}
+                            />
+
+                            <hr className="border-cream-300/40" />
+
+                            <div>
+                                <div className="mb-4 flex items-center justify-between">
+                                    <h4 className="text-sm font-bold text-ink-900">Skema Program MBKM</h4>
+                                    <button type="button" onClick={addScheme}
+                                        className="inline-flex items-center gap-1.5 rounded-xl bg-brand-700/8 px-3 py-2 text-xs font-semibold text-brand-700 hover:bg-brand-700/15 transition-colors">
+                                        <Plus className="size-3.5" /> Tambah Skema
+                                    </button>
+                                </div>
+                                <div className="space-y-3">
+                                    {data.mbkm_content.schemes.map((s, i) => (
+                                        <div key={i} className="rounded-xl border border-cream-300/40 bg-surface-50/20 p-4">
+                                            <div className="mb-3 flex items-center justify-between">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-brand-700">Skema {i + 1}</span>
+                                                <button type="button" onClick={() => removeScheme(i)}
+                                                    className="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 text-[10px] font-semibold text-red-600 hover:bg-red-100 transition-colors">
+                                                    <Trash2 className="size-2.5" /> Hapus
+                                                </button>
+                                            </div>
+                                            <div className="space-y-3">
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                                                    <div className="space-y-1 md:col-span-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Konversi SKS</label>
+                                                        <input type="text" value={s.sks} className={inputCls} placeholder="20 SKS"
+                                                            onChange={(e) => updateScheme(i, 'sks', e.target.value)} />
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Judul (ID)</label>
+                                                        <input type="text" value={s.title_id} className={inputCls} placeholder="Magang Industri Bersertifikat"
+                                                            onChange={(e) => updateScheme(i, 'title_id', e.target.value)} />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Judul (EN)</label>
+                                                        <input type="text" value={s.title_en} className={inputCls} placeholder="Certified Industry Internship"
+                                                            onChange={(e) => updateScheme(i, 'title_en', e.target.value)} />
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Deskripsi (ID)</label>
+                                                        <textarea rows={2} value={s.desc_id} className={`${inputCls} resize-none`}
+                                                            onChange={(e) => updateScheme(i, 'desc_id', e.target.value)} />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <label className="text-xs font-semibold text-navy-700">Deskripsi (EN)</label>
+                                                        <textarea rows={2} value={s.desc_en} className={`${inputCls} resize-none`}
+                                                            onChange={(e) => updateScheme(i, 'desc_en', e.target.value)} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {data.mbkm_content.schemes.length === 0 && (
+                                        <p className="rounded-xl border border-dashed border-cream-300 py-6 text-center text-xs text-navy-700/40">
+                                            Belum ada skema. Klik "Tambah Skema" untuk menambahkan. Jika dikosongkan, halaman publik akan menampilkan 6 skema bawaan.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     )}
 

@@ -55,7 +55,7 @@ class AdminNewsController extends Controller
         ]);
 
         $validated['slug'] = Str::slug($validated['title_id']);
-        
+
         // Ensure slug is unique
         $slugCount = News::where('slug', 'like', $validated['slug'] . '%')->count();
         if ($slugCount > 0) {

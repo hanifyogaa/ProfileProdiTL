@@ -43,7 +43,7 @@ interface StatItem {
 interface AboutProps {
     greeting?: GreetingData;
     distinctiveness?: any;
-    aboutContent?: AboutContent;
+    aboutContent?: AboutContent & { hero_image?: string | null };
     siteMeta?: SiteMeta;
     prodiStats?: {
         iabee_desc?: BilingualStr;
@@ -158,7 +158,7 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
                     style={shouldReduceMotion ? {} : { y: yBg }}
                 >
                     <img
-                        src={HERO_BG}
+                        src={aboutContent?.hero_image || HERO_BG}
                         alt=""
                         className="size-full object-cover"
                         style={{ opacity: 0.40 }}
@@ -183,11 +183,6 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
                         {/* Left — text (7 cols) */}
                         <div className="md:col-span-7">
                             <Reveal>
-                                <span className="mb-4 inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
-                                    style={{ background: 'rgba(217,159,96,0.15)', color: '#D99F60', border: '1px solid rgba(217,159,96,0.25)' }}>
-                                    <ShieldCheck className="size-3.5" />
-                                    {l === 'id' ? 'Tentang Prodi' : 'About the Program'}
-                                </span>
                                 <h1 className="font-display mt-3 text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
                                     {title}
                                 </h1>
@@ -245,10 +240,6 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
                 {/* Dark band intro akreditasi */}
                 <Reveal>
                     <div className="mb-12 text-center">
-                        <span className="mb-3 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                            style={{ background: 'rgba(140,100,65,0.12)', color: '#8C6441' }}>
-                            {l === 'id' ? 'Pengakuan Mutu' : 'Quality Recognition'}
-                        </span>
                         <h2 className="font-display text-ink-900 text-2xl font-semibold sm:text-3xl">
                             {l === 'id' ? 'Akreditasi & Sertifikasi' : 'Accreditation & Certification'}
                         </h2>
@@ -308,10 +299,6 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
                 <section id="visi-misi" className="mb-20 scroll-mt-24">
                     <Reveal>
                         <div className="mb-8">
-                            <span className="mb-3 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                                style={{ background: 'rgba(140,100,65,0.12)', color: '#8C6441' }}>
-                                {l === 'id' ? 'Arah & Tujuan' : 'Direction & Purpose'}
-                            </span>
                             <h2 className="font-display text-ink-900 mt-2 text-2xl font-semibold sm:text-3xl">
                                 {l === 'id' ? 'Visi & Misi' : 'Vision & Mission'}
                             </h2>
@@ -363,11 +350,6 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
                 <section id="profil-lulusan" className="mb-20 scroll-mt-24">
                     <Reveal>
                         <div className="mb-8">
-                            <span className="mb-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                                style={{ background: 'rgba(217,159,96,0.12)', color: '#C08A4C' }}>
-                                <GraduationCap className="size-3" />
-                                {l === 'id' ? 'Profil Lulusan' : 'Graduate Profiles'}
-                            </span>
                             <h2 className="font-display text-ink-900 mt-2 text-2xl font-semibold sm:text-3xl">
                                 {l === 'id' ? 'Tujuan Pendidikan' : 'Educational Objectives'}
                             </h2>
@@ -408,10 +390,6 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
                 <section id="strategi" className="mb-20 scroll-mt-24">
                     <Reveal>
                         <div className="mb-8">
-                            <span className="mb-3 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                                style={{ background: 'rgba(140,100,65,0.12)', color: '#8C6441' }}>
-                                {l === 'id' ? 'Strategi Pengembangan' : 'Development Strategy'}
-                            </span>
                             <h2 className="font-display text-ink-900 mt-2 text-2xl font-semibold sm:text-3xl">
                                 {l === 'id' ? '7 Tujuan Strategis' : '7 Strategic Objectives'}
                             </h2>
@@ -443,10 +421,6 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
                 </div>
                 <div className="relative mx-auto max-w-[1000px] px-6">
                     <Reveal>
-                        <span className="mb-3 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest"
-                            style={{ background: 'rgba(217,159,96,0.15)', color: '#D99F60', border: '1px solid rgba(217,159,96,0.20)' }}>
-                            {l === 'id' ? 'Latar Belakang' : 'Background'}
-                        </span>
                         <h2 className="font-display mb-8 mt-2 text-2xl font-semibold text-white sm:text-3xl">
                             {l === 'id' ? 'Sejarah & Legalitas' : 'History & Legal Framework'}
                         </h2>

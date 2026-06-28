@@ -438,11 +438,6 @@ export default function Lecturers({ kaprodi, labHeads, lecturers }: LecturersPro
                     <div className="grid items-end gap-10 md:grid-cols-12">
                         <div className="md:col-span-8">
                             <Reveal>
-                                <span className="mb-4 inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
-                                    style={{ background: 'rgba(217,159,96,0.15)', color: '#D99F60', border: '1px solid rgba(217,159,96,0.25)' }}>
-                                    <Users className="size-3.5" />
-                                    {l === 'id' ? 'Struktur & SDM' : 'Structure & Faculty'}
-                                </span>
                                 <h1 className="font-display mt-3 text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">{title}</h1>
                                 <p className="mt-5 max-w-lg text-base leading-relaxed" style={{ color: 'rgba(172,149,135,0.85)' }}>
                                     {l === 'id'
