@@ -32,6 +32,7 @@ class WebsiteSettings extends Page
     public string $hero_secondary_cta_label_id = '';
     public string $hero_secondary_cta_label_en = '';
     public string $hero_secondary_cta_href     = '';
+    public array  $hero_running_text            = [];
 
     // Site Meta
     public string $meta_name    = '';
@@ -130,6 +131,12 @@ class WebsiteSettings extends Page
         $this->hero_secondary_cta_label_id = $hero['secondary_cta']['label']['id'] ?? '';
         $this->hero_secondary_cta_label_en = $hero['secondary_cta']['label']['en'] ?? '';
         $this->hero_secondary_cta_href     = $hero['secondary_cta']['href']        ?? '';
+        $this->hero_running_text           = $hero['running_text']                 ?? [
+            ['id' => 'Program Studi Logistik dan Rantai Pasok Digital Berstandar Internasional.', 'en' => 'International Standard Center for Digital Logistics and Supply Chain.'],
+            ['id' => 'Profesional Rantai Pasok Berbasis Data dan Teknologi Digital.', 'en' => 'Data-Driven and Digital Technology Supply Chain Professionals.'],
+            ['id' => 'Mencetak Wirausaha dan Intrapreneur Bidang Logistik.', 'en' => 'Nurturing Entrepreneurs and Intrapreneurs in the Field of Logistics.'],
+            ['id' => 'Inovasi Rantai Pasok yang Mendukung SDGs.', 'en' => 'Supply Chain Innovation Supporting SDGs.'],
+        ];
 
         $this->meta_name    = $meta['name']    ?? '';
         $this->meta_address = $meta['address'] ?? '';
@@ -212,6 +219,17 @@ class WebsiteSettings extends Page
     }
 
     // Exposed for the Blade view to iterate repeaters
+    public function addHeroRunningText(): void
+    {
+        $this->hero_running_text[] = ['id' => '', 'en' => ''];
+    }
+
+    public function removeHeroRunningText(int $index): void
+    {
+        array_splice($this->hero_running_text, $index, 1);
+        $this->hero_running_text = array_values($this->hero_running_text);
+    }
+
     public function addTracerSeries(): void
     {
         $this->tracer_series[] = ['year' => '', 'employment_rate' => ''];
@@ -322,6 +340,7 @@ class WebsiteSettings extends Page
             'image'         => null,
             'primary_cta'   => ['label' => ['id' => $this->hero_primary_cta_label_id,   'en' => $this->hero_primary_cta_label_en],   'href' => $this->hero_primary_cta_href],
             'secondary_cta' => ['label' => ['id' => $this->hero_secondary_cta_label_id, 'en' => $this->hero_secondary_cta_label_en], 'href' => $this->hero_secondary_cta_href],
+            'running_text'  => $this->hero_running_text,
         ]]);
 
         // Site Meta

@@ -424,7 +424,7 @@ export default function About({ greeting, aboutContent, siteMeta, prodiStats, st
                         <h2 className="font-display mb-8 mt-2 text-2xl font-semibold text-white sm:text-3xl">
                             {l === 'id' ? 'Sejarah & Legalitas' : 'History & Legal Framework'}
                         </h2>
-                        <div className="max-w-3xl space-y-4 text-base leading-[1.9] text-justify text-white/95">
+                        <div className="space-y-4 text-base leading-[1.9] text-justify text-white/95">
                             {history?.split('\n').map((para, i) =>
                                 para.trim() === '' ? null : (
                                     <p key={i}>

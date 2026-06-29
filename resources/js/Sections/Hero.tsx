@@ -16,7 +16,27 @@ interface HeroData {
     image: string | null;
     primary_cta: { label: Bilingual; href: string };
     secondary_cta: { label: Bilingual; href: string };
+    running_text?: Bilingual[];
 }
+
+const DEFAULT_RUNNING_TEXT: Bilingual[] = [
+    {
+        id: 'Program Studi Logistik dan Rantai Pasok Digital Berstandar Internasional.',
+        en: 'International Standard Center for Digital Logistics and Supply Chain.',
+    },
+    {
+        id: 'Profesional Rantai Pasok Berbasis Data dan Teknologi Digital.',
+        en: 'Data-Driven and Digital Technology Supply Chain Professionals.',
+    },
+    {
+        id: 'Mencetak Wirausaha dan Intrapreneur Bidang Logistik.',
+        en: 'Nurturing Entrepreneurs and Intrapreneurs in the Field of Logistics.',
+    },
+    {
+        id: 'Inovasi Rantai Pasok yang Mendukung SDGs.',
+        en: 'Supply Chain Innovation Supporting SDGs.',
+    },
+];
 
 // Logistics-themed hero images
 const HERO_SLIDES = [
@@ -74,17 +94,10 @@ export function Hero({ hero }: { hero: HeroData }) {
     const [loaded, setLoaded] = useState(false);
 
     // Typewriter effect state
-    const sentences = locale === 'id' ? [
-        "Pusat Logistik dan Rantai Pasok Digital Berstandar Internasional.",
-        "Profesional Rantai Pasok Berbasis Data dan Teknologi Digital.",
-        "Mencetak Wirausaha dan Intrapreneur Bidang Logistik.",
-        "Inovasi Rantai Pasok yang Mendukung SDGs."
-    ] : [
-        "International Standard Center for Digital Logistics and Supply Chain.",
-        "Data-Driven and Digital Technology Supply Chain Professionals.",
-        "Nurturing Entrepreneurs and Intrapreneurs in the Field of Logistics.",
-        "Supply Chain Innovation Supporting SDGs."
-    ];
+    const runningText = hero.running_text?.length
+        ? hero.running_text
+        : DEFAULT_RUNNING_TEXT;
+    const sentences = runningText.map((sentence) => t(sentence));
 
     const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
     const [typedText, setTypedText] = useState("");

@@ -97,7 +97,7 @@ export function AmbientBand() {
                         className="font-display mx-auto max-w-3xl text-2xl leading-snug font-medium italic sm:text-3xl lg:text-[2rem]"
                         style={{ color: 'rgba(255,253,251,0.92)' }}
                     >
-                        "Membangun insinyur logistik masa depan yang menguasai
+                        "Membangun ahli logistik masa depan yang menguasai
                         rantai pasok digital dan memberi dampak nyata bagi industri Indonesia."
                     </p>
 

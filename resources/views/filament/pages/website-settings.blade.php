@@ -55,6 +55,21 @@
                     </div>
                 </x-filament::section>
 
+                <x-filament::section heading="Running Text (Typewriter)" class="mt-4">
+                    @foreach($hero_running_text as $i => $sentence)
+                    <div class="grid grid-cols-2 gap-3 mb-3 p-3 rounded-lg" style="background: rgba(140,100,65,0.04); border: 1px solid rgba(140,100,65,0.12);">
+                        <div><label class="fi-fo-field-wrp-label">Kalimat (ID)</label><input wire:model="hero_running_text.{{ $i }}.id" type="text" class="fi-input block w-full mt-1 rounded-lg border px-3 py-2 text-sm" /></div>
+                        <div class="flex items-end gap-2">
+                            <div class="flex-1"><label class="fi-fo-field-wrp-label">Sentence (EN)</label><input wire:model="hero_running_text.{{ $i }}.en" type="text" class="fi-input block w-full mt-1 rounded-lg border px-3 py-2 text-sm" /></div>
+                            <button type="button" wire:click="removeHeroRunningText({{ $i }})" class="mb-0.5 rounded-lg px-3 py-2 text-sm text-red-600 hover:bg-red-50">Hapus</button>
+                        </div>
+                    </div>
+                    @endforeach
+                    <button type="button" wire:click="addHeroRunningText" class="mt-2 rounded-lg border border-dashed px-4 py-2 text-sm font-medium" style="border-color: rgba(140,100,65,0.30); color: #8C6441;">
+                        + Tambah Kalimat
+                    </button>
+                </x-filament::section>
+
                 <x-filament::section heading="Visibilitas Seksi Beranda" class="mt-4">
                     <div class="grid grid-cols-2 gap-4">
                         <label class="flex items-center gap-2">
