@@ -32,6 +32,7 @@ interface StatItem {
 interface StatisticsProps {
     tracerStats: any;
     stats: StatItem[];
+    showTracer: boolean;
 }
 
 const HERO_BG =
@@ -149,7 +150,7 @@ function ProgressBar({ pct, accent, delay }: { pct: number; accent: string; dela
     );
 }
 
-export default function Statistics({ tracerStats, stats }: StatisticsProps) {
+export default function Statistics({ tracerStats, stats, showTracer }: StatisticsProps) {
     const { locale } = useLocale();
     const l = locale as 'id' | 'en';
     const heroRef = useRef<HTMLElement>(null);
@@ -463,21 +464,23 @@ export default function Statistics({ tracerStats, stats }: StatisticsProps) {
             </section>
 
             {/* ── TRACER STUDY CHART ── */}
-            <section className="relative overflow-hidden py-0 border-t" style={{ borderColor: 'rgba(172,149,135,0.08)' }}>
-                {/* Dark background */}
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(160deg, #1A0D16 0%, #2C1624 40%, #1E1128 100%)' }} />
-                {/* Orbs */}
-                <div className="pointer-events-none absolute -top-32 -left-32 size-[500px] rounded-full opacity-[0.16]"
-                    style={{ background: 'radial-gradient(circle, rgba(217,159,96,0.60) 0%, transparent 70%)', filter: 'blur(70px)' }} />
-                <div className="pointer-events-none absolute -bottom-20 -right-20 size-[380px] rounded-full opacity-[0.12]"
-                    style={{ background: 'radial-gradient(circle, rgba(140,100,65,0.65) 0%, transparent 70%)', filter: 'blur(55px)' }} />
-                {/* Dot grid */}
-                <div className="pointer-events-none absolute inset-0 opacity-[0.04]"
-                    style={{ backgroundImage: 'radial-gradient(rgba(217,159,96,0.8) 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
-                <div className="relative z-10">
-                    <TracerChart tracerStats={tracerStats} />
-                </div>
-            </section>
+            {showTracer && (
+                <section className="relative overflow-hidden py-0 border-t" style={{ borderColor: 'rgba(172,149,135,0.08)' }}>
+                    {/* Dark background */}
+                    <div className="absolute inset-0" style={{ background: 'linear-gradient(160deg, #1A0D16 0%, #2C1624 40%, #1E1128 100%)' }} />
+                    {/* Orbs */}
+                    <div className="pointer-events-none absolute -top-32 -left-32 size-[500px] rounded-full opacity-[0.16]"
+                        style={{ background: 'radial-gradient(circle, rgba(217,159,96,0.60) 0%, transparent 70%)', filter: 'blur(70px)' }} />
+                    <div className="pointer-events-none absolute -bottom-20 -right-20 size-[380px] rounded-full opacity-[0.12]"
+                        style={{ background: 'radial-gradient(circle, rgba(140,100,65,0.65) 0%, transparent 70%)', filter: 'blur(55px)' }} />
+                    {/* Dot grid */}
+                    <div className="pointer-events-none absolute inset-0 opacity-[0.04]"
+                        style={{ backgroundImage: 'radial-gradient(rgba(217,159,96,0.8) 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
+                    <div className="relative z-10">
+                        <TracerChart tracerStats={tracerStats} />
+                    </div>
+                </section>
+            )}
         </MainLayout>
     );
 }

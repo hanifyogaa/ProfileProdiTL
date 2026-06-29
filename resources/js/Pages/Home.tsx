@@ -32,6 +32,10 @@ interface HomeProps {
     tracerStats: any;
     labs: any[];
     partners: any[];
+    visibleSections: {
+        tracer: boolean;
+        cta: boolean;
+    };
     settings: {
         site_meta: any;
         socials: any;
@@ -52,6 +56,7 @@ export default function Home({
     tracerStats,
     labs,
     partners,
+    visibleSections,
     settings,
 }: HomeProps) {
     const { locale } = useLocale();
@@ -150,9 +155,11 @@ export default function Home({
                     </div>
 
                     {/* 10. Tracer study area chart */}
-                    <div id="tracer" className="relative z-10">
-                        <TracerChart tracerStats={tracerStats} />
-                    </div>
+                    {visibleSections.tracer && (
+                        <div id="tracer" className="relative z-10">
+                            <TracerChart tracerStats={tracerStats} />
+                        </div>
+                    )}
 
                     {/* 11. Laboratories & study facilities */}
                     <div id="labs" className="relative z-10">
@@ -170,9 +177,11 @@ export default function Home({
                     </div>
 
                     {/* 14. Call-to-action banner */}
-                    <div id="cta" className="relative z-10">
-                        <AdmissionCta />
-                    </div>
+                    {visibleSections.cta && (
+                        <div id="cta" className="relative z-10">
+                            <AdmissionCta />
+                        </div>
+                    )}
                 </main>
 
                 {/* 14. Program Footer */}

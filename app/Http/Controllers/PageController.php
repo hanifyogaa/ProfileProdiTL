@@ -207,9 +207,12 @@ class PageController extends Controller
 
     public function statistics(): Response
     {
+        $visibleSections = Setting::getValue('visible_sections', []);
+
         return Inertia::render('Statistics', [
             'tracerStats' => Setting::getValue('tracer_stats'),
             'stats' => Stat::orderBy('order')->get(),
+            'showTracer' => $visibleSections['tracer'] ?? false,
         ]);
     }
 

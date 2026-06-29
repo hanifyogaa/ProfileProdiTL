@@ -33,7 +33,7 @@ function CtaContent() {
             {/* Heading */}
             <h2 className="font-display text-surface-0 text-3xl leading-tight font-bold sm:text-4xl lg:text-[2.75rem]">
                 {locale === 'id'
-                    ? 'Siap Menjadi Insinyur Logistik Masa Depan?'
+                    ? 'Siap Menjadi Ahli Logistik Masa Depan?'
                     : 'Ready to Become a Future Logistics Engineer?'}
             </h2>
 

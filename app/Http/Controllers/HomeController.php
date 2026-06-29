@@ -17,6 +17,7 @@ class HomeController extends Controller
 {
     public function index(): Response
     {
+        $visibleSections = Setting::getValue('visible_sections', []);
         $signatureCourses = Course::where('is_signature', true)->get(['name_id', 'name_en']);
         $curriculumSummary = Setting::getValue('curriculum_summary', []);
         $curriculumSummary['signature_courses'] = $signatureCourses;
@@ -73,6 +74,10 @@ class HomeController extends Controller
             'tracerStats' => Setting::getValue('tracer_stats'),
             'labs' => Lab::orderBy('order')->limit(6)->get(),
             'partners' => Partner::orderBy('order')->get(),
+            'visibleSections' => [
+                'tracer' => $visibleSections['tracer'] ?? false,
+                'cta' => $visibleSections['cta'] ?? true,
+            ],
             'settings' => [
                 'site_meta' => Setting::getValue('site_meta'),
                 'socials' => Setting::getValue('socials'),

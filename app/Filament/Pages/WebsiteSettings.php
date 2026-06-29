@@ -102,6 +102,10 @@ class WebsiteSettings extends Page
     public int    $curriculum_total_sks = 145;
     public int    $curriculum_semesters = 8;
 
+    // Section visibility toggles
+    public bool $visible_tracer = false;
+    public bool $visible_cta    = true;
+
     // ── Boot ────────────────────────────────────────────────────────────
     public function mount(): void
     {
@@ -193,6 +197,11 @@ class WebsiteSettings extends Page
         $curr = Setting::getValue('curriculum_summary', []);
         $this->curriculum_total_sks = (int) ($curr['total_sks'] ?? 145);
         $this->curriculum_semesters = (int) ($curr['semesters'] ?? 8);
+
+        // Section visibility
+        $visibleSections = Setting::getValue('visible_sections', []);
+        $this->visible_tracer = $visibleSections['tracer'] ?? false;
+        $this->visible_cta    = $visibleSections['cta']    ?? true;
     }
 
     public static function getNavigationGroup(): string|null { return 'Pengaturan'; }
@@ -396,6 +405,12 @@ class WebsiteSettings extends Page
             'total_sks' => $this->curriculum_total_sks,
             'semesters' => $this->curriculum_semesters,
             'pdf_url'   => $existingCurr['pdf_url'] ?? null,
+        ]]);
+
+        // Section visibility
+        Setting::updateOrCreate(['key' => 'visible_sections'], ['value' => [
+            'tracer' => $this->visible_tracer,
+            'cta'    => $this->visible_cta,
         ]]);
 
         Notification::make()

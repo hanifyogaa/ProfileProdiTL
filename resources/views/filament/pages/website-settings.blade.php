@@ -54,6 +54,19 @@
                         <div><label class="fi-fo-field-wrp-label">URL Tombol Sekunder</label><input wire:model="hero_secondary_cta_href" type="text" placeholder="/profil" class="fi-input block w-full mt-1 rounded-lg border px-3 py-2 text-sm" /></div>
                     </div>
                 </x-filament::section>
+
+                <x-filament::section heading="Visibilitas Seksi Beranda" class="mt-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="flex items-center gap-2">
+                            <input wire:model="visible_tracer" type="checkbox" class="fi-checkbox-input rounded border" />
+                            <span class="fi-fo-field-wrp-label">Tampilkan grafik Tracer Study (Tingkat Penyerapan Kerja)</span>
+                        </label>
+                        <label class="flex items-center gap-2">
+                            <input wire:model="visible_cta" type="checkbox" class="fi-checkbox-input rounded border" />
+                            <span class="fi-fo-field-wrp-label">Tampilkan banner CTA Penerimaan Mahasiswa Baru</span>
+                        </label>
+                    </div>
+                </x-filament::section>
             </div>
 
             {{-- ── Tab: Identitas & Kontak ── --}}
